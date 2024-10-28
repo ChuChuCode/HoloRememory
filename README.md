@@ -1,0 +1,20 @@
+# Holo Rememory
+ A Hololive BOBA game
+
+
+## Develope Process
+<img width="1072" alt="截圖 2024-10-29 清晨5 33 04" src="https://github.com/user-attachments/assets/fd52a3d7-b9c1-418a-aa16-55f06075ed60">
+
+https://github.com/user-attachments/assets/b676edc5-45de-42b5-a9f0-0b1d46dbaa2b
+
+
+
+## Credit
+ ### Program
+ #### ChuChu
+ 
+![ChuChu](https://github.com/user-attachments/assets/49c6bf2e-90de-4a71-99d3-7f571a30f2d9)
+ 
+ [X](https://twitter.com/_ChuChu0314)
+ 
+ [Youtube](https://www.youtube.com/channel/UCdkTl8YBShi6iFQ4szRxfYA)
