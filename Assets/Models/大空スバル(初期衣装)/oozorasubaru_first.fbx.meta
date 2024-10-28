@@ -1,0 +1,294 @@
+fileFormatVersion: 2
+guid: c039f51ebf167491586183ed7f0e8e75
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable: []
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 0.Mat_oozorasubaru_first_body
+    second: {fileID: 2100000, guid: fa3fbb2fb28d24136911685640ce8bc3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 1.Mat_oozorasubaru_first_eye
+    second: {fileID: 2100000, guid: 1025aabfd39cf464ebd1ad8202b4876c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 10.Mat_oozorasubaru_first_eyes
+    second: {fileID: 2100000, guid: c77b8023e83224ab4b4d0dca1a58bda6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 11.Mat_oozorasubaru_first_morpheyes
+    second: {fileID: 2100000, guid: dc1824c88bc2946988c964219656e822, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 12.Mat_oozorasubaru_first_muka
+    second: {fileID: 2100000, guid: 6d2fc62b4f21f47deaa54d10f36a8a4b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 13.Mat_oozorasubaru_first_tears
+    second: {fileID: 2100000, guid: ecde39e7516074d2cb354c0cef381150, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 14.Mat_oozorasubaru_first_teres
+    second: {fileID: 2100000, guid: 452c8f7dcea474f2782b5401fc8d00ca, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 15.Mat_oozorasubaru_first_hat
+    second: {fileID: 2100000, guid: 32dbfcc79a7334fb2ae2ece1f677c479, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 16.Mat_oozorasubaru_first_hue
+    second: {fileID: 2100000, guid: b239febc4f6144c7f9380d54da3a10b0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 17.Mat_oozorasubaru_first_metal
+    second: {fileID: 2100000, guid: 9a168311503894ea3b1a302106de2dba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 18.Mat_oozorasubaru_first_munehimo
+    second: {fileID: 2100000, guid: 756c855a2447348ad94ffd8b076dbb5d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 19.Mat_oozorasubaru_first_watch
+    second: {fileID: 2100000, guid: b422f111e969743d18061469b86d450d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 2.Mat_oozorasubaru_first_highlight
+    second: {fileID: 2100000, guid: 11e68e63f85804ecb8164d91eea36aa9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 20.Mat_oozorasubaru_first_karabina
+    second: {fileID: 2100000, guid: d4920e3bd1edb47428e403460000c41f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 21.Mat_oozorasubaru_first_mega
+    second: {fileID: 2100000, guid: baf1adf88baa84b808408cff340e89fc, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 22.Mat_oozorasubaru_first_megahimo
+    second: {fileID: 2100000, guid: ae6eb153891214c48b009c287615c303, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 23.Mat_oozorasubaru_first_nuno
+    second: {fileID: 2100000, guid: a2c6d9acb023b43d686bb646e54f3ee4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 24.Mat_oozorasubaru_first_nuno2
+    second: {fileID: 2100000, guid: 50cec2ac6e1404a58bb7c68a2a2be381, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 25.Mat_oozorasubaru_first_huku
+    second: {fileID: 2100000, guid: b5e06249fa66d43538bce6cb73f28679, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 26.Mat_oozorasubaru_first_zubon
+    second: {fileID: 2100000, guid: 48b509e5ab4574261863f7c8531337b7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 27.Mat_oozorasubaru_first_button
+    second: {fileID: 2100000, guid: 2a1834d16a9b945a6b8921048e8f1737, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 28.Mat_oozorasubaru_first_ude
+    second: {fileID: 2100000, guid: b1b6c8e984f7c4bf28c13d9a28da7f12, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 29.Mat_oozorasubaru_first_spats
+    second: {fileID: 2100000, guid: 71cbc94e8a8aa45f8999503935404488, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 3.Mat_oozorasubaru_first_face
+    second: {fileID: 2100000, guid: afe0193a0875a4ca3ab1b47f13e13e56, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 30.Mat_oozorasubaru_first_shoes
+    second: {fileID: 2100000, guid: ea8739705b64e4118861e2b98da5c178, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 31.Mat_oozorasubaru_first_shoeshimo
+    second: {fileID: 2100000, guid: 8cdb12072b9f048f58889cc385f8fdba, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 32.Mat_oozorasubaru_first_kutushita
+    second: {fileID: 2100000, guid: d5062faa2a2c647eda8dbcc6c360fe65, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 33.Mat_oozorasubaru_first_mayuge
+    second: {fileID: 2100000, guid: b61a3181ad4714aaa8ad94f8abc779c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 34.Mat_oozorasubaru_first_ase
+    second: {fileID: 2100000, guid: d3ffcf4d967ee4ee4b5c6ee0247b84f2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 35.Mat_oozorasubaru_first_aozame
+    second: {fileID: 2100000, guid: f443c4803cfa24531aa20c25b671bb5d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 36.Mat_oozorasubaru_first_hair_kage
+    second: {fileID: 2100000, guid: ad1eb768e96974cc38a856b8ac08b0da, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 4.Mat_oozorasubaru_first_face_noline
+    second: {fileID: 2100000, guid: ed0365f54c88f4fd69ca46c58a27d672, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 5.Mat_oozorasubaru_first_face_sirome
+    second: {fileID: 2100000, guid: 77d9a0b8198e84ed9bf805ca584eb6c9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 6.Mat_oozorasubaru_first_face_mouth
+    second: {fileID: 2100000, guid: 27703c75995ed4c13a47df7b82053501, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 7.Mat_oozorasubaru_first_kuti_teeth
+    second: {fileID: 2100000, guid: c52ce15f9b66e4e4db17d5e24a5ca78f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 8.Mat_oozorasubaru_first_kuti_tongue
+    second: {fileID: 2100000, guid: 2655d80bc8891405ab9265e6ad4df97d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: 9.Mat_oozorasubaru_first_hair
+    second: {fileID: 2100000, guid: 0be40707d85b84544a2d8a732fd36e18, type: 2}
+  materials:
+    materialImportMode: 2
+    materialName: 0
+    materialSearch: 0
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 1
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 3
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 1
+  importBlendShapeDeformPercent: 1
+  remapMaterialsIfMaterialImportModeIsNone: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

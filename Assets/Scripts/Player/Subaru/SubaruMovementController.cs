@@ -1,0 +1,191 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.AI;
+
+public class SubaruMovementController : MonoBehaviour,IHealth
+{
+    public List<Duck_AI> duck_array = new List<Duck_AI>();
+    NavMeshAgent agent;
+    int max_duck_num = 6;
+    [Header("Duck Skills")]
+    [SerializeField] Duck_AI Duck_prefab;
+    [SerializeField] Duck_Ult Duck_Ult;
+    PlayerInputActions playerInput;
+    Vector3 mouseProject;
+    [SerializeField] Animator animator;
+
+    int isRunHash;
+
+    Vector2 currentInput;
+    Vector3 currentMovement;
+    bool isMovementPressed;
+    float rotationFactorPerFrame = 10.0f;
+    float movespeed = 5f;
+    [Header("Skill Time")]
+    float duck_spawn_cd = 10f;
+    float duck_spawn_timer = 0f;
+    float duck_rush_cd = 10f;
+    float duck_rush_timer = -10f;
+    float duck_ult_cd = 20f;
+    float duck_ult_timer = -20f;
+    [Header("Character Info")]
+    [SerializeField] int maxHealth;
+    [SerializeField] int currentHealth;
+    AnimatorStateInfo stateInfo;
+
+    void Awake()
+    {
+        playerInput = new PlayerInputActions();
+        agent =GetComponent<NavMeshAgent>();
+
+        isRunHash = Animator.StringToHash("isMove");
+
+        playerInput.Player.Right_Mouse.started += OnRightMouseClick;
+        playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
+        playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
+        
+        playerInput.Player.Q.started += OnKeyboardQClick;
+
+        playerInput.Player.MousePosition.started += OnMousePositionInput;
+        playerInput.Player.MousePosition.performed += OnMousePositionInput;
+        playerInput.Player.MousePosition.canceled += OnMousePositionInput;
+
+        playerInput.Player.R.started += OnRkeyUltInput;
+
+        InitialHealth();
+        
+    }
+
+    void OnRkeyUltInput(InputAction.CallbackContext context)
+    {
+        if (Time.time - duck_ult_timer < duck_ult_cd) return;
+        if (duck_array.Count == 0) return;
+        animator.SetTrigger("Special");
+        duck_ult_timer = Time.time;
+        // Delete Duck
+        int duck_index = UnityEngine.Random.Range(0,duck_array.Count);
+        GameObject deleteDuck = duck_array[duck_index].gameObject;
+        duck_array.Remove(duck_array[duck_index]);
+        Destroy(deleteDuck);
+        // Spawn Ult Duck
+        Duck_Ult duck = Instantiate(Duck_Ult,transform.position + new Vector3(0f,10f,0f) ,Quaternion.identity);
+    }
+
+    void OnMousePositionInput(InputAction.CallbackContext context)
+    {
+        Vector3 mousePos = context.ReadValue<Vector2>();
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        if (Physics.Raycast(ray, out hit))
+        {
+            mouseProject = hit.point;
+        }
+    }
+    void OnRightMouseClick(InputAction.CallbackContext context)
+    {
+        Vector3 faceDirection = mouseProject;
+        faceDirection.y = 0f;
+        // Rotate Immediately
+        agent.velocity = (faceDirection - transform.position).normalized * agent.speed;
+        transform.LookAt(faceDirection);
+        agent.destination = faceDirection;
+    }
+    void OnKeyboardQClick(InputAction.CallbackContext context)
+    {
+        if (Time.time - duck_rush_timer < duck_rush_cd) return;
+        if (duck_array.Count == 0) return;
+        animator.SetTrigger("Special");
+        duck_rush_timer = Time.time;
+        foreach (var duck in duck_array)
+        {
+            duck.rush_position = mouseProject;
+            duck.rush_trigger = true;
+        }
+    }
+    void HandleRotation( )
+    {
+        Vector3 positionToLookAt;
+        positionToLookAt.x = currentMovement.x;
+        positionToLookAt.y = 0.0f;
+        positionToLookAt.z = currentMovement.z;
+        Quaternion currentRotation = transform.rotation;
+
+        if (isMovementPressed)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
+            transform.rotation = Quaternion.Slerp(currentRotation,targetRotation,rotationFactorPerFrame* Time.deltaTime);
+        }
+    }
+    void HandleAnmation()
+    {
+        bool isRun = agent.velocity.magnitude > 0;
+        // Run when idle
+        if (isRun)
+        {
+            animator.SetBool(isRunHash,true);
+        }
+        // idle when run
+        else
+        {
+            animator.SetBool(isRunHash,false);
+        }
+    }
+    // Duck_Spawn_Timer
+    bool Duck_Spawnable()
+    {
+        if (Time.time - duck_spawn_timer > duck_spawn_cd)
+        {
+            return true;
+        }
+        return false;
+    }
+    // Update is called once per frame
+    void Update()
+    {
+
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if(stateInfo.IsTag("stand")) return;
+        // move
+        // HandleRotation();
+        HandleAnmation();
+
+        // Passive skill
+        if (Duck_Spawnable() && duck_array.Count < max_duck_num )
+        {
+            duck_spawn_timer = Time.time ;
+            Vector3 pos = transform.position + 
+                        new Vector3(
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius,
+                            0f,
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
+            Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
+            duck.player = this.gameObject;
+            duck_array.Add(duck);
+        }
+    }
+    void OnEnable() 
+    {
+        playerInput.Player.Enable();    
+    }
+    void OnDisable()
+    {
+        playerInput.Player.Disable();
+    }
+
+    public void InitialHealth()
+    {
+        currentHealth = maxHealth;
+    }
+    public void GetDamage(int damage)
+    {
+        currentHealth -= damage;
+    }
+
+    public void Death()
+    {
+        
+    }
+}
