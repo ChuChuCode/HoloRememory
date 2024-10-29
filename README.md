@@ -14,6 +14,10 @@ https://github.com/user-attachments/assets/b676edc5-45de-42b5-a9f0-0b1d46dbaa2b
  |大空スバル　Oozora Subaru  |戯時/横          |[X](https://x.com/saretoki)  |
  |スバルアヒル Subaru Duck   |Rendr_ZW        |[X](https://x.com/Rendr_ZW)  |
 
+## Memo(to do)
+1. UI の調整、prefab となります。
+2. UI のスクリプトをInterfaceから継承する。
+
 ## Credit
  ### ChuChu
  
