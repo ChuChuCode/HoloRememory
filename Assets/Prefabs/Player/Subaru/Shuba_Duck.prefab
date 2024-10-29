@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shuba_Duck
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 664dee156702c490eb87a4b43272f708, type: 3}
+      propertyPath: m_TagString
+      value: Selectable
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -71,7 +75,40 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 664dee156702c490eb87a4b43272f708, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8713174955817428959}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 664dee156702c490eb87a4b43272f708, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6476755161181809231}
+    - targetCorrespondingSourceObject: {fileID: -42076320733947015, guid: 664dee156702c490eb87a4b43272f708, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2142229083967663843}
   m_SourcePrefab: {fileID: 100100000, guid: 664dee156702c490eb87a4b43272f708, type: 3}
+--- !u!1 &4537605025107248359 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -42076320733947015, guid: 664dee156702c490eb87a4b43272f708, type: 3}
+  m_PrefabInstance: {fileID: 4724923026837675934}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &2142229083967663843
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4537605025107248359}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3299718717889977690, guid: 664dee156702c490eb87a4b43272f708, type: 3}
 --- !u!4 &5051056400881711221 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 664dee156702c490eb87a4b43272f708, type: 3}
@@ -173,10 +210,28 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
+--- !u!114 &6476755161181809231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5571838552065712847}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 0.007843138, g: 1, b: 0, a: 1}
+  outlineWidth: 2
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1001 &6237204524590128338
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -185,6 +240,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5051056400881711221}
     m_Modifications:
+    - target: {fileID: 2284805386747547561, guid: 881776e176a4e44f09ab6a0e03d1ac0d, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3792323234479751932, guid: 881776e176a4e44f09ab6a0e03d1ac0d, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

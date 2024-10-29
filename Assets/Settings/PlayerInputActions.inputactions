@@ -232,7 +232,7 @@
                     "name": "",
                     "id": "262e4b78-2046-414a-b73a-8e25a3ad0a8d",
                     "path": "<Keyboard>/r",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
                     "action": "R",

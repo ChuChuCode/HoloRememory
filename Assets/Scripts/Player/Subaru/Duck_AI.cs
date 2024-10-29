@@ -40,7 +40,7 @@ public class Duck_AI : MonoBehaviour,IHealth
     [Header("Character Info")]
     [SerializeField] int maxHealth;
     [SerializeField] int currentHealth;
-    [SerializeField] HealthBar healthBar;
+    [SerializeField] Bar healthBar;
 
 
     void Awake() 
@@ -257,12 +257,12 @@ public class Duck_AI : MonoBehaviour,IHealth
     public void InitialHealth()
     {
         currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        healthBar.SetMaxValue(maxHealth);
     }
     public void GetDamage(int damage)
     {
         currentHealth -= damage;
-        healthBar.SetHealth(currentHealth);
+        healthBar.SetValue(currentHealth);
     }
 
     public void Death()

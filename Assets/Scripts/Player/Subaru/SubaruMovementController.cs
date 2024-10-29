@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
+using UnityEditor;
 
 public class SubaruMovementController : MonoBehaviour,IHealth
 {
@@ -16,6 +17,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     PlayerInputActions playerInput;
     Vector3 mouseProject;
     [SerializeField] Animator animator;
+    [SerializeField] ParticleSystem Target;
 
     int isRunHash;
 
@@ -23,7 +25,6 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     Vector3 currentMovement;
     bool isMovementPressed;
     float rotationFactorPerFrame = 10.0f;
-    float movespeed = 5f;
     [Header("Skill Time")]
     float duck_spawn_cd = 10f;
     float duck_spawn_timer = 0f;
@@ -44,14 +45,14 @@ public class SubaruMovementController : MonoBehaviour,IHealth
         isRunHash = Animator.StringToHash("isMove");
 
         playerInput.Player.Right_Mouse.started += OnRightMouseClick;
-        playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
-        playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
+        //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
+        //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
         
         playerInput.Player.Q.started += OnKeyboardQClick;
 
-        playerInput.Player.MousePosition.started += OnMousePositionInput;
-        playerInput.Player.MousePosition.performed += OnMousePositionInput;
-        playerInput.Player.MousePosition.canceled += OnMousePositionInput;
+        //playerInput.Player.MousePosition.started += OnMousePositionInput;
+        //playerInput.Player.MousePosition.performed += OnMousePositionInput;
+        //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
 
         playerInput.Player.R.started += OnRkeyUltInput;
 
@@ -86,12 +87,14 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     }
     void OnRightMouseClick(InputAction.CallbackContext context)
     {
-        Vector3 faceDirection = mouseProject;
-        faceDirection.y = 0f;
+        // Vector3 faceDirection = mouseProject;
+        // Spawn Particle
+        ParticleSystem temp = Instantiate(Target,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
+        //faceDirection.y = 0f;
         // Rotate Immediately
-        agent.velocity = (faceDirection - transform.position).normalized * agent.speed;
-        transform.LookAt(faceDirection);
-        agent.destination = faceDirection;
+        //agent.velocity = (faceDirection - transform.position).normalized * agent.speed;
+        //transform.LookAt(faceDirection);
+        // agent.destination = mouseProject;
     }
     void OnKeyboardQClick(InputAction.CallbackContext context)
     {
@@ -145,7 +148,27 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     // Update is called once per frame
     void Update()
     {
+        // check mouse raycast
+        Vector3 mousePos = playerInput.Player.MousePosition.ReadValue<Vector2>();
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        if (Physics.Raycast(ray, out hit))
+        {
+            mouseProject = hit.point;
+        }
+        // Move
+        if ( playerInput.Player.Right_Mouse.IsPressed())
+        {
+            Vector3 faceDirection = mouseProject;
+            // Spawn Particle
+            // Instantiate(Target,mouseProject + new Vector3(0,1f,0), Quaternion.identity);
+            Vector3 moveVelocity = mouseProject - transform.position;
+            // Rotate Immediately
+            agent.velocity = moveVelocity.normalized * agent.speed;
 
+            transform.LookAt(faceDirection);
+            agent.destination = mouseProject;
+        }
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if(stateInfo.IsTag("stand")) return;
         // move
@@ -187,5 +210,11 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     public void Death()
     {
         
+    }
+    void Start()
+    {
+        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
+        Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
+
     }
 }
