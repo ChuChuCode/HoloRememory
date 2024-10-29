@@ -1,5 +1,6 @@
 # Holo Rememory
- A Hololive BOBA game
+ A Hololive MOBA game
+ (still at the start of main system.)
 
 
 ## Develope Process
