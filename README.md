@@ -8,6 +8,9 @@
 
 https://github.com/user-attachments/assets/b676edc5-45de-42b5-a9f0-0b1d46dbaa2b
 
+https://github.com/user-attachments/assets/9a4bd2f7-0d7f-4c03-bbb2-86adebb0570a
+
+
 ## Model List
  |モデル Model              | 創作者 Creator  | X(Twitter)                  |
  |-------------------------|----------------|-----------------------------|
