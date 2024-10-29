@@ -5,7 +5,7 @@
 ## Develope Process
 <img width="1072" src="https://github.com/user-attachments/assets/fd52a3d7-b9c1-418a-aa16-55f06075ed60">
 
-![](https://github.com/user-attachments/assets/b676edc5-45de-42b5-a9f0-0b1d46dbaa2b)
+https://github.com/user-attachments/assets/b676edc5-45de-42b5-a9f0-0b1d46dbaa2b
 
 ## Model List
  |モデル Model              | 創作者 Creator  | X(Twitter)                  |
