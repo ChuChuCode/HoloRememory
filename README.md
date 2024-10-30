@@ -8,8 +8,7 @@
 
 https://github.com/user-attachments/assets/b676edc5-45de-42b5-a9f0-0b1d46dbaa2b
 
-https://github.com/user-attachments/assets/9a4bd2f7-0d7f-4c03-bbb2-86adebb0570a
-
+https://github.com/user-attachments/assets/160abc6d-11c4-4fb4-a2b2-2bf085de3bde
 
 ## Model List
  |モデル Model              | 創作者 Creator  | X(Twitter)                  |
@@ -19,7 +18,7 @@ https://github.com/user-attachments/assets/9a4bd2f7-0d7f-4c03-bbb2-86adebb0570a
 
 ## Memo(to do)
 1. UI の調整、prefab となります。
-2. UI のスクリプトをInterfaceから継承する。
+2. ~~UI のスクリプトをInterfaceから継承する。~~
 
 ## Credit
  ### ChuChu
