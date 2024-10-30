@@ -225,6 +225,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Left_Mouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""d810027d-2329-41cf-a137-36a32af77783"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -271,6 +280,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Right_Mouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1b6b3859-1a1a-4ade-be56-5bcdc5d624d0"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Left_Mouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -290,6 +310,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Q = m_Player.FindAction("Q", throwIfNotFound: true);
         m_Player_R = m_Player.FindAction("R", throwIfNotFound: true);
         m_Player_Right_Mouse = m_Player.FindAction("Right_Mouse", throwIfNotFound: true);
+        m_Player_Left_Mouse = m_Player.FindAction("Left_Mouse", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -433,6 +454,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Q;
     private readonly InputAction m_Player_R;
     private readonly InputAction m_Player_Right_Mouse;
+    private readonly InputAction m_Player_Left_Mouse;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -441,6 +463,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Q => m_Wrapper.m_Player_Q;
         public InputAction @R => m_Wrapper.m_Player_R;
         public InputAction @Right_Mouse => m_Wrapper.m_Player_Right_Mouse;
+        public InputAction @Left_Mouse => m_Wrapper.m_Player_Left_Mouse;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -462,6 +485,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Right_Mouse.started += instance.OnRight_Mouse;
             @Right_Mouse.performed += instance.OnRight_Mouse;
             @Right_Mouse.canceled += instance.OnRight_Mouse;
+            @Left_Mouse.started += instance.OnLeft_Mouse;
+            @Left_Mouse.performed += instance.OnLeft_Mouse;
+            @Left_Mouse.canceled += instance.OnLeft_Mouse;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -478,6 +504,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Right_Mouse.started -= instance.OnRight_Mouse;
             @Right_Mouse.performed -= instance.OnRight_Mouse;
             @Right_Mouse.canceled -= instance.OnRight_Mouse;
+            @Left_Mouse.started -= instance.OnLeft_Mouse;
+            @Left_Mouse.performed -= instance.OnLeft_Mouse;
+            @Left_Mouse.canceled -= instance.OnLeft_Mouse;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -509,5 +538,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnQ(InputAction.CallbackContext context);
         void OnR(InputAction.CallbackContext context);
         void OnRight_Mouse(InputAction.CallbackContext context);
+        void OnLeft_Mouse(InputAction.CallbackContext context);
     }
 }

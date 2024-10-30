@@ -14,7 +14,6 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     [Header("Duck Skills")]
     [SerializeField] Duck_AI Duck_prefab;
     [SerializeField] Duck_Ult Duck_Ult;
-    PlayerInputActions playerInput;
     Vector3 mouseProject;
     [SerializeField] Animator animator;
     [SerializeField] ParticleSystem Target;
@@ -33,34 +32,34 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     float duck_ult_cd = 20f;
     float duck_ult_timer = -20f;
     [Header("Character Info")]
-    [SerializeField] int maxHealth;
-    [SerializeField] int currentHealth;
     AnimatorStateInfo stateInfo;
+
+    [field: SerializeField] public int maxHealth { get ; set ; }
+    [field: SerializeField] public int currentHealth { get; set ; }
 
     void Awake()
     {
-        playerInput = new PlayerInputActions();
-        agent =GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
 
         isRunHash = Animator.StringToHash("isMove");
 
-        playerInput.Player.Right_Mouse.started += OnRightMouseClick;
+        InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
         
-        playerInput.Player.Q.started += OnKeyboardQClick;
+        InputSystem.instance.playerInput.Player.Q.started += OnQKeyClick;
 
         //playerInput.Player.MousePosition.started += OnMousePositionInput;
         //playerInput.Player.MousePosition.performed += OnMousePositionInput;
         //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
 
-        playerInput.Player.R.started += OnRkeyUltInput;
+        InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
 
         InitialHealth();
         
     }
 
-    void OnRkeyUltInput(InputAction.CallbackContext context)
+    void OnRKeyInput(InputAction.CallbackContext context)
     {
         if (Time.time - duck_ult_timer < duck_ult_cd) return;
         if (duck_array.Count == 0) return;
@@ -96,7 +95,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
         //transform.LookAt(faceDirection);
         // agent.destination = mouseProject;
     }
-    void OnKeyboardQClick(InputAction.CallbackContext context)
+    void OnQKeyClick(InputAction.CallbackContext context)
     {
         if (Time.time - duck_rush_timer < duck_rush_cd) return;
         if (duck_array.Count == 0) return;
@@ -149,7 +148,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     void Update()
     {
         // check mouse raycast
-        Vector3 mousePos = playerInput.Player.MousePosition.ReadValue<Vector2>();
+        Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         if (Physics.Raycast(ray, out hit))
@@ -157,7 +156,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
             mouseProject = hit.point;
         }
         // Move
-        if ( playerInput.Player.Right_Mouse.IsPressed())
+        if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
         {
             Vector3 faceDirection = mouseProject;
             // Spawn Particle
@@ -165,9 +164,11 @@ public class SubaruMovementController : MonoBehaviour,IHealth
             Vector3 moveVelocity = mouseProject - transform.position;
             // Rotate Immediately
             agent.velocity = moveVelocity.normalized * agent.speed;
-
-            transform.LookAt(faceDirection);
+            // Walk goal
             agent.destination = mouseProject;
+            Vector3 direction = mouseProject - transform.position;
+            direction.y = 0;
+            transform.LookAt(transform.position + direction);
         }
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if(stateInfo.IsTag("stand")) return;
@@ -191,11 +192,11 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     }
     void OnEnable() 
     {
-        playerInput.Player.Enable();    
+        InputSystem.instance.playerInput.Player.Enable();    
     }
     void OnDisable()
     {
-        playerInput.Player.Disable();
+        InputSystem.instance.playerInput.Player.Disable();
     }
 
     public void InitialHealth()

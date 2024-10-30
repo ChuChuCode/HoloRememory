@@ -38,9 +38,9 @@ public class Duck_AI : MonoBehaviour,IHealth
     float rush_time = 2f;
     public bool rush_trigger;
     [Header("Character Info")]
-    [SerializeField] int maxHealth;
-    [SerializeField] int currentHealth;
     [SerializeField] Bar healthBar;
+    [field: SerializeField] public int maxHealth { get ; set; }
+    [field: SerializeField] public int currentHealth { get; set ; }
 
 
     void Awake() 
@@ -180,7 +180,7 @@ public class Duck_AI : MonoBehaviour,IHealth
                     enemy = Search_Nearest(hitColliders);
                 }
                 // If is in attack Range -> to attack state
-                if (Vector3.Distance(enemy.transform.position,transform.position) < 1f)
+                if (Vector3.Distance(enemy.transform.position,transform.position) < 2f)
                 {
                     current_State = State.Attack;
                     break;
@@ -204,7 +204,7 @@ public class Duck_AI : MonoBehaviour,IHealth
                     break;
                 }
                 // if is out of attack range -> chase
-                if (Vector3.Distance(enemy.transform.position,transform.position) >= 1f)
+                if (Vector3.Distance(enemy.transform.position,transform.position) >= 2f)
                 {
                     current_State = State.Chase;
                     animator.SetBool("isAttack",false);

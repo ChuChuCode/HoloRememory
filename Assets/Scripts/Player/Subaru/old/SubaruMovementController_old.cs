@@ -30,9 +30,9 @@ public class SubaruMovementController_old : MonoBehaviour,IHealth
     float duck_rush_timer = -10f;
     float duck_ult_cd = 20f;
     float duck_ult_timer = -20f;
-    [Header("Character Info")]
-    [SerializeField] int maxHealth;
-    [SerializeField] int currentHealth;
+
+    public int maxHealth { get ; set ; }
+    public int currentHealth { get; set ; }
     AnimatorStateInfo stateInfo;
 
     void Awake()
