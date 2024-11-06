@@ -18,6 +18,9 @@ public class TowerBehaviour : MonoBehaviour,IHealth
     [SerializeField] Transform top;
     [SerializeField] Transform Base;
     LineRenderer lineRenderer;
+    float Attack_CD_timer = -1f;
+    float Attack_CD = 1f;
+    [SerializeField] TowerBall Attack_Ball;
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
@@ -46,6 +49,7 @@ public class TowerBehaviour : MonoBehaviour,IHealth
         if (current_State == State.Break) return;
         if (currentHealth == 0) current_State = State.Break;
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius,enemy_layer);
+        // * Need Check Attack Priority
         switch (current_State)
         {
             case State.Idle:
@@ -58,20 +62,31 @@ public class TowerBehaviour : MonoBehaviour,IHealth
                 lineRenderer.positionCount = 1;
                 break;
             case State.Attack:
-                if (hitColliders.Length == 0)
+                //check distance 
+                Vector3 direction = enemy.position - Base.position;
+                direction.y = 0;
+                if (direction.magnitude > attack_radius)
                 {
                     current_State = State.Idle;
                     break;
                 }
+                // shoot attack if is not in CD
+                if (Time.time - Attack_CD_timer > Attack_CD)
+                {
+                    // Spawn attack ball and Set Target = enemy 
+                    TowerBall ball = Instantiate(Attack_Ball,top.transform.position,Quaternion.identity);
+                    ball.Target = enemy;
+                    // Set new timer
+                    Attack_CD_timer = Time.time;
+                }                
                 // Set Line
                 lineRenderer.positionCount = 2;
                 lineRenderer.SetPosition(1, enemy.position);
                 // Set Model
                 top.LookAt(enemy.position);
-                Vector3 direction = enemy.position - Base.position;
-                direction.y = 0;
                 Base.LookAt(Base.position+direction);
                 break;
+
             case State.Break:
                 Death();
                 break;

@@ -7,6 +7,7 @@ public class InputSystem : MonoBehaviour
 {
     public static InputSystem instance {get; private set;}
     public PlayerInputActions playerInput;
+    
     void Awake()
     {
         instance = this;

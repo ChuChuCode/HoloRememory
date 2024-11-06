@@ -212,10 +212,12 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     {
         
     }
+    /*
     void Start()
     {
         var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
         Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
 
     }
+    */
 }
