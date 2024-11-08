@@ -13,9 +13,10 @@ public class Duck_AI : MonoBehaviour,IHealth
         Back,
         Chase,
         Attack,
-        Special
+        Special,
+        Dead
     };
-    public GameObject player;
+    public SubaruMovementController player;
     GameObject enemy;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Rigidbody rd;
@@ -37,11 +38,12 @@ public class Duck_AI : MonoBehaviour,IHealth
     float rush_speed = 500f;
     float rush_time = 2f;
     public bool rush_trigger;
+    float deadTime = 1f;
     [Header("Character Info")]
     [SerializeField] Bar healthBar;
     [field: SerializeField] public int maxHealth { get ; set; }
     [field: SerializeField] public int currentHealth { get; set ; }
-
+    [field: SerializeField] public bool isDead { get; set ; } = false;
 
     void Awake() 
     {
@@ -58,37 +60,48 @@ public class Duck_AI : MonoBehaviour,IHealth
     {
         bool isMove = animator.GetBool("isMove");
         bool isAttack = animator.GetBool("isAttack");
-        // If far away from player -> to Back state
-        if (Vector3.Distance(transform.position,player.transform.position) >= 2* master_radius)
-        {
-            // if is still attack
-            animator.SetBool("isAttack",false);
-            current_State = State.Back;
-            // new position to player 
-            goal = player.transform.position + 
-                new Vector3(
-                    UnityEngine.Random.Range(-1f,1f)*master_radius,
-                    0f,
-                    UnityEngine.Random.Range(-1f,1f)*master_radius
-                );
-            // Change Speed * 5
-            animator.speed = 3f;
-            agent.speed = agent_back_speed; 
-        }
         // Search Enemy use sphere
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius,enemy_layer);
-        // Special mode interrupt
-        if (rush_trigger)
+        // if health < 0 -> to dead mode
+        if (currentHealth <= 0) 
         {
-            animator.SetBool("isAttack",false);
-            rush_position.y = 0;
-            // to Special mode
-            current_State = State.Special;
-            // This Parameter is for same position.
-            //rd.AddForce( (rush_position - transform.position) * rush_speed);
-            // This Parameter is for same Force with normalized
-            rd.AddForce( (rush_position - transform.position).normalized * rush_speed);
-            time = rush_time;
+            if (!isDead) time = deadTime;
+            isDead = true;
+            agent.isStopped = true;
+            current_State = State.Dead;
+        }
+        else
+        {
+            // If far away from player -> to Back state
+            if (Vector3.Distance(transform.position,player.transform.position) >= 2* master_radius)
+            {
+                // if is still attack
+                animator.SetBool("isAttack",false);
+                current_State = State.Back;
+                // new position to player 
+                goal = player.transform.position + 
+                    new Vector3(
+                        UnityEngine.Random.Range(-1f,1f)*master_radius,
+                        0f,
+                        UnityEngine.Random.Range(-1f,1f)*master_radius
+                    );
+                // Change Speed * 5
+                animator.speed = 3f;
+                agent.speed = agent_back_speed; 
+            }
+            // Special mode interrupt
+            if (rush_trigger)
+            {
+                animator.SetBool("isAttack",false);
+                rush_position.y = 0;
+                // to Special mode
+                current_State = State.Special;
+                // This Parameter is for same position.
+                //rd.AddForce( (rush_position - transform.position) * rush_speed);
+                // This Parameter is for same Force with normalized
+                rd.AddForce( (rush_position - transform.position).normalized * rush_speed);
+                time = rush_time;
+            }
         }
         switch (current_State)
         {
@@ -98,14 +111,14 @@ public class Duck_AI : MonoBehaviour,IHealth
                 {
                     // to Chase mode
                     current_State = State.Chase;
-                    break;
+                    return;
                 }
                 agent.isStopped = true;
                 // turn idle if still walk
                 if (isMove) animator.SetBool("isMove",false);
                 // timer for idle mode
                 time -= Time.deltaTime;
-                if (time < 0f)
+                if (time <= 0f)
                 {
                     // find new position to idle
                     goal = player.transform.position + 
@@ -116,16 +129,16 @@ public class Duck_AI : MonoBehaviour,IHealth
                         );
                     // to Walk mode
                     current_State = State.Walk;
-                    break;
+                    return;
                 }
-                break;
+                return;
             case State.Walk:
                 // Has enemy nearby
                 if (hitColliders.Length > 0)
                 {
                     // to Chase mode
                     current_State = State.Chase;
-                    break;
+                    return;
                 }
                 agent.isStopped = false;
                 // turn walk if still idle
@@ -133,15 +146,15 @@ public class Duck_AI : MonoBehaviour,IHealth
                 // go to new position
                 agent.destination = goal;
                 // Close to position then to Idle mode
-                if (Vector3.Distance(goal,transform.position) < 1f)
+                if (Vector3.Distance(goal,transform.position) < 2f)
                 {
                     // Reset time
                     time = UnityEngine.Random.Range(1f,3f);
                     // to Idle mode
                     current_State = State.Idle;
-                    break;
+                    return;
                 }
-                break;
+                return;
             case State.Back:
                 agent.isStopped = false;
                 // turn walk if still idle
@@ -149,7 +162,7 @@ public class Duck_AI : MonoBehaviour,IHealth
                 // go to new position
                 agent.destination = goal;
                 // Close to position then to Idle mode
-                if (Vector3.Distance(goal,transform.position) < 1f)
+                if (Vector3.Distance(goal,transform.position) < 2f)
                 {
                     // Reset time
                     time = UnityEngine.Random.Range(1f,3f);
@@ -158,9 +171,9 @@ public class Duck_AI : MonoBehaviour,IHealth
                     // Change speed back to 1
                     animator.speed = 1f;
                     agent.speed = agent_speed; 
-                    break;
+                    return;
                 }
-                break;
+                return;
             case State.Chase:
                 // no enemy nearby(dead or run away)
                 if (hitColliders.Length == 0)
@@ -171,7 +184,7 @@ public class Duck_AI : MonoBehaviour,IHealth
                     time = UnityEngine.Random.Range(1f,3f);
                     // to Idle mode
                     current_State = State.Idle;
-                    break;
+                    return;
                 }
                 agent.isStopped = false;
                 // Search enemy
@@ -183,14 +196,14 @@ public class Duck_AI : MonoBehaviour,IHealth
                 if (Vector3.Distance(enemy.transform.position,transform.position) < 2f)
                 {
                     current_State = State.Attack;
-                    break;
+                    return;
                 }
                 // turn walk if still idle
                 if (!isMove) animator.SetBool("isMove",true);
                 // chase enemy
                 agent.destination = enemy.transform.position;
                 // Close to position then to Attack mode
-                break;
+                return;
             case State.Attack:
                 // no enemy nearby(dead or run away)
                 if (hitColliders.Length == 0)
@@ -201,21 +214,21 @@ public class Duck_AI : MonoBehaviour,IHealth
                     time = UnityEngine.Random.Range(1f,3f);
                     // to Idle mode
                     current_State = State.Idle;
-                    break;
+                    return;
                 }
                 // if is out of attack range -> chase
                 if (Vector3.Distance(enemy.transform.position,transform.position) >= 2f)
                 {
                     current_State = State.Chase;
                     animator.SetBool("isAttack",false);
-                    break;
+                    return;
                 }
                 transform.LookAt(enemy.transform.position);
                 agent.isStopped = true;
                 // Set Attack if is not attack
                 if (!isAttack) animator.SetBool("isAttack",true);
                 
-                break;
+                return;
             case State.Special:
                 agent.isStopped = true;
                 time -= Time.deltaTime;
@@ -225,16 +238,29 @@ public class Duck_AI : MonoBehaviour,IHealth
                 agent.velocity = rd.velocity;
                 //agent.destination = rush_position;
                 if (!isMove) animator.SetBool("isMove",true);
-                if (time < 0f)
+                if (time <= 0f)
                 {
                     agent.speed = 3;
                     // Reset time
                     time = UnityEngine.Random.Range(1f,3f);
                     // to Idle mode
                     current_State = State.Idle;
-                    break;
+                    return;
                 }
-                break;
+                return;
+            case State.Dead:
+                if (time == deadTime) animator.Play("Dead");
+                // Delete Object when timer is done
+                time -= Time.deltaTime;
+                if (time <= 0f )
+                {
+                    // Delete from list
+                    player.duck_array.Remove(this);
+                    Death();
+                    
+                }
+                return;
+
         }
     }
     GameObject Search_Nearest(Collider[] hitColliders)
@@ -267,6 +293,9 @@ public class Duck_AI : MonoBehaviour,IHealth
 
     public void Death()
     {
-        
+        // Set Health to 0
+        currentHealth = 0;
+        healthBar.SetValue(0);
+        Destroy(gameObject);
     }
 }

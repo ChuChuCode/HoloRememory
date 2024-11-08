@@ -34,6 +34,7 @@ public class SubaruMovementController_old : MonoBehaviour,IHealth
     public int maxHealth { get ; set ; }
     public int currentHealth { get; set ; }
     AnimatorStateInfo stateInfo;
+    [field: SerializeField] public bool isDead { get; set ; }
 
     void Awake()
     {
@@ -175,7 +176,7 @@ public class SubaruMovementController_old : MonoBehaviour,IHealth
                             0f,
                             UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
             Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
-            duck.player = this.gameObject;
+            // duck.player = this; -> type change
             duck_array.Add(duck);
         }
     }

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using UnityEditor;
 
-public class SubaruMovementController : MonoBehaviour,IHealth
+public class SubaruMovementController : MonoBehaviour,IHealth, ICharacter
 {
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     NavMeshAgent agent;
@@ -20,7 +20,6 @@ public class SubaruMovementController : MonoBehaviour,IHealth
 
     int isRunHash;
 
-    Vector2 currentInput;
     Vector3 currentMovement;
     bool isMovementPressed;
     float rotationFactorPerFrame = 10.0f;
@@ -36,6 +35,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
 
     [field: SerializeField] public int maxHealth { get ; set ; }
     [field: SerializeField] public int currentHealth { get; set ; }
+    [field: SerializeField] public bool isDead { get; set ; } = false;
 
     void Awake()
     {
@@ -54,12 +54,13 @@ public class SubaruMovementController : MonoBehaviour,IHealth
         //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
 
         InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
-
+        // Health Initial
         InitialHealth();
-        
+        // Registry to Selectable
+        Selectable.instance.playerLayerID = gameObject.layer;
     }
 
-    void OnRKeyInput(InputAction.CallbackContext context)
+    public void OnRKeyInput(InputAction.CallbackContext context)
     {
         if (Time.time - duck_ult_timer < duck_ult_cd) return;
         if (duck_array.Count == 0) return;
@@ -84,7 +85,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
             mouseProject = hit.point;
         }
     }
-    void OnRightMouseClick(InputAction.CallbackContext context)
+    public void OnRightMouseClick(InputAction.CallbackContext context)
     {
         // Vector3 faceDirection = mouseProject;
         // Spawn Particle
@@ -95,7 +96,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
         //transform.LookAt(faceDirection);
         // agent.destination = mouseProject;
     }
-    void OnQKeyClick(InputAction.CallbackContext context)
+    public void OnQKeyClick(InputAction.CallbackContext context)
     {
         if (Time.time - duck_rush_timer < duck_rush_cd) return;
         if (duck_array.Count == 0) return;
@@ -147,6 +148,30 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     // Update is called once per frame
     void Update()
     {
+        // Dead already and wait to respawn
+        if (isDead) 
+        {
+
+            return;
+        }
+        // Dead now 
+        if (currentHealth <= 0 && !isDead)
+        {
+            DeadScreen.instance.isDead(true);
+            agent.isStopped = true;
+            animator.Play("Dead");
+            // All Duck Dead
+            foreach (var duck in duck_array)
+            {
+                duck.currentHealth = 0;
+            }
+            isDead = true;
+            // Unregister control
+            InputSystem.instance.playerInput.Player.Right_Mouse.started -= OnRightMouseClick;
+            InputSystem.instance.playerInput.Player.Q.started -= OnQKeyClick;
+            InputSystem.instance.playerInput.Player.R.started -= OnRKeyInput;
+            return;
+        }
         // check mouse raycast
         Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         RaycastHit hit;
@@ -155,6 +180,9 @@ public class SubaruMovementController : MonoBehaviour,IHealth
         {
             mouseProject = hit.point;
         }
+        // If stand Animation => stop move and rotate
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if(stateInfo.IsTag("stand")) return;
         // Move
         if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
         {
@@ -170,12 +198,10 @@ public class SubaruMovementController : MonoBehaviour,IHealth
             direction.y = 0;
             transform.LookAt(transform.position + direction);
         }
-        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if(stateInfo.IsTag("stand")) return;
         // move
         // HandleRotation();
         HandleAnmation();
-
+        
         // Passive skill
         if (Duck_Spawnable() && duck_array.Count < max_duck_num )
         {
@@ -186,7 +212,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth
                             0f,
                             UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
             Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
-            duck.player = this.gameObject;
+            duck.player = this;
             duck_array.Add(duck);
         }
     }
@@ -202,10 +228,15 @@ public class SubaruMovementController : MonoBehaviour,IHealth
     public void InitialHealth()
     {
         currentHealth = maxHealth;
+        MianInfoUI.instance.updateInfo(this);
+        Selectable.instance.updateInfo(this);
     }
     public void GetDamage(int damage)
     {
         currentHealth -= damage;
+        // Update UI
+        MianInfoUI.instance.updateInfo(this);
+        Selectable.instance.updateInfo(this);
     }
 
     public void Death()

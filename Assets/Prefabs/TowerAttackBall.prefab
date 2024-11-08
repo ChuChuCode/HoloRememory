@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1412844442378232966}
   - component: {fileID: 4427909071664426912}
   - component: {fileID: 8858132206322532672}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Trial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,7 +126,7 @@ GameObject:
   - component: {fileID: 430630288658424118}
   - component: {fileID: 6443431697760274653}
   - component: {fileID: 1977883244337380264}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: TowerAttackBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,11 +268,11 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.24
+  m_Radius: 0.36
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1977883244337380264
 MonoBehaviour:

@@ -15,6 +15,7 @@ public class Bar : MonoBehaviour
     {
         slider.value = value;
         fill.color = gradient.Evaluate(slider.normalizedValue);
+        // if text has object then set
         if (text != null) SetText();
     }
     public void SetMaxValue(int value)
@@ -24,6 +25,7 @@ public class Bar : MonoBehaviour
         slider.value = (int)ratio * value;
 
         fill.color = gradient.Evaluate(ratio);
+        // if text has object then set
         if (text != null) SetText();
     }
     public void SetText()

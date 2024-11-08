@@ -5,12 +5,12 @@ using UnityEngine.InputSystem;
 
 public class InputSystem : MonoBehaviour
 {
-    public static InputSystem instance {get; private set;}
+    public static InputSystem instance ;
     public PlayerInputActions playerInput;
     
     void Awake()
     {
-        instance = this;
         playerInput = new PlayerInputActions();
+        if (instance == null) instance = this;
     }
 }
