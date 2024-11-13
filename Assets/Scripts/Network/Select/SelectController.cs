@@ -13,7 +13,7 @@ public class SelectController : MonoBehaviour
     public Network_SelectPlayer SelectPlayerPrefab;
     [SerializeField] CharacterSelectItem CharacterPrefab;
     [SerializeField] Transform Select_Character_Panel;
-    [SerializeField] List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
+    [SerializeField] List<CharacterSelectItem> SelectItemList = new List<CharacterSelectItem>();
     [Header("Team")]
     [SerializeField] Transform Team1_transform;
     [SerializeField] Transform Team2_transform;
@@ -22,8 +22,7 @@ public class SelectController : MonoBehaviour
     public bool PlayerItemCreated = false;
     [Header("UI")]
     public TMP_Text LobbyNameText;
-    public TMP_Text ReadyButtonText;
-    public Button StartButton;
+    public Button ReadyButton;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -50,8 +49,9 @@ public class SelectController : MonoBehaviour
     }
     void Start()
     {
+        ReadyButton.interactable = false;
         // Set Character Select
-        foreach(CharacterSelectComponent characterSelectComponent in characterSelectComponentsList)
+        foreach(CharacterSelectComponent characterSelectComponent in Manager.characterSelectComponentsList)
         {
             CharacterSelectItem temp_characterSelectComponent = Instantiate(CharacterPrefab);
             // Set Sprite and CharacterID
@@ -62,6 +62,7 @@ public class SelectController : MonoBehaviour
             // Set Parent
             temp_characterSelectComponent.transform.SetParent(Select_Character_Panel);
             temp_characterSelectComponent.transform.localScale = Vector3.one;
+            SelectItemList.Add(temp_characterSelectComponent);
         }
         // Update Lobby Name
         CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
@@ -82,7 +83,6 @@ public class SelectController : MonoBehaviour
             network_SelectPlayer.ConnectionID = player.ConnectionID;
             network_SelectPlayer.PlayerSteamID = player.PlayerSteamID;
             network_SelectPlayer.TeamID = player.TeamID;
-            // network_SelectPlayer.isReady = player.Ready;
             network_SelectPlayer.SetPlayerValues();
             // Set Team
             if (network_SelectPlayer.TeamID == 1)
@@ -106,7 +106,7 @@ public class SelectController : MonoBehaviour
     Sprite Search_Character(int CharacterID)
     {
         if (CharacterID == -1) return null;
-        CharacterSelectComponent temp = characterSelectComponentsList.Find(component => component.ID == CharacterID);
+        CharacterSelectComponent temp = manager.characterSelectComponentsList.Find(component => component.ID == CharacterID);
         return temp.CharacterImage;
     }
     public void UpdatePlayerList()
@@ -297,29 +297,32 @@ public class SelectController : MonoBehaviour
         // Start Button Clickable
         if (AllReady)
         {
-            // Is Host
-            if (LocalPlayerController.PlayerIdNumber == 1)
-            {
-                StartButton.interactable = true;
-            }
-            else
-            {
-                StartButton.interactable = false;
-            }
+            // Start Game
+            LocalPlayerController.CanStartGame("Game_Scene");
         }
-        else
+    }
+    // Select Button
+    public void SelectPlayer()
+    {
+        ReadyButton.interactable = false;
+        LocalPlayerController.ChangeReady(true);
+        // UI Disable
+        foreach (CharacterSelectItem selectItem in SelectItemList)
         {
-            StartButton.interactable = false;
+            selectItem.GetComponent<Button>().interactable = false;
         }
+        StartCoroutine(nameof(CheckStartGame));
     }
-    // Ready Button
-    public void ReadyPlayer()
+    // Set other player interactable false
+    public void Character_Interactable(int CharacterID,bool isInteractable)
     {
-        LocalPlayerController.ChangeReady();
+        CharacterSelectItem selected = SelectItemList.Find(component => component.CharacterID == CharacterID);
+        if (selected == null) return;
+        selected.GetComponent<Button>().interactable = isInteractable;
     }
-    // Start Button
-    public void StarGame(string SceneName)
+    IEnumerator CheckStartGame()
     {
-        LocalPlayerController.CanStartGame(SceneName);
+        yield return new WaitForSeconds(1);
+        CheckIfAllReady();
     }
 }

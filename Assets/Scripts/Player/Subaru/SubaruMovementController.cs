@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
-using UnityEditor;
+using Mirror;
 
-public class SubaruMovementController : MonoBehaviour,IHealth, ICharacter
+public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
 {
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     NavMeshAgent agent;
@@ -148,6 +148,7 @@ public class SubaruMovementController : MonoBehaviour,IHealth, ICharacter
     // Update is called once per frame
     void Update()
     {
+        if (!isLocalPlayer) return;
         // Dead already and wait to respawn
         if (isDead) 
         {
@@ -242,6 +243,10 @@ public class SubaruMovementController : MonoBehaviour,IHealth, ICharacter
     public void Death()
     {
         
+    }
+    void Start()
+    {
+        DontDestroyOnLoad(gameObject);
     }
     /*
     void Start()

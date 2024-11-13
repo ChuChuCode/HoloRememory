@@ -286,7 +286,7 @@ public class LobbyController : MonoBehaviour
     // Ready Button
     public void ReadyPlayer()
     {
-        LocalPlayerController.ChangeReady();
+        LocalPlayerController.ChangeReady(true);
     }
     // Start Button
     public void StarGame(string SceneName)

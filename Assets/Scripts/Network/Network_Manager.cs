@@ -4,14 +4,18 @@ using Mirror;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Steamworks;
+using System.Linq;
 
 public class Network_Manager : NetworkManager
 {
     [Header("Lobby")]
     [SerializeField] PlayerObject PlayerObject_Prefab;
-    public List<PlayerObject> PlayersInfoList {get;} = new List<PlayerObject>();
+    public List<PlayerObject> PlayersInfoList = new List<PlayerObject>();
     [Header("Select")]
     [SerializeField] Network_SelectPlayer SelectPlayer;
+    [Header("Character Component")]
+    public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
+    public List<GameObject> Player_List = new List<GameObject>();
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if ( SceneManager.GetActiveScene().name == "Lobby_Scene") 
@@ -33,57 +37,40 @@ public class Network_Manager : NetworkManager
             // PlayersInfoList.Add(player);
         }
     }
-    public override void ServerChangeScene(string newSceneName)
+    public override void OnServerSceneChanged(string newSceneName)
     {
-        base.ServerChangeScene(newSceneName);
-        /*
-        //Lobby to Select
-        if (SceneManager.GetActiveScene().name == "Lobby_Scene" && newSceneName.StartsWith("Select_Scene"))
+        
+        // base.ServerChangeScene(newSceneName);
+        if (newSceneName.StartsWith("Game_Scene"))
         {
-            
-            // NetworkClient.ClearSpawners();
-            for (int i = 0 ; i < PlayersInfoList.Count ; i++)
+            foreach (PlayerObject player in PlayersInfoList)
             {
-                var conn = PlayersInfoList[i].connectionToClient;
+                NetworkConnectionToClient conn = player.connectionToClient;
                 GameObject oldPlayer = conn.identity.gameObject;
-                Network_SelectPlayer gameplayInsance = Instantiate(SelectPlayer);
-
-                gameplayInsance.PlayerName = PlayersInfoList[i].PlayerName;
-                gameplayInsance.ConnectionID = PlayersInfoList[i].ConnectionID;
-                gameplayInsance.PlayerSteamID = PlayersInfoList[i].PlayerSteamID;
-                gameplayInsance.TeamID = PlayersInfoList[i].TeamID;
-                NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject);
-                // Add to Group
-                SelectController.Instance.Add_TeamList(gameplayInsance);
+                // Spawn Prefab
+                CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == player.CharacterID);
+                GameObject characterModel = characterModelComponent.CharacterModel;
+                GameObject gameplayInsance = Instantiate(characterModel);
+                if (player.TeamID == 1)
+                {
+                    gameplayInsance = Instantiate(characterModel,GameController.Instance.Team1_transform.position,Quaternion.identity);
+                }
+                else
+                {
+                    gameplayInsance = Instantiate(characterModel,GameController.Instance.Team2_transform.position,Quaternion.identity);
+                }
                 
-                // NetworkServer.Spawn(gameplayInsance.gameObject);
-                NetworkServer.Destroy(oldPlayer);
-            }
-            
-        }
-        */
-        if (SceneManager.GetActiveScene().name == "Select_Scene" && newSceneName.StartsWith("Game_Scene"))
-        {
-            NetworkClient.ClearSpawners();
-            for (int i = 0 ; i < PlayersInfoList.Count ; i++)
-            {
-                var conn = PlayersInfoList[i].connectionToClient;
-                GameObject oldPlayer = conn.identity.gameObject;
-                print(oldPlayer.name);
-                // var gameplayInsance = Instantiate(InGamePlayer);
-
                 // gameplayInsance.ConnectionID = PlayersInfoList[i].ConnectionID;
                 // gameplayInsance.PlayerIdNumber = PlayersInfoList[i].PlayerIdNumber;
                 // gameplayInsance.PlayerSteamID = PlayersInfoList[i].PlayerSteamID;
+                // NetworkServer.Destroy(oldPlayer);
+                NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance);
                 
-                // NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject);
-
-                //NetworkServer.Destroy(oldPlayer);
-                //Play_Room_Player_List.Add(gameplayInsance);
-                //Play_Room_Player_List.Add(gameplayInsance.gameObject);
-                //NetworkServer.Destroy(oldPlayer);
+                
+                Player_List.Add(gameplayInsance);
             }
         }
+        
     }
     // Server Change Scene
     public void StartGame(string SceneName)

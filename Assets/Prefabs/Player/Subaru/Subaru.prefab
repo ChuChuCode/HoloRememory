@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: -25.1, y: 14.7, z: -13.03}
+  m_FollowOffset: {x: -50.7, y: 37.4, z: -30.4}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -139,8 +139,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 985031338423989986}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.20287701, y: 0.50441575, z: -0.12326657, w: 0.8301874}
-  m_LocalPosition: {x: -25.100002, y: 14.700001, z: -13.030001}
+  m_LocalRotation: {x: 0.2421737, y: 0.4733528, z: -0.13716279, w: 0.8357485}
+  m_LocalPosition: {x: -50.699997, y: 37.4, z: -30.400002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -168,12 +168,12 @@ MonoBehaviour:
   m_LookAt: {fileID: 4015481502940484996}
   m_Follow: {fileID: 4015481502940484996}
   m_Lens:
-    FieldOfView: 60
+    FieldOfView: 10
     OrthographicSize: 5
-    NearClipPlane: 0.3
+    NearClipPlane: 5.8
     FarClipPlane: 1000
     Dutch: 0
-    ModeOverride: 0
+    ModeOverride: 2
     LensShift: {x: 0, y: 0}
     GateFit: 2
     FocusDistance: 10
@@ -211,6 +211,9 @@ GameObject:
   - component: {fileID: 4687151441908504746}
   - component: {fileID: 8030685103550228832}
   - component: {fileID: 3006667629081473162}
+  - component: {fileID: 2025118370715580960}
+  - component: {fileID: 9045378710496004315}
+  - component: {fileID: 2724207811357110483}
   m_Layer: 6
   m_Name: Subaru
   m_TagString: Selectable
@@ -269,6 +272,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b9bcb35faa074919add4db413bbce71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}
   Duck_Ult: {fileID: 3088117104640011826, guid: 2a3b0cc2d73b44e1fa2d014b19bf1812, type: 3}
@@ -322,6 +328,73 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2025118370715580960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311601850566683335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 3857526327
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
+--- !u!114 &9045378710496004315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311601850566683335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 4015481502940484996}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
+--- !u!114 &2724207811357110483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311601850566683335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 1
+  animator: {fileID: 1946654108785073176}
 --- !u!1001 &5361942385694663049
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -187,7 +187,7 @@ namespace Mirror
                 _connectionToClient?.AddOwnedObject(this);
             }
         }
-        NetworkConnectionToClient _connectionToClient;
+        public NetworkConnectionToClient _connectionToClient;
 
         // get all NetworkBehaviour components
         public NetworkBehaviour[] NetworkBehaviours { get; private set; }

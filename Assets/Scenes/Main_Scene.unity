@@ -227,7 +227,10 @@ MonoBehaviour:
   playerPrefab: {fileID: 2398457333383709619, guid: 2d0034765e071ed45800b7947e13a88b, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
-  spawnPrefabs: []
+  spawnPrefabs:
+  - {fileID: 8311601850566683335, guid: deded17e70c474193b2d338eb6a219c1, type: 3}
+  - {fileID: 5571838552065712847, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}
+  - {fileID: 9093653501188938057, guid: 38a025b286fae6040813c1c9e2629f65, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -245,6 +248,9 @@ MonoBehaviour:
   timeInterpolationGui: 0
   PlayerObject_Prefab: {fileID: 8301942137255686253, guid: 2d0034765e071ed45800b7947e13a88b, type: 3}
   SelectPlayer: {fileID: 8168614158581726803, guid: 285a470ed9f65a9478060b5b57840ae9, type: 3}
+  characterSelectComponentsList:
+  - {fileID: 11400000, guid: bb1c05426955d614fabb80ce180ab2e2, type: 2}
+  - {fileID: 11400000, guid: 849384408812bb54c9e21270381aa362, type: 2}
 --- !u!1 &972078132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1061,6 +1067,7 @@ MonoBehaviour:
   timeInterpolationGui: 0
   PlayerObject_Prefab: {fileID: 0}
   SelectPlayer: {fileID: 0}
+  characterSelectComponentsList: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -10,5 +10,5 @@ public class CharacterSelectComponent : ScriptableObject
 
     public Sprite CharacterImage;
     public AudioClip SelectAudio;
-
+    public GameObject CharacterModel;
 }

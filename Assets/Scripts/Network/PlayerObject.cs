@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Mirror;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerObject : NetworkBehaviour
 {
@@ -53,7 +54,7 @@ public class PlayerObject : NetworkBehaviour
     public override void OnStopClient()
     {
         Manager.PlayersInfoList.Remove(this);
-        LobbyController.Instance.UpdatePlayerList();
+        if (SceneManager.GetActiveScene().name == "Lobby_Scene")  LobbyController.Instance.UpdatePlayerList();
     }
     /// Ready Change
     void PlayerReadyUpdate(bool OldValue,bool NewValue)
@@ -65,23 +66,23 @@ public class PlayerObject : NetworkBehaviour
         // Client
         if (isClient)
         {
-            LobbyController.Instance.UpdatePlayerList();
+            if (SceneManager.GetActiveScene().name == "Lobby_Scene") LobbyController.Instance.UpdatePlayerList();
         }
     }
     // client -> server
     [Command]
-    void CmdSetPlayerReady()
+    void CmdSetPlayerReady(bool isReady)
     {
         // Ask Everyone to update my value
-        this.PlayerReadyUpdate(this.Ready, !this.Ready);
+        this.PlayerReadyUpdate(this.Ready, isReady);
     }
     // if is owned -> call Cmd
-    public void ChangeReady()
+    public void ChangeReady(bool isReady)
     {
         // if this oject is player's
         if (isOwned)
         {
-            CmdSetPlayerReady();
+            CmdSetPlayerReady(isReady);
         }
     }
     /// Name Change
@@ -106,6 +107,8 @@ public class PlayerObject : NetworkBehaviour
     /// Start Button
     public void CanStartGame(string SceneName)
     {
+        // Reset Ready for select scene
+        ChangeReady(false);
         if (isOwned)
         {
             CmdCanStartGame(SceneName);
