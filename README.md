@@ -10,13 +10,13 @@
 https://github.com/user-attachments/assets/160abc6d-11c4-4fb4-a2b2-2bf085de3bde
 
 # Multi-Game UI
-https://github.com/user-attachments/assets/b380ffd2-3cfd-440e-bf3e-b2da0aa53377
+https://github.com/user-attachments/assets/9b816a0d-f688-420a-8cb4-cd604a76decf
 
 ## Model List
- |モデル Model              | 創作者 Creator  | X(Twitter)                  |
- |-------------------------|----------------|-----------------------------|
- |大空スバル　Oozora Subaru  |戯時/横          |[X](https://x.com/saretoki)  |
- |スバルアヒル Subaru Duck   |Rendr_ZW        |[X](https://x.com/Rendr_ZW)  |
+ |モデル Model              | 創作者 Creator/X(Twitter)  |
+ |-------------------------|----------------|
+ |大空スバル　Oozora Subaru  |[戯時/横](https://x.com/saretoki)  |
+ |スバルアヒル Subaru Duck   |[Rendr_ZW](https://x.com/Rendr_ZW)  |
 
 ## Memo(to do)
 1. UI の調整、prefab となります。
