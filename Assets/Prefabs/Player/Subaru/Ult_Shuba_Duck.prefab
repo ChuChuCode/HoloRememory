@@ -78,7 +78,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 664dee156702c490eb87a4b43272f708, type: 3}
       propertyPath: m_Name
-      value: Shuba_Duck_Ult
+      value: Ult_Shuba_Duck
       objectReference: {fileID: 0}
     - target: {fileID: 2216572977404751551, guid: 664dee156702c490eb87a4b43272f708, type: 3}
       propertyPath: m_LocalPosition.x
@@ -277,6 +277,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DeleteTime: 0.1
+  Scanner: {fileID: 4010224599099426561, guid: a32814f45bd5516429b5849f2064558f, type: 3}
+  duration: 3
+  size: 10
 --- !u!4 &220091282803849180 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 962143439544032690, guid: 664dee156702c490eb87a4b43272f708, type: 3}
