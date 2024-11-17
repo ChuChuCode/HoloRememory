@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class LobbyController : MonoBehaviour
 {
+    public bool AllReady;
     public static LobbyController Instance;
     [Header("Lobby Prefab")]
     [SerializeField] GameObject LobbyPlayerPrefab;
@@ -218,7 +219,7 @@ public class LobbyController : MonoBehaviour
     }
     public void CheckIfAllReady()
     {
-        bool AllReady = false;
+        AllReady = false;
 
         foreach(PlayerObject player in Manager.PlayersInfoList)
         {
@@ -286,7 +287,7 @@ public class LobbyController : MonoBehaviour
     // Ready Button
     public void ReadyPlayer()
     {
-        LocalPlayerController.ChangeReady(true);
+        LocalPlayerController.ChangeReady();
     }
     // Start Button
     public void StarGame(string SceneName)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class SubaruMovementController_old : MonoBehaviour,IHealth
+public class SubaruMovementController_old : Health
 {
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     int max_duck_num = 6;
@@ -31,10 +31,7 @@ public class SubaruMovementController_old : MonoBehaviour,IHealth
     float duck_ult_cd = 20f;
     float duck_ult_timer = -20f;
 
-    public int maxHealth { get ; set ; }
-    public int currentHealth { get; set ; }
     AnimatorStateInfo stateInfo;
-    [field: SerializeField] public bool isDead { get; set ; }
 
     void Awake()
     {
@@ -189,16 +186,16 @@ public class SubaruMovementController_old : MonoBehaviour,IHealth
         playerInput.Player_old.Disable();
     }
 
-    public void InitialHealth()
+    public override void InitialHealth()
     {
         currentHealth = maxHealth;
     }
-    public void GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
         currentHealth -= damage;
     }
 
-    public void Death()
+    public override void Death()
     {
         
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class TowerBehaviour : MonoBehaviour,IHealth
+public class TowerBehaviour : Health
 {
     enum State {
         Idle,
@@ -11,9 +11,6 @@ public class TowerBehaviour : MonoBehaviour,IHealth
         Break
     }
     [SerializeField] State current_State;
-    [field: SerializeField] public int maxHealth { get ; set ; }
-    [field: SerializeField] public int currentHealth { get; set ; }
-    [field: SerializeField] public bool isDead { get; set ; } = false;
     [SerializeField] [Range(0.0f, 10.0f)]float attack_radius = 5f;
     [SerializeField] LayerMask enemy_layer;
     [SerializeField] Transform enemy;
@@ -32,17 +29,17 @@ public class TowerBehaviour : MonoBehaviour,IHealth
         InitialHealth();
     }
 
-    public void Death()
+    public override void Death()
     {
         top.gameObject.SetActive(false);
     }
 
-    public void GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
         
     }
 
-    public void InitialHealth()
+    public override void InitialHealth()
     {
         currentHealth = maxHealth;
     }
@@ -52,12 +49,12 @@ public class TowerBehaviour : MonoBehaviour,IHealth
         if (current_State == State.Break) return;
         if (currentHealth <= 0) current_State = State.Break;
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius,enemy_layer);
-        /*
+
         foreach(Collider col in hitColliders)
         {
             print(col.transform.root.name);
         }
-        */
+
         // * Need Check Attack Priority
         switch (current_State)
         {
@@ -67,7 +64,7 @@ public class TowerBehaviour : MonoBehaviour,IHealth
                     // Check target is not dead
                     for (int index = 0 ; index < hitColliders.Length; index++)
                     {
-                        if (hitColliders[index].transform.root.GetComponent<IHealth>().currentHealth > 0)
+                        if (hitColliders[index].transform.root.GetComponent<Health>().currentHealth > 0)
                         {
                             enemy = hitColliders[index].transform.root;
                             current_State = State.Attack;
@@ -79,7 +76,7 @@ public class TowerBehaviour : MonoBehaviour,IHealth
                 lineRenderer.positionCount = 1;
                 return;
             case State.Attack:
-                if (enemy == null || enemy.GetComponent<IHealth>().currentHealth <= 0) 
+                if (enemy == null || enemy.GetComponent<Health>().currentHealth <= 0) 
                 {
                     current_State = State.Idle;
                     return;

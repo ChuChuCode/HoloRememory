@@ -247,10 +247,56 @@ MonoBehaviour:
   evaluationInterval: 3
   timeInterpolationGui: 0
   PlayerObject_Prefab: {fileID: 8301942137255686253, guid: 2d0034765e071ed45800b7947e13a88b, type: 3}
+  PlayersInfoList: []
   SelectPlayer: {fileID: 8168614158581726803, guid: 285a470ed9f65a9478060b5b57840ae9, type: 3}
   characterSelectComponentsList:
   - {fileID: 11400000, guid: bb1c05426955d614fabb80ce180ab2e2, type: 2}
   - {fileID: 11400000, guid: 849384408812bb54c9e21270381aa362, type: 2}
+  Player_List: []
+--- !u!1 &884888351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 884888353}
+  - component: {fileID: 884888352}
+  m_Layer: 0
+  m_Name: LOG
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &884888352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884888351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ad19679a842b1647a566f0c54232dba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &884888353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 884888351}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 937.1087, y: 495.29623, z: 3.034773}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &972078132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,8 +1112,10 @@ MonoBehaviour:
   evaluationInterval: 3
   timeInterpolationGui: 0
   PlayerObject_Prefab: {fileID: 0}
+  PlayersInfoList: []
   SelectPlayer: {fileID: 0}
   characterSelectComponentsList: []
+  Player_List: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1078,3 +1126,4 @@ SceneRoots:
   - {fileID: 581779758}
   - {fileID: 1488231087}
   - {fileID: 1575140107}
+  - {fileID: 884888353}

@@ -1365,20 +1365,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe2f2ffdf8c64711b96d25c8ad5a975, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  maxHealth: 300
+  currentHealth: 0
   player: {fileID: 0}
   agent: {fileID: 5707987594537908091}
   rd: {fileID: 8713174955817428959}
   current_State: 0
   time: 1
-  enemy_layer:
-    serializedVersion: 2
-    m_Bits: 384
   rush_position: {x: 0, y: 0, z: 0}
   rush_trigger: 0
   healthBar: {fileID: 6221899985002140448}
-  <maxHealth>k__BackingField: 50
-  <currentHealth>k__BackingField: 0
-  <isDead>k__BackingField: 0
 --- !u!95 &883360396524798469
 Animator:
   serializedVersion: 5

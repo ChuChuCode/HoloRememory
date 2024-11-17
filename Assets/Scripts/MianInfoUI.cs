@@ -14,7 +14,7 @@ public class MianInfoUI : MonoBehaviour
             instance = this;
         }
     }
-    public void updateInfo(IHealth health)
+    public void updateInfo(Health health)
     {
         HP.SetMaxValue(health.maxHealth);
         HP.SetValue(health.currentHealth);

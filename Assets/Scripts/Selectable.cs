@@ -80,8 +80,8 @@ public class Selectable : MonoBehaviour
                 Check_Outline_Color(select);
                 highlight = null;
                 // Set HP/SP
-                HP.SetMaxValue(select.GetComponent<IHealth>().maxHealth);
-                HP.SetValue(select.GetComponent<IHealth>().currentHealth);
+                HP.SetMaxValue(select.GetComponent<Health>().maxHealth);
+                HP.SetValue(select.GetComponent<Health>().currentHealth);
             }
             else
             {
@@ -97,13 +97,13 @@ public class Selectable : MonoBehaviour
             }
         }
     }
-    public void updateInfo(IHealth health)
+    public void updateInfo(Health health)
     {
         // If UI is open and select is same as the update object -> then update
         if (select == null) return;
-        if ( health != select.GetComponent<IHealth>() ) return;
-        HP.SetMaxValue(select.GetComponent<IHealth>().maxHealth);
-        HP.SetValue(select.GetComponent<IHealth>().currentHealth);
+        if ( health != select.GetComponent<Health>() ) return;
+        HP.SetMaxValue(select.GetComponent<Health>().maxHealth);
+        HP.SetValue(select.GetComponent<Health>().currentHealth);
     }
     void Check_Outline_Color(Transform ob)
     {

@@ -12,7 +12,7 @@ public class TowerBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Target == null || Target.GetComponent<IHealth>().currentHealth <= 0) 
+        if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
         {
             Destroy(gameObject);
             return;
@@ -27,7 +27,7 @@ public class TowerBall : MonoBehaviour
         // Trigger needd Collider and Rigid !!!!
         if (other.transform.root == Target)
         {
-            IHealth health = other.transform.root.GetComponent<IHealth>();
+            Health health = other.transform.root.GetComponent<Health>();
             health.GetDamage(towerDamage);
             Destroy(gameObject);
         }

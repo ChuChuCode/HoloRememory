@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Duck_AI : MonoBehaviour,IHealth
+public class Duck_AI : Health
 {
     enum State{
         Idle,
@@ -28,7 +28,8 @@ public class Duck_AI : MonoBehaviour,IHealth
     Vector3 goal;
     [SerializeField] State current_State;
     [SerializeField] float time = 1f;
-    [SerializeField] LayerMask enemy_layer;
+    [Header("Enemy Layer")]
+    int Layer_Enemy;
 
     [Header("Skill")]
     public Vector3 rush_position;
@@ -41,9 +42,6 @@ public class Duck_AI : MonoBehaviour,IHealth
     float deadTime = 1f;
     [Header("Character Info")]
     [SerializeField] Bar healthBar;
-    [field: SerializeField] public int maxHealth { get ; set; }
-    [field: SerializeField] public int currentHealth { get; set ; }
-    [field: SerializeField] public bool isDead { get; set ; } = false;
 
     void Awake() 
     {
@@ -61,7 +59,21 @@ public class Duck_AI : MonoBehaviour,IHealth
         bool isMove = animator.GetBool("isMove");
         bool isAttack = animator.GetBool("isAttack");
         // Search Enemy use sphere
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius,enemy_layer);
+        // If duck layer == Team1
+        if (gameObject.layer.Equals(LayerMask.NameToLayer("Team1")))
+        {
+            Layer_Enemy = LayerMask.NameToLayer("Team2");
+        }
+        // If duck layer == Team2
+        else if (gameObject.layer.Equals(LayerMask.NameToLayer("Team2")))
+        {
+            Layer_Enemy = LayerMask.NameToLayer("Team1");
+        }
+        else
+        {
+            Debug.Log("This Duck Set wrong Layer.");
+        }
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius, Layer_Enemy);
         // if health < 0 -> to dead mode
         if (currentHealth <= 0) 
         {
@@ -280,18 +292,18 @@ public class Duck_AI : MonoBehaviour,IHealth
         return target;
     }
 
-    public void InitialHealth()
+    public override void InitialHealth()
     {
         currentHealth = maxHealth;
         healthBar.SetMaxValue(maxHealth);
     }
-    public void GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
         currentHealth -= damage;
         healthBar.SetValue(currentHealth);
     }
 
-    public void Death()
+    public override void Death()
     {
         // Set Health to 0
         currentHealth = 0;

@@ -305,7 +305,7 @@ public class SelectController : MonoBehaviour
     public void SelectPlayer()
     {
         ReadyButton.interactable = false;
-        LocalPlayerController.ChangeReady(true);
+        LocalPlayerController.ChangeReady();
         // UI Disable
         foreach (CharacterSelectItem selectItem in SelectItemList)
         {

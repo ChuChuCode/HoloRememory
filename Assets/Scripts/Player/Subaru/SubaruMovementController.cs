@@ -5,8 +5,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using Mirror;
+using UnityEditor;
 
-public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
+public class SubaruMovementController : Health, ICharacter
 {
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     NavMeshAgent agent;
@@ -33,16 +34,12 @@ public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
     [Header("Character Info")]
     AnimatorStateInfo stateInfo;
 
-    [field: SerializeField] public int maxHealth { get ; set ; }
-    [field: SerializeField] public int currentHealth { get; set ; }
-    [field: SerializeField] public bool isDead { get; set ; } = false;
-
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
 
         isRunHash = Animator.StringToHash("isMove");
-
+        
         InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
@@ -56,10 +53,42 @@ public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
         InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
         // Health Initial
         InitialHealth();
-        // Registry to Selectable
-        Selectable.instance.playerLayerID = gameObject.layer;
     }
+    void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+        // Set layer
+        Selectable.instance.playerLayerID = gameObject.layer;
+        
+        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
+        Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
+    }
+    public void Passive()
+    {
+        if (Duck_Spawnable() && duck_array.Count < max_duck_num )
+        {
+            duck_spawn_timer = Time.time ;
+            Vector3 pos = transform.position + 
+                        new Vector3(
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius,
+                            0f,
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
+            Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
 
+            // Set Layer to all
+            Transform[] children = duck.GetComponentsInChildren<Transform>(includeInactive: true);
+            foreach(Transform child in children)
+            {
+                child.gameObject.layer = gameObject.layer;
+            }
+
+            NetworkServer.Spawn(duck.gameObject);
+            // Set Info
+            duck.player = this;
+            // Add to list
+            duck_array.Add(duck);
+        }
+    }
     public void OnRKeyInput(InputAction.CallbackContext context)
     {
         if (Time.time - duck_ult_timer < duck_ult_cd) return;
@@ -183,7 +212,15 @@ public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
         }
         // If stand Animation => stop move and rotate
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if(stateInfo.IsTag("stand")) return;
+        if(stateInfo.IsTag("stand"))
+        {
+            agent.isStopped = true;
+            return;
+        }
+        else
+        {
+            agent.isStopped = false;
+        }
         // Move
         if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
         {
@@ -204,18 +241,7 @@ public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
         HandleAnmation();
         
         // Passive skill
-        if (Duck_Spawnable() && duck_array.Count < max_duck_num )
-        {
-            duck_spawn_timer = Time.time ;
-            Vector3 pos = transform.position + 
-                        new Vector3(
-                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius,
-                            0f,
-                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
-            Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
-            duck.player = this;
-            duck_array.Add(duck);
-        }
+        Passive();
     }
     void OnEnable() 
     {
@@ -226,13 +252,13 @@ public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
         InputSystem.instance.playerInput.Player.Disable();
     }
 
-    public void InitialHealth()
+    public override void InitialHealth()
     {
         currentHealth = maxHealth;
         MianInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
     }
-    public void GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
         currentHealth -= damage;
         // Update UI
@@ -240,20 +266,8 @@ public class SubaruMovementController : NetworkBehaviour,IHealth, ICharacter
         Selectable.instance.updateInfo(this);
     }
 
-    public void Death()
+    public override void Death()
     {
         
     }
-    void Start()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
-    /*
-    void Start()
-    {
-        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
-        Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
-
-    }
-    */
 }

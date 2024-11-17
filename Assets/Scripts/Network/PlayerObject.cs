@@ -71,18 +71,18 @@ public class PlayerObject : NetworkBehaviour
     }
     // client -> server
     [Command]
-    void CmdSetPlayerReady(bool isReady)
+    void CmdSetPlayerReady()
     {
         // Ask Everyone to update my value
-        this.PlayerReadyUpdate(this.Ready, isReady);
+        this.PlayerReadyUpdate(this.Ready, !this.Ready);
     }
     // if is owned -> call Cmd
-    public void ChangeReady(bool isReady)
+    public void ChangeReady()
     {
         // if this oject is player's
         if (isOwned)
         {
-            CmdSetPlayerReady(isReady);
+            CmdSetPlayerReady();
         }
     }
     /// Name Change
@@ -108,7 +108,7 @@ public class PlayerObject : NetworkBehaviour
     public void CanStartGame(string SceneName)
     {
         // Reset Ready for select scene
-        ChangeReady(false);
+        ChangeReady();
         if (isOwned)
         {
             CmdCanStartGame(SceneName);

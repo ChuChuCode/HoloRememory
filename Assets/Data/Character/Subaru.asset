@@ -16,4 +16,4 @@ MonoBehaviour:
   CharacterName: "\u5927\u7A7A\u30B9\u30D0\u30EB"
   CharacterImage: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   SelectAudio: {fileID: 8300000, guid: 9a20b2b3ebff94306aa58846051d04ad, type: 3}
-  CharacterModel: {fileID: 0}
+  CharacterModel: {fileID: 8311601850566683335, guid: deded17e70c474193b2d338eb6a219c1, type: 3}

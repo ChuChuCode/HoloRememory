@@ -39,7 +39,6 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerSceneChanged(string newSceneName)
     {
-        
         // base.ServerChangeScene(newSceneName);
         if (newSceneName.StartsWith("Game_Scene"))
         {
@@ -50,7 +49,9 @@ public class Network_Manager : NetworkManager
                 // Spawn Prefab
                 CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == player.CharacterID);
                 GameObject characterModel = characterModelComponent.CharacterModel;
-                GameObject gameplayInsance = Instantiate(characterModel);
+                GameObject gameplayInsance;
+                // Set Layer
+                int LayerIgnoreRaycast = LayerMask.NameToLayer("Team" + player.TeamID);
                 if (player.TeamID == 1)
                 {
                     gameplayInsance = Instantiate(characterModel,GameController.Instance.Team1_transform.position,Quaternion.identity);
@@ -58,6 +59,12 @@ public class Network_Manager : NetworkManager
                 else
                 {
                     gameplayInsance = Instantiate(characterModel,GameController.Instance.Team2_transform.position,Quaternion.identity);
+                }
+                // Set Layer to all child
+                Transform[] children = gameplayInsance.GetComponentsInChildren<Transform>(includeInactive: true);
+                foreach(Transform child in children)
+                {
+                    child.gameObject.layer = LayerIgnoreRaycast;
                 }
                 
                 // gameplayInsance.ConnectionID = PlayersInfoList[i].ConnectionID;

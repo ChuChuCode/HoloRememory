@@ -150,6 +150,7 @@ GameObject:
   - component: {fileID: 4015481502940484996}
   - component: {fileID: 6839704757017824692}
   - component: {fileID: 252581091862674347}
+  - component: {fileID: 7093697178772832883}
   m_Layer: 0
   m_Name: Subaru_old
   m_TagString: Untagged
@@ -212,8 +213,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea5d721e9422b47fba2535e96f74ea60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  maxHealth: 0
+  currentHealth: 0
+  duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}
+  Duck_Ult: {fileID: 0}
   animator: {fileID: 1946654108785073176}
+--- !u!114 &7093697178772832883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311601850566683335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  _assetId: 732150241
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1001 &5361942385694663049
 PrefabInstance:
   m_ObjectHideFlags: 0
