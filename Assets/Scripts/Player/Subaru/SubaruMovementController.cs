@@ -178,6 +178,11 @@ public class SubaruMovementController : Health, ICharacter
     void Update()
     {
         if (!isLocalPlayer) return;
+        // Update Cool Down
+        MianInfoUI.instance.Q.Set_CoolDown(duck_rush_timer,duck_rush_cd);
+        // MianInfoUI.instance.W.Set_CoolDown(duck_ult_timer,duck_ult_cd);
+        // MianInfoUI.instance.E.Set_CoolDown(duck_ult_timer,duck_ult_cd);
+        MianInfoUI.instance.R.Set_CoolDown(duck_ult_timer,duck_ult_cd);
         // Dead already and wait to respawn
         if (isDead) 
         {

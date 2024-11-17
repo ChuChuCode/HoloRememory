@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using Steamworks;
 using System;
+using UnityEngine.UI;
 
 public class SteamLobby : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class SteamLobby : MonoBehaviour
     [Header("variables")]
     public ulong CurrentLobbyID;
     const string HostAddressKey = "HostAddress";
+    [SerializeField] Button HostButton;
 
     void Start()
     {
@@ -37,7 +39,8 @@ public class SteamLobby : MonoBehaviour
     public void HostLobby()
     {
         print("Host Button Press");
-
+        // Disable host button
+        HostButton.interactable = false;
         SteamMatchmaking.CreateLobby(
             ELobbyType.k_ELobbyTypeFriendsOnly,
             networkManager.maxConnections
