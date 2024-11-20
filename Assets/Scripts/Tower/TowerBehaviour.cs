@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class TowerBehaviour : Health
 {
+    [Header("Gizmos")]
+    [HideInInspector]public bool ShowGizmos;
     enum State {
         Idle,
         Attack,
@@ -49,12 +52,6 @@ public class TowerBehaviour : Health
         if (current_State == State.Break) return;
         if (currentHealth <= 0) current_State = State.Break;
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius,enemy_layer);
-
-        foreach(Collider col in hitColliders)
-        {
-            print(col.transform.root.name);
-        }
-
         // * Need Check Attack Priority
         switch (current_State)
         {
@@ -119,6 +116,7 @@ public class TowerBehaviour : Health
     }
     void OnDrawGizmosSelected()
     {
+        if (!ShowGizmos) return;
         // Draw a yellow sphere at the transform's position
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(transform.position, attack_radius);

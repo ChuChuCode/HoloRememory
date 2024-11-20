@@ -10,6 +10,7 @@ public class InputSystem : MonoBehaviour
     
     void Awake()
     {
+        DontDestroyOnLoad(this);
         playerInput = new PlayerInputActions();
         if (instance == null) instance = this;
     }

@@ -7,4 +7,5 @@ public class Health : NetworkBehaviour
     public virtual void InitialHealth(){}
     public virtual void GetDamage(int damage){}
     public virtual void Death(){}
+    
 }

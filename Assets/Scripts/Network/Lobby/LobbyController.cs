@@ -294,6 +294,7 @@ public class LobbyController : MonoBehaviour
     {
         LocalPlayerController.CanStartGame(SceneName);
     }
+    // Change Team Button
     public void TeamChange(int TeamID)
     {
         LocalPlayerController.CanTeamJoin(TeamID);

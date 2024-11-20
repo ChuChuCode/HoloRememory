@@ -301,6 +301,9 @@ public class Duck_AI : Health
     {
         currentHealth -= damage;
         healthBar.SetValue(currentHealth);
+
+        // Update UI
+        Selectable.instance.updateInfo(this);
     }
 
     public override void Death()

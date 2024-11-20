@@ -40,6 +40,7 @@ public class Selectable : MonoBehaviour
                 // New one highlight
                 highlight = temp;
                 highlight.gameObject.GetComponent<Outline>().enabled = true;
+                highlight.gameObject.GetComponent<Outline>().OutlineWidth = 1.5f;
                 // Check Outline Color
                 Check_Outline_Color(highlight);
             }
@@ -76,6 +77,7 @@ public class Selectable : MonoBehaviour
                 // Set Outline
                 select = highlight;
                 select.gameObject.GetComponent<Outline>().enabled = true;
+                select.gameObject.GetComponent<Outline>().OutlineWidth = 1f;
                 // Check Outline Color
                 Check_Outline_Color(select);
                 highlight = null;

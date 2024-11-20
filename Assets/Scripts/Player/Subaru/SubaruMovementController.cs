@@ -31,6 +31,8 @@ public class SubaruMovementController : Health, ICharacter
     float duck_rush_timer = -10f;
     float duck_ult_cd = 20f;
     float duck_ult_timer = -20f;
+    [Header("Dead Time")]
+    float DeadTime = 3f;
     [Header("Character Info")]
     AnimatorStateInfo stateInfo;
 
@@ -67,12 +69,20 @@ public class SubaruMovementController : Health, ICharacter
     {
         if (Duck_Spawnable() && duck_array.Count < max_duck_num )
         {
+            NavMeshHit hit;
+            Vector3 pos;
             duck_spawn_timer = Time.time ;
-            Vector3 pos = transform.position + 
+            // Check spawn point is on Navmesh
+            do
+            {
+                pos = transform.position + 
                         new Vector3(
                             UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius,
                             0f,
                             UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
+            }
+            while (!NavMesh.SamplePosition(pos,out hit, 1.0f, NavMesh.AllAreas));
+            pos = hit.position;
             Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
 
             // Set Layer to all
@@ -186,7 +196,6 @@ public class SubaruMovementController : Health, ICharacter
         // Dead already and wait to respawn
         if (isDead) 
         {
-
             return;
         }
         // Dead now 
@@ -205,13 +214,17 @@ public class SubaruMovementController : Health, ICharacter
             InputSystem.instance.playerInput.Player.Right_Mouse.started -= OnRightMouseClick;
             InputSystem.instance.playerInput.Player.Q.started -= OnQKeyClick;
             InputSystem.instance.playerInput.Player.R.started -= OnRKeyInput;
+            // UI Update -> Ally Icon
+            
+            // Dead Time Start
+            Death();
             return;
         }
         // check mouse raycast
         Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray.origin,ray.direction, out hit,Mathf.Infinity,~LayerMask.NameToLayer("Land")))
         {
             mouseProject = hit.point;
         }
@@ -220,6 +233,7 @@ public class SubaruMovementController : Health, ICharacter
         if(stateInfo.IsTag("stand"))
         {
             agent.isStopped = true;
+            animator.SetBool(isRunHash,false);
             return;
         }
         else
@@ -273,6 +287,36 @@ public class SubaruMovementController : Health, ICharacter
 
     public override void Death()
     {
-        
+        float dead_start_time = Time.time;
+        StartCoroutine(nameof(DeadCountDown),dead_start_time);
+    }
+    IEnumerator DeadCountDown(float dead_start_time)
+    {
+        while (Time.time - dead_start_time < DeadTime)
+        {
+            // Update UI wait time
+            yield return null;
+        }
+        if (gameObject.layer == LayerMask.NameToLayer("Team1"))
+        {
+            agent.Warp(GameController.Instance.Team1_transform.position);
+        }
+        else if (gameObject.layer == LayerMask.NameToLayer("Team2"))
+        {
+            agent.Warp(GameController.Instance.Team2_transform.position);
+        }
+        // Screen Control
+        DeadScreen.instance.isDead(false);
+        // Animation Control
+        agent.isStopped = false;
+        animator.Play("Idle");
+        // Register control
+        InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
+        InputSystem.instance.playerInput.Player.Q.started += OnQKeyClick;
+        InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
+        isDead = false;
+        // Health
+        InitialHealth();
+        yield return null;
     }
 }
