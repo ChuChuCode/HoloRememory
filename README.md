@@ -4,15 +4,14 @@
 
 
 ## Develope Process
-<img width="1072" src="https://github.com/user-attachments/assets/fd52a3d7-b9c1-418a-aa16-55f06075ed60">
 
-# Character Control
+### Character Control
 https://github.com/user-attachments/assets/160abc6d-11c4-4fb4-a2b2-2bf085de3bde
 
-# Feature
+### Feature
 https://github.com/user-attachments/assets/bacd0b02-695c-4b88-ae72-ea82a0c3d24d
 
-# Multi-Game UI
+### Multi-Game UI
 https://github.com/user-attachments/assets/1ccf9ee0-8711-4749-9381-8c02f1ad2ee2
 
 ## Model List
