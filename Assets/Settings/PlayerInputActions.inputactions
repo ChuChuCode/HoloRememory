@@ -2,6 +2,154 @@
     "name": "PlayerInputActions",
     "maps": [
         {
+            "name": "Player",
+            "id": "cb49e831-2293-41b1-9802-72e29edcf6f3",
+            "actions": [
+                {
+                    "name": "MousePosition",
+                    "type": "Value",
+                    "id": "78507cad-4a0a-4553-b83e-ffa9affe5680",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Q",
+                    "type": "Button",
+                    "id": "3e5e6522-bf26-47f5-a137-ffe3a5b7daf9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "R",
+                    "type": "Button",
+                    "id": "ae100d31-2669-47c1-a1c1-9170562d5195",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Right_Mouse",
+                    "type": "Button",
+                    "id": "16b4b54b-ef35-4997-9e80-864564744578",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Left_Mouse",
+                    "type": "Button",
+                    "id": "d810027d-2329-41cf-a137-36a32af77783",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Camera_Change",
+                    "type": "Button",
+                    "id": "6c30fe70-1bc9-4425-8bf8-44cd73b07b97",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Camera_Reset",
+                    "type": "Button",
+                    "id": "bbd5cef7-d505-46d8-b7e6-e016f7841eea",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9f50c553-58d7-4486-af24-f4bd20bc69cf",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "70390658-fa4c-4d3a-89fc-f2f161e70fe9",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Q",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "262e4b78-2046-414a-b73a-8e25a3ad0a8d",
+                    "path": "<Keyboard>/r",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "R",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f8598a89-ebbe-4ef9-988c-8e5f59b4be7e",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Right_Mouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1b6b3859-1a1a-4ade-be56-5bcdc5d624d0",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Left_Mouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6759e65a-6dc8-49a9-ba24-3f3011030ae5",
+                    "path": "<Keyboard>/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Camera_Change",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f7dc91d0-6d8b-4661-8a2f-0b9e90a39c37",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Camera_Reset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Player_old",
             "id": "3406a063-99c8-4e0a-9e73-a1f7d577898e",
             "actions": [
@@ -36,7 +184,7 @@
                     "name": "Special",
                     "type": "Button",
                     "id": "ddfd338c-aae9-4276-8e48-226e561df1c4",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -159,114 +307,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Ult",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Player",
-            "id": "cb49e831-2293-41b1-9802-72e29edcf6f3",
-            "actions": [
-                {
-                    "name": "MousePosition",
-                    "type": "Value",
-                    "id": "78507cad-4a0a-4553-b83e-ffa9affe5680",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "Q",
-                    "type": "Button",
-                    "id": "3e5e6522-bf26-47f5-a137-ffe3a5b7daf9",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "R",
-                    "type": "Button",
-                    "id": "ae100d31-2669-47c1-a1c1-9170562d5195",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Right_Mouse",
-                    "type": "Button",
-                    "id": "16b4b54b-ef35-4997-9e80-864564744578",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Left_Mouse",
-                    "type": "Button",
-                    "id": "d810027d-2329-41cf-a137-36a32af77783",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "9f50c553-58d7-4486-af24-f4bd20bc69cf",
-                    "path": "<Mouse>/position",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MousePosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "70390658-fa4c-4d3a-89fc-f2f161e70fe9",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Q",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "262e4b78-2046-414a-b73a-8e25a3ad0a8d",
-                    "path": "<Keyboard>/r",
-                    "interactions": "Hold",
-                    "processors": "",
-                    "groups": "",
-                    "action": "R",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f8598a89-ebbe-4ef9-988c-8e5f59b4be7e",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Right_Mouse",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1b6b3859-1a1a-4ade-be56-5bcdc5d624d0",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Left_Mouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

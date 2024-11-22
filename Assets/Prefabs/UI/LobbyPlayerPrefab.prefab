@@ -456,7 +456,7 @@ MonoBehaviour:
   PlayerNameText: {fileID: 409971782014499334}
   PlayerIcon: {fileID: 883115856901141913}
   PlayerReadyText: {fileID: 335510261429912677}
-  Ready: 0
+  isReady: 0
 --- !u!114 &6727632195674999318
 MonoBehaviour:
   m_ObjectHideFlags: 0

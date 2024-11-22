@@ -11,10 +11,14 @@ public class SteamLobby : MonoBehaviour
     public static SteamLobby Instance;
 
     Network_Manager networkManager;
-    [Header("Event")]
+    [Header("Lobby Create Callbacks")]
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
+    [Header("Lobby Join Callbacks")]
+    protected Callback<LobbyMatchList_t> lobbyList;
+    protected Callback<LobbyDataUpdate_t> lobbyDataUpdated;
+    public List<CSteamID> lobbyIDs = new List<CSteamID>();
     [Header("variables")]
     public ulong CurrentLobbyID;
     const string HostAddressKey = "HostAddress";
@@ -22,31 +26,34 @@ public class SteamLobby : MonoBehaviour
 
     void Start()
     {
-        networkManager = GetComponent<Network_Manager>();
         // networkManager = Network_Manager.singleton as Network_Manager;
         // If initialized failed
         if (!SteamManager.Initialized) return;
-
-        lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
-        gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
-        lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
-
         if (Instance == null)
         {
             Instance = this;
         }
+
+        networkManager = GetComponent<Network_Manager>();
+
+        lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+        gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
+        lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+        lobbyList = Callback<LobbyMatchList_t>.Create(OnGetLobbyList);
+        lobbyDataUpdated = Callback<LobbyDataUpdate_t>.Create(OnGetLobbyData);
+        
     }
     public void HostLobby()
     {
         print("Host Button Press");
         // Disable host button
         HostButton.interactable = false;
-        SteamMatchmaking.CreateLobby(
-            ELobbyType.k_ELobbyTypeFriendsOnly,
-            networkManager.maxConnections
-        );
+        // Friend only
+        // SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly,networkManager.maxConnections);
+        // public 
+        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic,networkManager.maxConnections);
     }
-    private void OnLobbyCreated(LobbyCreated_t callback)
+    void OnLobbyCreated(LobbyCreated_t callback)
     {
         print("Lobby Create");
         // If Lobby Create Error -> Show Host button
@@ -67,12 +74,12 @@ public class SteamLobby : MonoBehaviour
             SteamFriends.GetPersonaName().ToString()+ "'s LOBBY"
         );
     }
-    private void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
+    void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
     {
         print("Join Lobby");
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
-    private void OnLobbyEntered(LobbyEnter_t callback)
+    void OnLobbyEntered(LobbyEnter_t callback)
     {
         print("Lobby Entered");
         // Everyone
@@ -88,5 +95,30 @@ public class SteamLobby : MonoBehaviour
         );
         networkManager.networkAddress = hostAddress;
         networkManager.StartClient();
+    }
+    public void GetLobbyList()
+    {
+        if (lobbyIDs.Count > 0) lobbyIDs.Clear();
+
+        SteamMatchmaking.AddRequestLobbyListResultCountFilter(60);
+        SteamMatchmaking.RequestLobbyList();
+    }
+    public void JoinLobby(CSteamID lobbyID)
+    {
+        SteamMatchmaking.JoinLobby(lobbyID);
+    }
+    void OnGetLobbyList(LobbyMatchList_t callback)
+    {
+        if (LobbyListManager.instance.listOfLobbies.Count > 0) LobbyListManager.instance.DestroyLobbies();
+        for(int i = 0 ; i < callback.m_nLobbiesMatching ; i++)
+        {
+            CSteamID lobbyID = SteamMatchmaking.GetLobbyByIndex(i);
+            lobbyIDs.Add(lobbyID);
+            SteamMatchmaking.RequestLobbyData(lobbyID);
+        }
+    }
+    void OnGetLobbyData(LobbyDataUpdate_t callback)
+    {
+        LobbyListManager.instance.DisplayLobbies(lobbyIDs,callback);
     }
 }

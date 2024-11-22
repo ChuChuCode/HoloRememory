@@ -12,6 +12,9 @@ public class SubaruMovementController : Health, ICharacter
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     NavMeshAgent agent;
     int max_duck_num = 6;
+    [Header("Camera ")]
+    [SerializeField] GameObject Fixed_Cam;
+    [SerializeField] GameObject Free_CameParent;
     [Header("Duck Skills")]
     [SerializeField] Duck_AI Duck_prefab;
     [SerializeField] Duck_Ult Duck_Ult;
@@ -41,7 +44,16 @@ public class SubaruMovementController : Health, ICharacter
         agent = GetComponent<NavMeshAgent>();
 
         isRunHash = Animator.StringToHash("isMove");
-        
+        // Health Initial
+        InitialHealth();
+    }
+    void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+        // Set layer
+        Selectable.instance.playerLayerID = gameObject.layer;
+        if (!isLocalPlayer) return;
+        Free_CameParent.SetActive(true);
         InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
@@ -53,14 +65,10 @@ public class SubaruMovementController : Health, ICharacter
         //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
 
         InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
-        // Health Initial
-        InitialHealth();
-    }
-    void Start()
-    {
-        DontDestroyOnLoad(gameObject);
-        // Set layer
-        Selectable.instance.playerLayerID = gameObject.layer;
+        InputSystem.instance.playerInput.Player.Camera_Change.started += OnYKeyClick;
+
+        // InputSystem.instance.playerInput.Player.Camera_Reset.started += OnSpaceKeyClick;
+        // InputSystem.instance.playerInput.Player.Camera_Reset.performed += OnSpaceKeyClick;
         
         var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
         Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
@@ -146,6 +154,27 @@ public class SubaruMovementController : Health, ICharacter
             duck.rush_position = mouseProject;
             duck.rush_trigger = true;
         }
+    }
+    public void OnYKeyClick(InputAction.CallbackContext context)
+    {
+        // Fixed cam active -> Fixed cam deactive and free cam active
+        if (Fixed_Cam.activeSelf)
+        {
+            Fixed_Cam.SetActive(false);
+            Free_CameParent.SetActive(true);
+            // set position to gameobject
+            Free_CameParent.transform.position = gameObject.transform.position;
+        }
+        else
+        {
+            Fixed_Cam.SetActive(true);
+            Free_CameParent.SetActive(false);
+        }
+    }
+    public void OnSpaceKeyClick(InputAction.CallbackContext context)
+    {
+        if (!Free_CameParent.activeSelf) return;
+        Free_CameParent.transform.position = gameObject.transform.position;
     }
     void HandleRotation( )
     {
@@ -240,6 +269,14 @@ public class SubaruMovementController : Health, ICharacter
         {
             agent.isStopped = false;
         }
+        // Camera Reset
+        if ( InputSystem.instance.playerInput.Player.Camera_Reset.IsPressed())
+        {
+            if (Free_CameParent.activeSelf)
+            {
+                Free_CameParent.transform.position = gameObject.transform.position;
+            }
+        }
         // Move
         if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
         {
@@ -255,7 +292,6 @@ public class SubaruMovementController : Health, ICharacter
             direction.y = 0;
             transform.LookAt(transform.position + direction);
         }
-        // move
         // HandleRotation();
         HandleAnmation();
         
