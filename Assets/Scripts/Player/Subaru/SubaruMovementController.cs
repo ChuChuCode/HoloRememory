@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using Mirror;
 using UnityEditor;
+using Unity.VisualScripting;
 
 public class SubaruMovementController : Health, ICharacter
 {
@@ -27,6 +28,11 @@ public class SubaruMovementController : Health, ICharacter
     Vector3 currentMovement;
     bool isMovementPressed;
     float rotationFactorPerFrame = 10.0f;
+    [Header("Skill Pressed")]
+    [SerializeField] bool IsPressed_Q = false;
+    [SerializeField] bool IsPressed_W = false;
+    [SerializeField] bool IsPressed_E = false;
+    [SerializeField] bool IsPressed_R = false;
     [Header("Skill Time")]
     float duck_spawn_cd = 10f;
     float duck_spawn_timer = 0f;
@@ -57,8 +63,11 @@ public class SubaruMovementController : Health, ICharacter
         InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
+
+        InputSystem.instance.playerInput.Player.Left_Mouse.started += OnLeftMouseClick;
         
-        InputSystem.instance.playerInput.Player.Q.started += OnQKeyClick;
+        InputSystem.instance.playerInput.Player.Q.started += OnQKeyDown;
+        InputSystem.instance.playerInput.Player.Q.canceled += OnQKeyUp;
 
         //playerInput.Player.MousePosition.started += OnMousePositionInput;
         //playerInput.Player.MousePosition.performed += OnMousePositionInput;
@@ -67,8 +76,8 @@ public class SubaruMovementController : Health, ICharacter
         InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
         InputSystem.instance.playerInput.Player.Camera_Change.started += OnYKeyClick;
 
-        // InputSystem.instance.playerInput.Player.Camera_Reset.started += OnSpaceKeyClick;
-        // InputSystem.instance.playerInput.Player.Camera_Reset.performed += OnSpaceKeyClick;
+        InputSystem.instance.playerInput.Player.Camera_Reset.started += OnSpaceKeyClick;
+        InputSystem.instance.playerInput.Player.Camera_Reset.performed += OnSpaceKeyClick;
         
         var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
         Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
@@ -99,6 +108,8 @@ public class SubaruMovementController : Health, ICharacter
             {
                 child.gameObject.layer = gameObject.layer;
             }
+            // Set Enemy Layer
+            duck.Update_Enemy_Layer(gameObject.layer);
 
             NetworkServer.Spawn(duck.gameObject);
             // Set Info
@@ -134,25 +145,38 @@ public class SubaruMovementController : Health, ICharacter
     }
     public void OnRightMouseClick(InputAction.CallbackContext context)
     {
-        // Vector3 faceDirection = mouseProject;
-        // Spawn Particle
+        // Check skill is Hovering
+        
         ParticleSystem temp = Instantiate(Target,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
-        //faceDirection.y = 0f;
-        // Rotate Immediately
-        //agent.velocity = (faceDirection - transform.position).normalized * agent.speed;
-        //transform.LookAt(faceDirection);
-        // agent.destination = mouseProject;
     }
-    public void OnQKeyClick(InputAction.CallbackContext context)
+    public void OnLeftMouseClick(InputAction.CallbackContext context)
+    {
+        // Check if Skill is pressed
+    }
+    public void OnQKeyDown(InputAction.CallbackContext context)
     {
         if (Time.time - duck_rush_timer < duck_rush_cd) return;
         if (duck_array.Count == 0) return;
+        IsPressed_Q = true;
+        // Show UI preview
+        foreach (var duck in duck_array)
+        {
+            duck.Q_UI_Set(true);
+        }
+    }
+    public void OnQKeyUp(InputAction.CallbackContext context)
+    {
+        if (!IsPressed_Q) return;
+        // If count = 0 when key Up 
+        if (duck_array.Count == 0) return;
         animator.SetTrigger("Special");
         duck_rush_timer = Time.time;
+        IsPressed_Q = false;
         foreach (var duck in duck_array)
         {
             duck.rush_position = mouseProject;
             duck.rush_trigger = true;
+            duck.Q_UI_Set(false);
         }
     }
     public void OnYKeyClick(InputAction.CallbackContext context)
@@ -170,7 +194,7 @@ public class SubaruMovementController : Health, ICharacter
             Fixed_Cam.SetActive(true);
             Free_CameParent.SetActive(false);
         }
-    }
+    } 
     public void OnSpaceKeyClick(InputAction.CallbackContext context)
     {
         if (!Free_CameParent.activeSelf) return;
@@ -241,7 +265,7 @@ public class SubaruMovementController : Health, ICharacter
             isDead = true;
             // Unregister control
             InputSystem.instance.playerInput.Player.Right_Mouse.started -= OnRightMouseClick;
-            InputSystem.instance.playerInput.Player.Q.started -= OnQKeyClick;
+            InputSystem.instance.playerInput.Player.Q.started -= OnQKeyDown;
             InputSystem.instance.playerInput.Player.R.started -= OnRKeyInput;
             // UI Update -> Ally Icon
             
@@ -297,6 +321,16 @@ public class SubaruMovementController : Health, ICharacter
         
         // Passive skill
         Passive();
+        if (InputSystem.instance.playerInput.Player.Camera_Reset.WasPressedThisFrame())
+            Debug.Log("Was Just Pressed");
+
+        if (InputSystem.instance.playerInput.Player.Camera_Reset.IsPressed())
+            Debug.Log("Is Currently Pressed");
+
+        if (InputSystem.instance.playerInput.Player.Camera_Reset.WasReleasedThisFrame())
+            Debug.Log("Was Just Released");
+        if (InputSystem.instance.playerInput.Player.Camera_Reset.triggered)
+            Debug.Log("Triggered");
     }
     void OnEnable() 
     {
@@ -348,7 +382,7 @@ public class SubaruMovementController : Health, ICharacter
         animator.Play("Idle");
         // Register control
         InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
-        InputSystem.instance.playerInput.Player.Q.started += OnQKeyClick;
+        InputSystem.instance.playerInput.Player.Q.started += OnQKeyDown;
         InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
         isDead = false;
         // Health

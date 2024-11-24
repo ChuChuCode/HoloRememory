@@ -532,6 +532,10 @@ MonoBehaviour:
   Duck_Ult: {fileID: 3088117104640011826, guid: 2a3b0cc2d73b44e1fa2d014b19bf1812, type: 3}
   animator: {fileID: 1946654108785073176}
   Target: {fileID: 3508981945991229934, guid: 7d22d2f886e1d4e63985f741719e7b3b, type: 3}
+  IsPressed_Q: 0
+  IsPressed_W: 0
+  IsPressed_E: 0
+  IsPressed_R: 0
 --- !u!114 &8030685103550228832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -752,17 +756,21 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 4971408523369059555, guid: 881776e176a4e44f09ab6a0e03d1ac0d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5536713071453195112, guid: 881776e176a4e44f09ab6a0e03d1ac0d, type: 3}
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8122897597752069885, guid: 881776e176a4e44f09ab6a0e03d1ac0d, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8122897597752069885, guid: 881776e176a4e44f09ab6a0e03d1ac0d, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

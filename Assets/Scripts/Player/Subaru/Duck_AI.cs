@@ -30,8 +30,8 @@ public class Duck_AI : Health
     [SerializeField] float time = 1f;
     [Header("Enemy Layer")]
     int Layer_Enemy;
-
-    [Header("Skill")]
+    [Header("Q Skill")]
+    [SerializeField] GameObject Q_UI;
     public Vector3 rush_position;
     // This Parameter is for same position.
     //float rush_speed = 50f;
@@ -39,8 +39,9 @@ public class Duck_AI : Health
     float rush_speed = 500f;
     float rush_time = 2f;
     public bool rush_trigger;
+    [Header("Dead")]
     float deadTime = 1f;
-    [Header("Character Info")]
+    [Header("Duck Info")]
     [SerializeField] Bar healthBar;
 
     void Awake() 
@@ -49,6 +50,7 @@ public class Duck_AI : Health
     }
     void Start()
     {
+        //*** need to set only on onserver
         current_State = State.Idle;
         rush_trigger = false;
         InitialHealth();
@@ -59,20 +61,6 @@ public class Duck_AI : Health
         bool isMove = animator.GetBool("isMove");
         bool isAttack = animator.GetBool("isAttack");
         // Search Enemy use sphere
-        // If duck layer == Team1
-        if (gameObject.layer.Equals(LayerMask.NameToLayer("Team1")))
-        {
-            Layer_Enemy = LayerMask.NameToLayer("Team2");
-        }
-        // If duck layer == Team2
-        else if (gameObject.layer.Equals(LayerMask.NameToLayer("Team2")))
-        {
-            Layer_Enemy = LayerMask.NameToLayer("Team1");
-        }
-        else
-        {
-            Debug.Log("This Duck Set wrong Layer.");
-        }
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius, Layer_Enemy);
         // if health < 0 -> to dead mode
         if (currentHealth <= 0) 
@@ -312,5 +300,26 @@ public class Duck_AI : Health
         currentHealth = 0;
         healthBar.SetValue(0);
         Destroy(gameObject);
+    }
+    public void Update_Enemy_Layer(int duck_layer)
+    {
+        // If duck layer == Team1
+        if (LayerMask.NameToLayer("Team1") == duck_layer)
+        {
+            Layer_Enemy = LayerMask.NameToLayer("Team2");
+        }
+        // If duck layer == Team2
+        else if (LayerMask.NameToLayer("Team2") == duck_layer)
+        {
+            Layer_Enemy = LayerMask.NameToLayer("Team1");
+        }
+        else
+        {
+            Debug.Log("This Duck Set wrong Layer.");
+        }
+    }
+    public void Q_UI_Set(bool isShow)
+    {
+        Q_UI.SetActive(isShow);
     }
 }
