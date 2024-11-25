@@ -8,32 +8,18 @@ using Mirror;
 using UnityEditor;
 using Unity.VisualScripting;
 
-public class SubaruMovementController : Health, ICharacter
+public class SubaruMovementController : CharacterBase
 {
     public List<Duck_AI> duck_array = new List<Duck_AI>();
-    NavMeshAgent agent;
     int max_duck_num = 6;
-    [Header("Camera ")]
-    [SerializeField] GameObject Fixed_Cam;
-    [SerializeField] GameObject Free_CameParent;
     [Header("Duck Skills")]
     [SerializeField] Duck_AI Duck_prefab;
     [SerializeField] Duck_Ult Duck_Ult;
-    Vector3 mouseProject;
     [SerializeField] Animator animator;
-    [SerializeField] ParticleSystem Target;
 
     int isRunHash;
 
-    Vector3 currentMovement;
-    bool isMovementPressed;
-    float rotationFactorPerFrame = 10.0f;
-    [Header("Skill Pressed")]
-    [SerializeField] bool IsPressed_Q = false;
-    [SerializeField] bool IsPressed_W = false;
-    [SerializeField] bool IsPressed_E = false;
-    [SerializeField] bool IsPressed_R = false;
-    [Header("Skill Time")]
+    [Header("Skill Timer")]
     float duck_spawn_cd = 10f;
     float duck_spawn_timer = 0f;
     float duck_rush_cd = 10f;
@@ -42,47 +28,24 @@ public class SubaruMovementController : Health, ICharacter
     float duck_ult_timer = -20f;
     [Header("Dead Time")]
     float DeadTime = 3f;
+    [Header("Skill Image")]
+    [SerializeField] GameObject R_UI;
     [Header("Character Info")]
     AnimatorStateInfo stateInfo;
 
-    void Awake()
+    protected override void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
-
-        isRunHash = Animator.StringToHash("isMove");
-        // Health Initial
-        InitialHealth();
+        base.Awake();
+        isRunHash = Animator.StringToHash("isMove");;
     }
-    void Start()
+    protected override void Start()
     {
-        DontDestroyOnLoad(gameObject);
-        // Set layer
-        Selectable.instance.playerLayerID = gameObject.layer;
-        if (!isLocalPlayer) return;
-        Free_CameParent.SetActive(true);
-        InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
-        //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
-        //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
-
-        InputSystem.instance.playerInput.Player.Left_Mouse.started += OnLeftMouseClick;
-        
-        InputSystem.instance.playerInput.Player.Q.started += OnQKeyDown;
-        InputSystem.instance.playerInput.Player.Q.canceled += OnQKeyUp;
-
-        //playerInput.Player.MousePosition.started += OnMousePositionInput;
-        //playerInput.Player.MousePosition.performed += OnMousePositionInput;
-        //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
-
-        InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
-        InputSystem.instance.playerInput.Player.Camera_Change.started += OnYKeyClick;
-
-        InputSystem.instance.playerInput.Player.Camera_Reset.started += OnSpaceKeyClick;
-        InputSystem.instance.playerInput.Player.Camera_Reset.performed += OnSpaceKeyClick;
+        base.Start();
         
         var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
         Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
     }
-    public void Passive()
+    public override void Passive()
     {
         if (Duck_Spawnable() && duck_array.Count < max_duck_num )
         {
@@ -110,6 +73,8 @@ public class SubaruMovementController : Health, ICharacter
             }
             // Set Enemy Layer
             duck.Update_Enemy_Layer(gameObject.layer);
+            // Set Q UI
+            if (IsPressed_Q) duck.Q_UI_Set(true);
 
             NetworkServer.Spawn(duck.gameObject);
             // Set Info
@@ -118,60 +83,40 @@ public class SubaruMovementController : Health, ICharacter
             duck_array.Add(duck);
         }
     }
-    public void OnRKeyInput(InputAction.CallbackContext context)
+    protected override void Hide_Q_UI()
     {
-        if (Time.time - duck_ult_timer < duck_ult_cd) return;
-        if (duck_array.Count == 0) return;
-        animator.SetTrigger("Special");
-        duck_ult_timer = Time.time;
-        // Delete Duck
-        int duck_index = UnityEngine.Random.Range(0,duck_array.Count);
-        GameObject deleteDuck = duck_array[duck_index].gameObject;
-        duck_array.Remove(duck_array[duck_index]);
-        Destroy(deleteDuck);
-        // Spawn Ult Duck
-        Duck_Ult duck = Instantiate(Duck_Ult,transform.position + new Vector3(0f,10f,0f) ,Quaternion.identity);
-    }
-
-    void OnMousePositionInput(InputAction.CallbackContext context)
-    {
-        Vector3 mousePos = context.ReadValue<Vector2>();
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        if (Physics.Raycast(ray, out hit))
+        // Hide Duck UI
+        foreach (var duck in duck_array)
         {
-            mouseProject = hit.point;
+            duck.Q_UI_Set(false);
         }
     }
-    public void OnRightMouseClick(InputAction.CallbackContext context)
+    protected override void Hide_R_UI()
     {
-        // Check skill is Hovering
-        
-        ParticleSystem temp = Instantiate(Target,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
+        // Hide R preview
+        R_UI.SetActive(false);
     }
-    public void OnLeftMouseClick(InputAction.CallbackContext context)
-    {
-        // Check if Skill is pressed
-    }
-    public void OnQKeyDown(InputAction.CallbackContext context)
+    /// Q skill
+    public override void OnQKeyDown(InputAction.CallbackContext context)
     {
         if (Time.time - duck_rush_timer < duck_rush_cd) return;
         if (duck_array.Count == 0) return;
-        IsPressed_Q = true;
+        base.OnQKeyDown(context);
         // Show UI preview
         foreach (var duck in duck_array)
         {
             duck.Q_UI_Set(true);
         }
     }
-    public void OnQKeyUp(InputAction.CallbackContext context)
+    public override void OnQKeyUp(InputAction.CallbackContext context)
     {
         if (!IsPressed_Q) return;
         // If count = 0 when key Up 
         if (duck_array.Count == 0) return;
+        base.OnQKeyUp(context);
         animator.SetTrigger("Special");
         duck_rush_timer = Time.time;
-        IsPressed_Q = false;
+        
         foreach (var duck in duck_array)
         {
             duck.rush_position = mouseProject;
@@ -179,40 +124,31 @@ public class SubaruMovementController : Health, ICharacter
             duck.Q_UI_Set(false);
         }
     }
-    public void OnYKeyClick(InputAction.CallbackContext context)
+    /// R skill 
+    public override void OnRKeyDown(InputAction.CallbackContext context)
     {
-        // Fixed cam active -> Fixed cam deactive and free cam active
-        if (Fixed_Cam.activeSelf)
-        {
-            Fixed_Cam.SetActive(false);
-            Free_CameParent.SetActive(true);
-            // set position to gameobject
-            Free_CameParent.transform.position = gameObject.transform.position;
-        }
-        else
-        {
-            Fixed_Cam.SetActive(true);
-            Free_CameParent.SetActive(false);
-        }
-    } 
-    public void OnSpaceKeyClick(InputAction.CallbackContext context)
-    {
-        if (!Free_CameParent.activeSelf) return;
-        Free_CameParent.transform.position = gameObject.transform.position;
+        if (Time.time - duck_ult_timer < duck_ult_cd) return;
+        if (duck_array.Count == 0) return;
+        base.OnRKeyDown(context);
+        // Show UI preview
+        R_UI.SetActive(true);
     }
-    void HandleRotation( )
+    public override void OnRKeyUp(InputAction.CallbackContext context)
     {
-        Vector3 positionToLookAt;
-        positionToLookAt.x = currentMovement.x;
-        positionToLookAt.y = 0.0f;
-        positionToLookAt.z = currentMovement.z;
-        Quaternion currentRotation = transform.rotation;
-
-        if (isMovementPressed)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
-            transform.rotation = Quaternion.Slerp(currentRotation,targetRotation,rotationFactorPerFrame* Time.deltaTime);
-        }
+        if (!IsPressed_R) return;
+        if (duck_array.Count == 0) return;
+        base.OnRKeyUp(context);
+        animator.SetTrigger("Special");
+        duck_ult_timer = Time.time;
+        // Delete Duck
+        int duck_index = UnityEngine.Random.Range(0,duck_array.Count);
+        GameObject deleteDuck = duck_array[duck_index].gameObject;
+        duck_array.Remove(duck_array[duck_index]);
+        Destroy(deleteDuck);
+        // Hide UI preview
+        R_UI.SetActive(false);
+        // Spawn Ult Duck
+        Duck_Ult duck = Instantiate(Duck_Ult,transform.position + new Vector3(0f,10f,0f) ,Quaternion.identity);
     }
     void HandleAnmation()
     {
@@ -242,10 +178,12 @@ public class SubaruMovementController : Health, ICharacter
     {
         if (!isLocalPlayer) return;
         // Update Cool Down
+
         MianInfoUI.instance.Q.Set_CoolDown(duck_rush_timer,duck_rush_cd);
         // MianInfoUI.instance.W.Set_CoolDown(duck_ult_timer,duck_ult_cd);
         // MianInfoUI.instance.E.Set_CoolDown(duck_ult_timer,duck_ult_cd);
         MianInfoUI.instance.R.Set_CoolDown(duck_ult_timer,duck_ult_cd);
+
         // Dead already and wait to respawn
         if (isDead) 
         {
@@ -266,21 +204,17 @@ public class SubaruMovementController : Health, ICharacter
             // Unregister control
             InputSystem.instance.playerInput.Player.Right_Mouse.started -= OnRightMouseClick;
             InputSystem.instance.playerInput.Player.Q.started -= OnQKeyDown;
-            InputSystem.instance.playerInput.Player.R.started -= OnRKeyInput;
+            InputSystem.instance.playerInput.Player.R.started -= OnRKeyDown;
             // UI Update -> Ally Icon
             
             // Dead Time Start
             Death();
             return;
         }
-        // check mouse raycast
-        Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        if (Physics.Raycast(ray.origin,ray.direction, out hit,Mathf.Infinity,~LayerMask.NameToLayer("Land")))
-        {
-            mouseProject = hit.point;
-        }
+        // Update Mouse raycast -> MousePosition
+        Get_Project_Mouse();
+        // Check Free Camera Reset -> Camera_Reset
+        Camera_Reset();
         // If stand Animation => stop move and rotate
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if(stateInfo.IsTag("stand"))
@@ -293,14 +227,7 @@ public class SubaruMovementController : Health, ICharacter
         {
             agent.isStopped = false;
         }
-        // Camera Reset
-        if ( InputSystem.instance.playerInput.Player.Camera_Reset.IsPressed())
-        {
-            if (Free_CameParent.activeSelf)
-            {
-                Free_CameParent.transform.position = gameObject.transform.position;
-            }
-        }
+        HandleAnmation();
         // Move
         if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
         {
@@ -316,9 +243,7 @@ public class SubaruMovementController : Health, ICharacter
             direction.y = 0;
             transform.LookAt(transform.position + direction);
         }
-        // HandleRotation();
-        HandleAnmation();
-        
+
         // Passive skill
         Passive();
         if (InputSystem.instance.playerInput.Player.Camera_Reset.WasPressedThisFrame())
@@ -332,24 +257,15 @@ public class SubaruMovementController : Health, ICharacter
         if (InputSystem.instance.playerInput.Player.Camera_Reset.triggered)
             Debug.Log("Triggered");
     }
-    void OnEnable() 
-    {
-        InputSystem.instance.playerInput.Player.Enable();    
-    }
-    void OnDisable()
-    {
-        InputSystem.instance.playerInput.Player.Disable();
-    }
-
     public override void InitialHealth()
     {
-        currentHealth = maxHealth;
+        base.InitialHealth();
         MianInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
     }
     public override void GetDamage(int damage)
     {
-        currentHealth -= damage;
+        base.GetDamage(damage);
         // Update UI
         MianInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
@@ -383,7 +299,7 @@ public class SubaruMovementController : Health, ICharacter
         // Register control
         InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
         InputSystem.instance.playerInput.Player.Q.started += OnQKeyDown;
-        InputSystem.instance.playerInput.Player.R.started += OnRKeyInput;
+        InputSystem.instance.playerInput.Player.R.started += OnRKeyDown;
         isDead = false;
         // Health
         InitialHealth();

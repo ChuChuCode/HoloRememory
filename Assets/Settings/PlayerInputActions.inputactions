@@ -24,10 +24,28 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "W",
+                    "type": "Button",
+                    "id": "ce8fdabe-e550-41cb-ab5d-35981135f1a4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "E",
+                    "type": "Button",
+                    "id": "08b16753-869e-46e6-a746-a5fd9749d78a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "R",
                     "type": "Button",
                     "id": "ae100d31-2669-47c1-a1c1-9170562d5195",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -36,16 +54,16 @@
                     "name": "Right_Mouse",
                     "type": "Button",
                     "id": "16b4b54b-ef35-4997-9e80-864564744578",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press",
                     "initialStateCheck": false
                 },
                 {
                     "name": "Left_Mouse",
                     "type": "Button",
                     "id": "d810027d-2329-41cf-a137-36a32af77783",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -89,6 +107,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Q",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0a4c821-f51e-47f9-94fc-1271be3848af",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "W",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ead8712c-c445-4b4d-8768-77637d0aed3f",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "E",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

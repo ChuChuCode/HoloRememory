@@ -46,10 +46,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""W"",
+                    ""type"": ""Button"",
+                    ""id"": ""ce8fdabe-e550-41cb-ab5d-35981135f1a4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""E"",
+                    ""type"": ""Button"",
+                    ""id"": ""08b16753-869e-46e6-a746-a5fd9749d78a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""R"",
                     ""type"": ""Button"",
                     ""id"": ""ae100d31-2669-47c1-a1c1-9170562d5195"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -58,16 +76,16 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Right_Mouse"",
                     ""type"": ""Button"",
                     ""id"": ""16b4b54b-ef35-4997-9e80-864564744578"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Left_Mouse"",
                     ""type"": ""Button"",
                     ""id"": ""d810027d-2329-41cf-a137-36a32af77783"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -111,6 +129,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Q"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e0a4c821-f51e-47f9-94fc-1271be3848af"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""W"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ead8712c-c445-4b4d-8768-77637d0aed3f"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""E"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -341,6 +381,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_MousePosition = m_Player.FindAction("MousePosition", throwIfNotFound: true);
         m_Player_Q = m_Player.FindAction("Q", throwIfNotFound: true);
+        m_Player_W = m_Player.FindAction("W", throwIfNotFound: true);
+        m_Player_E = m_Player.FindAction("E", throwIfNotFound: true);
         m_Player_R = m_Player.FindAction("R", throwIfNotFound: true);
         m_Player_Right_Mouse = m_Player.FindAction("Right_Mouse", throwIfNotFound: true);
         m_Player_Left_Mouse = m_Player.FindAction("Left_Mouse", throwIfNotFound: true);
@@ -422,6 +464,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_MousePosition;
     private readonly InputAction m_Player_Q;
+    private readonly InputAction m_Player_W;
+    private readonly InputAction m_Player_E;
     private readonly InputAction m_Player_R;
     private readonly InputAction m_Player_Right_Mouse;
     private readonly InputAction m_Player_Left_Mouse;
@@ -433,6 +477,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @MousePosition => m_Wrapper.m_Player_MousePosition;
         public InputAction @Q => m_Wrapper.m_Player_Q;
+        public InputAction @W => m_Wrapper.m_Player_W;
+        public InputAction @E => m_Wrapper.m_Player_E;
         public InputAction @R => m_Wrapper.m_Player_R;
         public InputAction @Right_Mouse => m_Wrapper.m_Player_Right_Mouse;
         public InputAction @Left_Mouse => m_Wrapper.m_Player_Left_Mouse;
@@ -453,6 +499,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Q.started += instance.OnQ;
             @Q.performed += instance.OnQ;
             @Q.canceled += instance.OnQ;
+            @W.started += instance.OnW;
+            @W.performed += instance.OnW;
+            @W.canceled += instance.OnW;
+            @E.started += instance.OnE;
+            @E.performed += instance.OnE;
+            @E.canceled += instance.OnE;
             @R.started += instance.OnR;
             @R.performed += instance.OnR;
             @R.canceled += instance.OnR;
@@ -478,6 +530,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Q.started -= instance.OnQ;
             @Q.performed -= instance.OnQ;
             @Q.canceled -= instance.OnQ;
+            @W.started -= instance.OnW;
+            @W.performed -= instance.OnW;
+            @W.canceled -= instance.OnW;
+            @E.started -= instance.OnE;
+            @E.performed -= instance.OnE;
+            @E.canceled -= instance.OnE;
             @R.started -= instance.OnR;
             @R.performed -= instance.OnR;
             @R.canceled -= instance.OnR;
@@ -592,6 +650,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnMousePosition(InputAction.CallbackContext context);
         void OnQ(InputAction.CallbackContext context);
+        void OnW(InputAction.CallbackContext context);
+        void OnE(InputAction.CallbackContext context);
         void OnR(InputAction.CallbackContext context);
         void OnRight_Mouse(InputAction.CallbackContext context);
         void OnLeft_Mouse(InputAction.CallbackContext context);
