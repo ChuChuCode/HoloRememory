@@ -7,16 +7,19 @@ public class CharacterBase: Health
 {
     [Header("Agent")]
     protected NavMeshAgent agent;
+
     [Header("Skill Pressed")]
     [SerializeField] protected bool IsPressed_Q = false;
     [SerializeField] protected bool IsPressed_W = false;
     [SerializeField] protected bool IsPressed_E = false;
     [SerializeField] protected bool IsPressed_R = false;
-    [Header("Camera ")]
+
+    [Header("Camera")]
     [Tooltip("Fix Camera on Character")]
     [SerializeField] protected GameObject Fixed_Cam;
     [Tooltip("Free Camera on Character")]
     [SerializeField] protected GameObject Free_CameParent;
+    [Header("Move Target")]
     [Tooltip("Particle that show move target")]
     [SerializeField] protected ParticleSystem Target;
     protected Vector3 mouseProject;
@@ -76,6 +79,14 @@ public class CharacterBase: Health
         InputSystem.instance.playerInput.Player.Camera_Reset.started += OnSpaceKeyClick;
         InputSystem.instance.playerInput.Player.Camera_Reset.performed += OnSpaceKeyClick;
     }
+    protected virtual void Update()
+    {
+        // Move
+        CharacterMove();
+        // Passive skill
+        Passive();
+    }
+    /// <summary>This is invoked when Mouse Right Click Down.</summary>
     public virtual void OnRightMouseClick(InputAction.CallbackContext context)
     {
         // Check skill is Hovering
@@ -109,9 +120,10 @@ public class CharacterBase: Health
             ParticleSystem temp = Instantiate(Target,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
         }
     }
+    /// <summary>This is invoked when Mouse Left Click Down.</summary>
     public virtual void OnLeftMouseClick(InputAction.CallbackContext context)
     {
-        // Check skill is Hovering
+        // Check skill is Previewing
         if (IsPressed_Q)
         {
             // Hide Q preview
@@ -138,41 +150,51 @@ public class CharacterBase: Health
         }
     }
     // Q skill
+    /// <summary>This is invoked when QKey Click Down.</summary>
     public virtual void OnQKeyDown(InputAction.CallbackContext context)
     {
         IsPressed_Q = true;
     }
+    /// <summary>This is invoked when QKey Click Up.</summary>
     public virtual void OnQKeyUp(InputAction.CallbackContext context)
     {
         IsPressed_Q = false;
     }
     // W skill
+    /// <summary>This is invoked when WKey Click Down.</summary>
     public virtual void OnWKeyDown(InputAction.CallbackContext context)
     {
         IsPressed_W = true;
     }
+    /// <summary>This is invoked when WKey Click Up.</summary>
     public virtual void OnWKeyUp(InputAction.CallbackContext context)
     {
         IsPressed_W = false;
     }
     // E skill
+    /// <summary>This is invoked when EKey Click Down.</summary>
     public virtual void OnEKeyDown(InputAction.CallbackContext context)
     {
         IsPressed_E = true;
     }
+    /// <summary>This is invoked when EKey Click Up.</summary>
     public virtual void OnEKeyUp(InputAction.CallbackContext context)
     {
         IsPressed_E = false;
     }
     // R skill
+    /// <summary>This is invoked when RKey Click Down.</summary>
     public virtual void OnRKeyDown(InputAction.CallbackContext context)
     {
         IsPressed_R = true;
     }
+    /// <summary>This is invoked when RKey Click Up.</summary>
     public virtual void OnRKeyUp(InputAction.CallbackContext context)
     {
         IsPressed_R = false;
     }
+    // Camera Change
+    /// <summary>This is invoked when YKey Click Down.</summary>
     public virtual void OnYKeyClick(InputAction.CallbackContext context)
     {
         // Fixed cam active -> Fixed cam deactive and free cam active
@@ -189,22 +211,22 @@ public class CharacterBase: Health
             Free_CameParent.SetActive(false);
         }
     } 
+    // Camera Reset
+    /// <summary>This is invoked when SpaceKey Click Down.</summary>
     public virtual void OnSpaceKeyClick(InputAction.CallbackContext context)
     {
         if (!Free_CameParent.activeSelf) return;
         Free_CameParent.transform.position = gameObject.transform.position;
     }
-    public virtual void Passive(){}
     // Skill Preview Hide
     protected virtual void Hide_Q_UI(){}
     protected virtual void Hide_W_UI(){}
     protected virtual void Hide_E_UI(){}
     protected virtual void Hide_R_UI(){}
-    // Skill Use
-    protected virtual void Q_Skill_Use(){}
-    protected virtual void W_Skill_Use(){}
-    protected virtual void E_Skill_Use(){}
-    protected virtual void R_Skill_Use(){}
+    // Passive Skill
+    /// <summary>This method relate to Passive Skill.</summary>
+    public virtual void Passive(){}
+    /// <summary>This is invoked when Mouse Move. Now use "Get_Project_Mouse" to Update Project Point.</summary>
     public virtual void OnMousePositionInput(InputAction.CallbackContext context)
     {
         Vector3 mousePos = context.ReadValue<Vector2>();
@@ -215,6 +237,7 @@ public class CharacterBase: Health
             mouseProject = hit.point;
         }
     }
+    /// <summary>This method calculate the project point from camera to scene object in Land Layer.</summary>
     protected void Get_Project_Mouse()
     {
         // check mouse raycast
@@ -235,6 +258,24 @@ public class CharacterBase: Health
             {
                 Free_CameParent.transform.position = gameObject.transform.position;
             }
+        }
+    }
+    protected void CharacterMove()
+    {
+        // Move
+        if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
+        {
+            Vector3 faceDirection = mouseProject;
+            // Spawn Particle -> Spawn in OnRightMouseClick
+            // Instantiate(Target,mouseProject + new Vector3(0,1f,0), Quaternion.identity);
+            Vector3 moveVelocity = mouseProject - transform.position;
+            // Rotate Immediately
+            agent.velocity = moveVelocity.normalized * agent.speed;
+            // Walk goal
+            agent.destination = mouseProject;
+            Vector3 direction = mouseProject - transform.position;
+            direction.y = 0;
+            transform.LookAt(transform.position + direction);
         }
     }
 }

@@ -150,7 +150,7 @@ public class SubaruMovementController : CharacterBase
         // Spawn Ult Duck
         Duck_Ult duck = Instantiate(Duck_Ult,transform.position + new Vector3(0f,10f,0f) ,Quaternion.identity);
     }
-    void HandleAnmation()
+    void HandleMoveAnmation()
     {
         bool isRun = agent.velocity.magnitude > 0;
         // Run when idle
@@ -174,11 +174,11 @@ public class SubaruMovementController : CharacterBase
         return false;
     }
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         if (!isLocalPlayer) return;
-        // Update Cool Down
 
+        // Update Cool Down
         MianInfoUI.instance.Q.Set_CoolDown(duck_rush_timer,duck_rush_cd);
         // MianInfoUI.instance.W.Set_CoolDown(duck_ult_timer,duck_ult_cd);
         // MianInfoUI.instance.E.Set_CoolDown(duck_ult_timer,duck_ult_cd);
@@ -227,25 +227,10 @@ public class SubaruMovementController : CharacterBase
         {
             agent.isStopped = false;
         }
-        HandleAnmation();
-        // Move
-        if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
-        {
-            Vector3 faceDirection = mouseProject;
-            // Spawn Particle
-            // Instantiate(Target,mouseProject + new Vector3(0,1f,0), Quaternion.identity);
-            Vector3 moveVelocity = mouseProject - transform.position;
-            // Rotate Immediately
-            agent.velocity = moveVelocity.normalized * agent.speed;
-            // Walk goal
-            agent.destination = mouseProject;
-            Vector3 direction = mouseProject - transform.position;
-            direction.y = 0;
-            transform.LookAt(transform.position + direction);
-        }
+        HandleMoveAnmation();
+        
+        base.Update();
 
-        // Passive skill
-        Passive();
         if (InputSystem.instance.playerInput.Player.Camera_Reset.WasPressedThisFrame())
             Debug.Log("Was Just Pressed");
 

@@ -69,7 +69,7 @@ public class PlayerObject : NetworkBehaviour
             if (SceneManager.GetActiveScene().name == "Lobby_Scene") LobbyController.Instance.UpdatePlayerList();
         }
     }
-    // client -> server
+    // client -> server(only on server)
     [Command]
     void CmdSetPlayerReady()
     {
