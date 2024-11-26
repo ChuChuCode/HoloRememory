@@ -1,6 +1,6 @@
 # Holo Rememory
  A Hololive MOBA game
- (still at the start of main system.)
+ (still at the start of Core system.)
 
 
 ## Develope Process
