@@ -18,6 +18,7 @@ public class FreeCamera : MonoBehaviour
     void Update()
     {
         Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
+        print(mousePos);
         Vector3 position = transform.position;
         // Up
         if (mousePos.y >= Screen.height - screenSizeThickness)

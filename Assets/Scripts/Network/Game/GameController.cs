@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
             return manager = Network_Manager.singleton as Network_Manager;
         }
     }
+    public CharacterBase LocalPlayer;
     void Awake()
     {
         if (Instance == null)

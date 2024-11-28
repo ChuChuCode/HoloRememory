@@ -1,6 +1,7 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CharacterBase: Health
@@ -31,7 +32,7 @@ public class CharacterBase: Health
     }
     protected virtual void OnEnable() 
     {
-        InputSystem.instance.playerInput.Player.Enable();    
+        InputSystem.instance.playerInput.Player.Enable();
     }
     protected virtual void OnDisable()
     {
@@ -43,6 +44,8 @@ public class CharacterBase: Health
         // Set layer
         Selectable.instance.playerLayerID = gameObject.layer;
         if (!isLocalPlayer) return;
+        // Set LocalPlayer for MiniMap
+        GameController.Instance.LocalPlayer = this;
         Free_CameParent.SetActive(true);
 
         // Right Mouse
@@ -95,6 +98,7 @@ public class CharacterBase: Health
             IsPressed_Q = false;
             // Hide Q preview
             Hide_Q_UI();
+            print("Cancle");
         }
         else if (IsPressed_W)
         {
@@ -117,7 +121,8 @@ public class CharacterBase: Health
         // Normal Walk
         else
         {
-            ParticleSystem temp = Instantiate(Target,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            Instantiate(Target,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
         }
     }
     /// <summary>This is invoked when Mouse Left Click Down.</summary>
@@ -128,24 +133,28 @@ public class CharacterBase: Health
         {
             // Hide Q preview
             Hide_Q_UI();
+            // Use Q Skill
             OnQKeyUp(context);
         }
         else if (IsPressed_W)
         {
             // Hide W preview
             Hide_W_UI();
+            // Use W Skill
             OnWKeyUp(context);
         }
         else if (IsPressed_E)
         {
             // Hide E preview
             Hide_E_UI();
+            // Use E Skill
             OnEKeyUp(context);
         }
         else if (IsPressed_R)
         {
             // Hide R preview
             Hide_R_UI();
+            // Use R Skill
             OnRKeyUp(context);
         }
     }
@@ -219,9 +228,13 @@ public class CharacterBase: Health
         Free_CameParent.transform.position = gameObject.transform.position;
     }
     // Skill Preview Hide
+    /// <summary>Hide Q skill preview.</summary>
     protected virtual void Hide_Q_UI(){}
+    /// <summary>Hide W skill preview.</summary>
     protected virtual void Hide_W_UI(){}
+    /// <summary>Hide E skill preview.</summary>
     protected virtual void Hide_E_UI(){}
+    /// <summary>Hide R skill preview.</summary>
     protected virtual void Hide_R_UI(){}
     // Passive Skill
     /// <summary>This method relate to Passive Skill.</summary>
@@ -263,9 +276,9 @@ public class CharacterBase: Health
     protected void CharacterMove()
     {
         // Move
-        if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed())
+        // !EventSystem.current.IsPointerOverGameObject() prevent on UI
+        if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed() && !EventSystem.current.IsPointerOverGameObject())
         {
-            Vector3 faceDirection = mouseProject;
             // Spawn Particle -> Spawn in OnRightMouseClick
             // Instantiate(Target,mouseProject + new Vector3(0,1f,0), Quaternion.identity);
             Vector3 moveVelocity = mouseProject - transform.position;
@@ -273,9 +286,28 @@ public class CharacterBase: Health
             agent.velocity = moveVelocity.normalized * agent.speed;
             // Walk goal
             agent.destination = mouseProject;
-            Vector3 direction = mouseProject - transform.position;
-            direction.y = 0;
-            transform.LookAt(transform.position + direction);
+            moveVelocity.y = 0;
+            transform.LookAt(transform.position + moveVelocity);
+        }
+    }
+    // Minimap Method
+    public void Set_Destination(Vector3 position,bool SpawnParticle)
+    {
+        // Spawn Particle
+        if (SpawnParticle) Instantiate(Target,position + new Vector3(0,0.01f,0), Quaternion.identity);
+        Vector3 moveVelocity = position - transform.position;
+        // Rotate Immediately
+        agent.velocity = moveVelocity.normalized * agent.speed;
+        // Walk goal
+        agent.destination = position;
+        moveVelocity.y = 0;
+        transform.LookAt(transform.position + moveVelocity);
+    }
+    public void Set_FreeCamera(Vector3 position)
+    {
+        if (Free_CameParent.activeSelf)
+        {
+            Free_CameParent.transform.position = position;
         }
     }
 }

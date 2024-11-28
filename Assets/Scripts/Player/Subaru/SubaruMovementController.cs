@@ -202,9 +202,8 @@ public class SubaruMovementController : CharacterBase
             }
             isDead = true;
             // Unregister control
-            InputSystem.instance.playerInput.Player.Right_Mouse.started -= OnRightMouseClick;
-            InputSystem.instance.playerInput.Player.Q.started -= OnQKeyDown;
-            InputSystem.instance.playerInput.Player.R.started -= OnRKeyDown;
+            InputSystem.instance.playerInput.Player.Disable();
+
             // UI Update -> Ally Icon
             
             // Dead Time Start
@@ -282,12 +281,14 @@ public class SubaruMovementController : CharacterBase
         agent.isStopped = false;
         animator.Play("Idle");
         // Register control
-        InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
-        InputSystem.instance.playerInput.Player.Q.started += OnQKeyDown;
-        InputSystem.instance.playerInput.Player.R.started += OnRKeyDown;
+        InputSystem.instance.playerInput.Player.Enable();
         isDead = false;
         // Health
         InitialHealth();
         yield return null;
+    }
+    void OnDrawGizmos() 
+    {
+        Gizmos.DrawSphere(agent.destination,1f);
     }
 }
