@@ -97,23 +97,23 @@ public class SubaruMovementController : CharacterBase
         R_UI.SetActive(false);
     }
     /// Q skill
-    public override void OnQKeyDown(InputAction.CallbackContext context)
+    public override void OnQKeyDown()
     {
         if (Time.time - duck_rush_timer < duck_rush_cd) return;
         if (duck_array.Count == 0) return;
-        base.OnQKeyDown(context);
+        base.OnQKeyDown();
         // Show UI preview
         foreach (var duck in duck_array)
         {
             duck.Q_UI_Set(true);
         }
     }
-    public override void OnQKeyUp(InputAction.CallbackContext context)
+    public override void OnQKeyUp()
     {
         if (!IsPressed_Q) return;
         // If count = 0 when key Up 
         if (duck_array.Count == 0) return;
-        base.OnQKeyUp(context);
+        base.OnQKeyUp();
         animator.SetTrigger("Special");
         duck_rush_timer = Time.time;
         
@@ -125,19 +125,19 @@ public class SubaruMovementController : CharacterBase
         }
     }
     /// R skill 
-    public override void OnRKeyDown(InputAction.CallbackContext context)
+    public override void OnRKeyDown()
     {
         if (Time.time - duck_ult_timer < duck_ult_cd) return;
         if (duck_array.Count == 0) return;
-        base.OnRKeyDown(context);
+        base.OnRKeyDown();
         // Show UI preview
         R_UI.SetActive(true);
     }
-    public override void OnRKeyUp(InputAction.CallbackContext context)
+    public override void OnRKeyUp()
     {
         if (!IsPressed_R) return;
         if (duck_array.Count == 0) return;
-        base.OnRKeyUp(context);
+        base.OnRKeyUp();
         animator.SetTrigger("Special");
         duck_ult_timer = Time.time;
         // Delete Duck
@@ -275,6 +275,11 @@ public class SubaruMovementController : CharacterBase
         {
             agent.Warp(GameController.Instance.Team2_transform.position);
         }
+        // Reset Skill Cooldown
+        MianInfoUI.instance.Q.Set_CoolDown(0,duck_rush_cd);
+        // MianInfoUI.instance.W.Set_CoolDown(0,duck_ult_cd);
+        // MianInfoUI.instance.E.Set_CoolDown(0,duck_ult_cd);
+        MianInfoUI.instance.R.Set_CoolDown(0,duck_ult_cd);
         // Screen Control
         DeadScreen.instance.isDead(false);
         // Animation Control
@@ -286,9 +291,5 @@ public class SubaruMovementController : CharacterBase
         // Health
         InitialHealth();
         yield return null;
-    }
-    void OnDrawGizmos() 
-    {
-        Gizmos.DrawSphere(agent.destination,1f);
     }
 }

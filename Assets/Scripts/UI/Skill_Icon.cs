@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class Skill_Icon : MonoBehaviour
 {
     [SerializeField] Image skill_Image;
     [SerializeField] Image skill_Image_Gray;
     [SerializeField] TMP_Text coolDown_TIme;
-
+    [SerializeField] GameObject Level_Up_Button;
     public void Set_Skill_Icon(Sprite Skill_Image)
     {
         skill_Image.sprite = Skill_Image;
@@ -32,7 +33,6 @@ public class Skill_Icon : MonoBehaviour
         {
             // Hide Time Text
             if (coolDown_TIme.gameObject.activeSelf) coolDown_TIme.gameObject.SetActive(false);
-            skill_Image.fillAmount = 1f;
         }
     }
     string Cal_CoolDown_Text(float timer, float CD_time)
@@ -41,5 +41,30 @@ public class Skill_Icon : MonoBehaviour
         float NeedTime = CD_time -Usedtime;
         float DecimalTime = Mathf.Round( NeedTime *10f ) / 10f;
         return DecimalTime.ToString();
+    }
+    // Skill UI Button UnityAction
+    public void Use_Skill(string skill)
+    {
+        switch (skill)
+        {
+            case "Q":
+                GameController.Instance.LocalPlayer.OnQKeyDown();
+                return;
+            case "W":
+                GameController.Instance.LocalPlayer.OnWKeyDown();
+                return;
+            case "E":
+                GameController.Instance.LocalPlayer.OnEKeyDown();
+                return;
+            case "R":
+                GameController.Instance.LocalPlayer.OnRKeyDown();
+                return;
+        }
+    }
+    // Skill Up Button
+    public void Skill_Up(string skill)
+    {
+        GameController.Instance.LocalPlayer.Skill_Up(skill);
+        Level_Up_Button.SetActive(false);
     }
 }

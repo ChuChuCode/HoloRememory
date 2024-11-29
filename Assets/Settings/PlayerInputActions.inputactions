@@ -85,6 +85,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Option",
+                    "type": "Button",
+                    "id": "bc1ea15e-fab8-4c27-9abe-21fb5802feb6",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "StoreKey",
+                    "type": "Button",
+                    "id": "2f1f9f36-298c-416f-ae83-c68602abfb24",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -94,7 +112,7 @@
                     "path": "<Mouse>/position",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "MousePosition",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -105,7 +123,7 @@
                     "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "Q",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -116,7 +134,7 @@
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "W",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -127,7 +145,7 @@
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "E",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -138,7 +156,7 @@
                     "path": "<Keyboard>/r",
                     "interactions": "Hold",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "R",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -149,7 +167,7 @@
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "Right_Mouse",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -160,7 +178,7 @@
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "Left_Mouse",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -171,7 +189,7 @@
                     "path": "<Keyboard>/y",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "Camera_Change",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -182,8 +200,30 @@
                     "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": ";KeyBoard and Mouse",
                     "action": "Camera_Reset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4728e900-d45a-4a5e-9f56-b95d74a8be5a",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Option",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "242d1db6-3858-459e-b2f4-3664271f05ab",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StoreKey",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -353,5 +393,22 @@
             ]
         }
     ],
-    "controlSchemes": []
+    "controlSchemes": [
+        {
+            "name": "KeyBoard and Mouse",
+            "bindingGroup": "KeyBoard and Mouse",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
 }

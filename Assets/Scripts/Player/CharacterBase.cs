@@ -2,6 +2,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
+using System;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class CharacterBase: Health
@@ -14,7 +15,13 @@ public class CharacterBase: Health
     [SerializeField] protected bool IsPressed_W = false;
     [SerializeField] protected bool IsPressed_E = false;
     [SerializeField] protected bool IsPressed_R = false;
-
+    [Header("Character Level")]
+    [SerializeField] protected int Character_Level = 1;
+    [Header("Skill Level")]
+    [SerializeField] protected int Q_Level = 0;
+    [SerializeField] protected int W_Level = 0;
+    [SerializeField] protected int E_Level = 0;
+    [SerializeField] protected int R_Level = 0;
     [Header("Camera")]
     [Tooltip("Fix Camera on Character")]
     [SerializeField] protected GameObject Fixed_Cam;
@@ -49,12 +56,12 @@ public class CharacterBase: Health
         Free_CameParent.SetActive(true);
 
         // Right Mouse
-        InputSystem.instance.playerInput.Player.Right_Mouse.started += OnRightMouseClick;
+        InputSystem.instance.playerInput.Player.Right_Mouse.started += _ => OnRightMouseClick();
         //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
 
         // Left Mouse
-        InputSystem.instance.playerInput.Player.Left_Mouse.started += OnLeftMouseClick;
+        InputSystem.instance.playerInput.Player.Left_Mouse.started += _ => OnLeftMouseClick();
 
         // Mous Position
         //playerInput.Player.MousePosition.started += OnMousePositionInput;
@@ -62,25 +69,29 @@ public class CharacterBase: Health
         //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
 
         // Q skill
-        InputSystem.instance.playerInput.Player.Q.started += OnQKeyDown;
-        InputSystem.instance.playerInput.Player.Q.canceled += OnQKeyUp;
+        InputSystem.instance.playerInput.Player.Q.started += _ => OnQKeyDown();
+        InputSystem.instance.playerInput.Player.Q.canceled += _ => OnQKeyUp();
         
         // W skill
-        InputSystem.instance.playerInput.Player.W.started += OnWKeyDown;
-        InputSystem.instance.playerInput.Player.W.canceled += OnWKeyUp;
+        InputSystem.instance.playerInput.Player.W.started += _ => OnWKeyDown();
+        InputSystem.instance.playerInput.Player.W.canceled += _ => OnWKeyUp();
         
         // E skill
-        InputSystem.instance.playerInput.Player.E.started += OnEKeyDown;
-        InputSystem.instance.playerInput.Player.E.canceled += OnEKeyUp;
+        InputSystem.instance.playerInput.Player.E.started += _ => OnEKeyDown();
+        InputSystem.instance.playerInput.Player.E.canceled += _ => OnEKeyUp();
 
         // R skill
-        InputSystem.instance.playerInput.Player.R.started += OnRKeyDown;
-        InputSystem.instance.playerInput.Player.R.canceled += OnRKeyUp;
+        InputSystem.instance.playerInput.Player.R.started += _ => OnRKeyDown();
+        InputSystem.instance.playerInput.Player.R.canceled += _ => OnRKeyUp();
 
-        InputSystem.instance.playerInput.Player.Camera_Change.started += OnYKeyClick;
+        // Camera Change
+        InputSystem.instance.playerInput.Player.Camera_Change.started += _ => OnYKeyClick();
 
-        InputSystem.instance.playerInput.Player.Camera_Reset.started += OnSpaceKeyClick;
-        InputSystem.instance.playerInput.Player.Camera_Reset.performed += OnSpaceKeyClick;
+        // Camera Reset
+        InputSystem.instance.playerInput.Player.Camera_Reset.started += _ => OnSpaceKeyClick();
+
+        // Option
+        InputSystem.instance.playerInput.Player.Option.started += _ => OnEscKeyClick();
     }
     protected virtual void Update()
     {
@@ -90,7 +101,7 @@ public class CharacterBase: Health
         Passive();
     }
     /// <summary>This is invoked when Mouse Right Click Down.</summary>
-    public virtual void OnRightMouseClick(InputAction.CallbackContext context)
+    public virtual void OnRightMouseClick()
     {
         // Check skill is Hovering
         if (IsPressed_Q)
@@ -98,7 +109,6 @@ public class CharacterBase: Health
             IsPressed_Q = false;
             // Hide Q preview
             Hide_Q_UI();
-            print("Cancle");
         }
         else if (IsPressed_W)
         {
@@ -126,7 +136,7 @@ public class CharacterBase: Health
         }
     }
     /// <summary>This is invoked when Mouse Left Click Down.</summary>
-    public virtual void OnLeftMouseClick(InputAction.CallbackContext context)
+    public virtual void OnLeftMouseClick()
     {
         // Check skill is Previewing
         if (IsPressed_Q)
@@ -134,77 +144,77 @@ public class CharacterBase: Health
             // Hide Q preview
             Hide_Q_UI();
             // Use Q Skill
-            OnQKeyUp(context);
+            OnQKeyUp();
         }
         else if (IsPressed_W)
         {
             // Hide W preview
             Hide_W_UI();
             // Use W Skill
-            OnWKeyUp(context);
+            OnWKeyUp();
         }
         else if (IsPressed_E)
         {
             // Hide E preview
             Hide_E_UI();
             // Use E Skill
-            OnEKeyUp(context);
+            OnEKeyUp();
         }
         else if (IsPressed_R)
         {
             // Hide R preview
             Hide_R_UI();
             // Use R Skill
-            OnRKeyUp(context);
+            OnRKeyUp();
         }
     }
     // Q skill
     /// <summary>This is invoked when QKey Click Down.</summary>
-    public virtual void OnQKeyDown(InputAction.CallbackContext context)
+    public virtual void OnQKeyDown()
     {
         IsPressed_Q = true;
     }
     /// <summary>This is invoked when QKey Click Up.</summary>
-    public virtual void OnQKeyUp(InputAction.CallbackContext context)
+    public virtual void OnQKeyUp()
     {
         IsPressed_Q = false;
     }
     // W skill
     /// <summary>This is invoked when WKey Click Down.</summary>
-    public virtual void OnWKeyDown(InputAction.CallbackContext context)
+    public virtual void OnWKeyDown()
     {
         IsPressed_W = true;
     }
     /// <summary>This is invoked when WKey Click Up.</summary>
-    public virtual void OnWKeyUp(InputAction.CallbackContext context)
+    public virtual void OnWKeyUp()
     {
         IsPressed_W = false;
     }
     // E skill
     /// <summary>This is invoked when EKey Click Down.</summary>
-    public virtual void OnEKeyDown(InputAction.CallbackContext context)
+    public virtual void OnEKeyDown()
     {
         IsPressed_E = true;
     }
     /// <summary>This is invoked when EKey Click Up.</summary>
-    public virtual void OnEKeyUp(InputAction.CallbackContext context)
+    public virtual void OnEKeyUp()
     {
         IsPressed_E = false;
     }
     // R skill
     /// <summary>This is invoked when RKey Click Down.</summary>
-    public virtual void OnRKeyDown(InputAction.CallbackContext context)
+    public virtual void OnRKeyDown()
     {
         IsPressed_R = true;
     }
     /// <summary>This is invoked when RKey Click Up.</summary>
-    public virtual void OnRKeyUp(InputAction.CallbackContext context)
+    public virtual void OnRKeyUp()
     {
         IsPressed_R = false;
     }
     // Camera Change
     /// <summary>This is invoked when YKey Click Down.</summary>
-    public virtual void OnYKeyClick(InputAction.CallbackContext context)
+    public virtual void OnYKeyClick()
     {
         // Fixed cam active -> Fixed cam deactive and free cam active
         if (Fixed_Cam.activeSelf)
@@ -222,10 +232,23 @@ public class CharacterBase: Health
     } 
     // Camera Reset
     /// <summary>This is invoked when SpaceKey Click Down.</summary>
-    public virtual void OnSpaceKeyClick(InputAction.CallbackContext context)
+    public virtual void OnSpaceKeyClick()
     {
         if (!Free_CameParent.activeSelf) return;
         Free_CameParent.transform.position = gameObject.transform.position;
+    }
+    public virtual void OnEscKeyClick()
+    {
+        // Show/Hide UI
+        GameObject OptionUI = OptionPanel.Instance.gameObject;
+        if (OptionUI.activeSelf)
+        {
+            OptionPanel.Instance.gameObject.SetActive(false);
+        }
+        else
+        {
+            OptionPanel.Instance.gameObject.SetActive(true);
+        }
     }
     // Skill Preview Hide
     /// <summary>Hide Q skill preview.</summary>
@@ -240,9 +263,9 @@ public class CharacterBase: Health
     /// <summary>This method relate to Passive Skill.</summary>
     public virtual void Passive(){}
     /// <summary>This is invoked when Mouse Move. Now use "Get_Project_Mouse" to Update Project Point.</summary>
-    public virtual void OnMousePositionInput(InputAction.CallbackContext context)
+    public virtual void OnMousePositionInput()
     {
-        Vector3 mousePos = context.ReadValue<Vector2>();
+        Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         if (Physics.Raycast(ray, out hit))
@@ -276,7 +299,7 @@ public class CharacterBase: Health
     protected void CharacterMove()
     {
         // Move
-        // !EventSystem.current.IsPointerOverGameObject() prevent on UI
+        // !EventSystem.current.IsPointerOverGameObject() to prevent on UI hover
         if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed() && !EventSystem.current.IsPointerOverGameObject())
         {
             // Spawn Particle -> Spawn in OnRightMouseClick
@@ -290,7 +313,8 @@ public class CharacterBase: Health
             transform.LookAt(transform.position + moveVelocity);
         }
     }
-    // Minimap Method
+
+    /// Minimap Method
     public void Set_Destination(Vector3 position,bool SpawnParticle)
     {
         // Spawn Particle
@@ -308,6 +332,24 @@ public class CharacterBase: Health
         if (Free_CameParent.activeSelf)
         {
             Free_CameParent.transform.position = position;
+        }
+    }
+    public void Skill_Up(string skill)
+    {
+        switch (skill)
+        {
+            case "Q":
+                Q_Level += 1;
+                return;
+            case "W":
+                W_Level += 1;
+                return;
+            case "E":
+                E_Level += 1;
+                return;
+            case "R":
+                R_Level += 1;
+                return;
         }
     }
 }

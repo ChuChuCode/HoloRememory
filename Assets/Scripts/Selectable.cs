@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Selectable : MonoBehaviour
 {
@@ -62,7 +61,7 @@ public class Selectable : MonoBehaviour
             }
         }
         // Left Click
-        if (InputSystem.instance.playerInput.Player.Left_Mouse.WasPressedThisFrame())
+        if (InputSystem.instance.playerInput.Player.Left_Mouse.WasPressedThisFrame() && !EventSystem.current.IsPointerOverGameObject())
         {
             // if is hgihlight and click
             if (highlight != null)

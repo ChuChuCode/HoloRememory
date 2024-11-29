@@ -107,6 +107,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Option"",
+                    ""type"": ""Button"",
+                    ""id"": ""bc1ea15e-fab8-4c27-9abe-21fb5802feb6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""StoreKey"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f1f9f36-298c-416f-ae83-c68602abfb24"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -116,7 +134,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/position"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""MousePosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -127,7 +145,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Q"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -138,7 +156,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""W"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -149,7 +167,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""E"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -160,7 +178,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/r"",
                     ""interactions"": ""Hold"",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""R"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -171,7 +189,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Right_Mouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -182,7 +200,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Left_Mouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -193,7 +211,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/y"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Camera_Change"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -204,8 +222,30 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Camera_Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4728e900-d45a-4a5e-9f56-b95d74a8be5a"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Option"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""242d1db6-3858-459e-b2f4-3664271f05ab"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""StoreKey"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -375,7 +415,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ]
         }
     ],
-    ""controlSchemes"": []
+    ""controlSchemes"": [
+        {
+            ""name"": ""KeyBoard and Mouse"",
+            ""bindingGroup"": ""KeyBoard and Mouse"",
+            ""devices"": [
+                {
+                    ""devicePath"": ""<Keyboard>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                },
+                {
+                    ""devicePath"": ""<Mouse>"",
+                    ""isOptional"": false,
+                    ""isOR"": false
+                }
+            ]
+        }
+    ]
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
@@ -388,6 +445,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Left_Mouse = m_Player.FindAction("Left_Mouse", throwIfNotFound: true);
         m_Player_Camera_Change = m_Player.FindAction("Camera_Change", throwIfNotFound: true);
         m_Player_Camera_Reset = m_Player.FindAction("Camera_Reset", throwIfNotFound: true);
+        m_Player_Option = m_Player.FindAction("Option", throwIfNotFound: true);
+        m_Player_StoreKey = m_Player.FindAction("StoreKey", throwIfNotFound: true);
         // Player_old
         m_Player_old = asset.FindActionMap("Player_old", throwIfNotFound: true);
         m_Player_old_Move = m_Player_old.FindAction("Move", throwIfNotFound: true);
@@ -471,6 +530,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Left_Mouse;
     private readonly InputAction m_Player_Camera_Change;
     private readonly InputAction m_Player_Camera_Reset;
+    private readonly InputAction m_Player_Option;
+    private readonly InputAction m_Player_StoreKey;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -484,6 +545,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Left_Mouse => m_Wrapper.m_Player_Left_Mouse;
         public InputAction @Camera_Change => m_Wrapper.m_Player_Camera_Change;
         public InputAction @Camera_Reset => m_Wrapper.m_Player_Camera_Reset;
+        public InputAction @Option => m_Wrapper.m_Player_Option;
+        public InputAction @StoreKey => m_Wrapper.m_Player_StoreKey;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -520,6 +583,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Camera_Reset.started += instance.OnCamera_Reset;
             @Camera_Reset.performed += instance.OnCamera_Reset;
             @Camera_Reset.canceled += instance.OnCamera_Reset;
+            @Option.started += instance.OnOption;
+            @Option.performed += instance.OnOption;
+            @Option.canceled += instance.OnOption;
+            @StoreKey.started += instance.OnStoreKey;
+            @StoreKey.performed += instance.OnStoreKey;
+            @StoreKey.canceled += instance.OnStoreKey;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -551,6 +620,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Camera_Reset.started -= instance.OnCamera_Reset;
             @Camera_Reset.performed -= instance.OnCamera_Reset;
             @Camera_Reset.canceled -= instance.OnCamera_Reset;
+            @Option.started -= instance.OnOption;
+            @Option.performed -= instance.OnOption;
+            @Option.canceled -= instance.OnOption;
+            @StoreKey.started -= instance.OnStoreKey;
+            @StoreKey.performed -= instance.OnStoreKey;
+            @StoreKey.canceled -= instance.OnStoreKey;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -646,6 +721,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public Player_oldActions @Player_old => new Player_oldActions(this);
+    private int m_KeyBoardandMouseSchemeIndex = -1;
+    public InputControlScheme KeyBoardandMouseScheme
+    {
+        get
+        {
+            if (m_KeyBoardandMouseSchemeIndex == -1) m_KeyBoardandMouseSchemeIndex = asset.FindControlSchemeIndex("KeyBoard and Mouse");
+            return asset.controlSchemes[m_KeyBoardandMouseSchemeIndex];
+        }
+    }
     public interface IPlayerActions
     {
         void OnMousePosition(InputAction.CallbackContext context);
@@ -657,6 +741,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnLeft_Mouse(InputAction.CallbackContext context);
         void OnCamera_Change(InputAction.CallbackContext context);
         void OnCamera_Reset(InputAction.CallbackContext context);
+        void OnOption(InputAction.CallbackContext context);
+        void OnStoreKey(InputAction.CallbackContext context);
     }
     public interface IPlayer_oldActions
     {

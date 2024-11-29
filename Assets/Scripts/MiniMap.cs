@@ -15,13 +15,7 @@ public class MiniMap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,IPo
     void Awake()
     {
         textureRectTransform = GetComponent<RectTransform>(); //Get the RectTransform
-    }  
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(position,3f);
     }
-
     public void OnPointerDown(PointerEventData eventData)
     {
         //I get the point of the RawImage where I click
@@ -30,8 +24,6 @@ public class MiniMap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,IPo
 
         //My RawImage is 700x700 and the click coordinates are in range (-350,350) so I transform it to (0,700) to then normalize
         localClick.x = textureRectTransform.rect.width - (localClick.x * -1);
-        print("x: " + localClick.x);
-        print("y: " + localClick.y);
 
         //I normalize the click coordinates so I get the viewport point to cast a Ray
         Vector2 viewportClick = new Vector2(localClick.x / textureRectTransform.rect.width, localClick.y / textureRectTransform.rect.height);
