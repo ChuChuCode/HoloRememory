@@ -18,33 +18,28 @@ public class FreeCamera : MonoBehaviour
     void Update()
     {
         Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
-        print(mousePos);
         Vector3 position = transform.position;
         // Up
         if (mousePos.y >= Screen.height - screenSizeThickness)
         {
-            print("up");
             position.x += camSpeed * Time.deltaTime * Mathf.Cos(angle * Mathf.Deg2Rad);
             position.z -= camSpeed * Time.deltaTime * Mathf.Sin(angle * Mathf.Deg2Rad);
         }
         // Down
         if (mousePos.y <= screenSizeThickness)
         {
-            print("down");
             position.x -= camSpeed * Time.deltaTime * Mathf.Cos(angle * Mathf.Deg2Rad);
             position.z += camSpeed * Time.deltaTime * Mathf.Sin(angle * Mathf.Deg2Rad);
         }
         // Right
         if (mousePos.x >= Screen.width - screenSizeThickness)
         {
-            print("right");
             position.x -= camSpeed * Time.deltaTime * Mathf.Sin(angle * Mathf.Deg2Rad);
             position.z -= camSpeed * Time.deltaTime * Mathf.Cos(angle * Mathf.Deg2Rad);
         }
         // Left
         if (mousePos.x <= screenSizeThickness)
         {
-            print("left");
             position.x += camSpeed * Time.deltaTime * Mathf.Sin(angle * Mathf.Deg2Rad);
             position.z += camSpeed * Time.deltaTime * Mathf.Cos(angle * Mathf.Deg2Rad);
         }

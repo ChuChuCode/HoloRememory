@@ -2,11 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.AI;
 using Mirror;
-using UnityEditor;
-using Unity.VisualScripting;
 
 public class SubaruMovementController : CharacterBase
 {
@@ -41,9 +38,6 @@ public class SubaruMovementController : CharacterBase
     protected override void Start()
     {
         base.Start();
-        
-        var tex = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/cursor_g .png");
-        Cursor.SetCursor(tex,new Vector2(0.5f,0.5f), CursorMode.ForceSoftware );
     }
     public override void Passive()
     {

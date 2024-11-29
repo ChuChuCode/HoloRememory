@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InputSystem : MonoBehaviour
 {
@@ -13,5 +13,11 @@ public class InputSystem : MonoBehaviour
         DontDestroyOnLoad(this);
         playerInput = new PlayerInputActions();
         if (instance == null) instance = this;
+    }
+    void Start()
+    {
+        #if UNITY_EDITOR
+            Cursor.SetCursor(PlayerSettings.defaultCursor, Vector2.zero, CursorMode.ForceSoftware);
+        #endif
     }
 }
