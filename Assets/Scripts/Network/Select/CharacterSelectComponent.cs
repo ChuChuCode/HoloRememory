@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+namespace HR.Network.Select{
 [CreateAssetMenu(fileName = "CharacterSelectComponent", menuName = "SelectMenu/CharacterComponent", order = 1)]
 public class CharacterSelectComponent : ScriptableObject
 {
@@ -15,4 +14,6 @@ public class CharacterSelectComponent : ScriptableObject
     public Sprite R_skill_Image;
     public AudioClip SelectAudio;
     public GameObject CharacterModel;
+}
+
 }

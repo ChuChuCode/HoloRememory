@@ -1,4 +1,5 @@
 using Mirror;
+namespace HR.Object{
 public class Health : NetworkBehaviour
 {
     [SyncVar] public int maxHealth ;
@@ -14,4 +15,6 @@ public class Health : NetworkBehaviour
     }
     public virtual void Death(){}
     
+}
+
 }

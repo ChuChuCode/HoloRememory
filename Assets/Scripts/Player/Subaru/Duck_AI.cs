@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using HR.UI;
+using HR.Object.Player;
 
+namespace HR.Object.Minion{
 public class Duck_AI : Health
 {
     enum State{
@@ -322,4 +325,6 @@ public class Duck_AI : Health
     {
         Q_UI.SetActive(isShow);
     }
+}
+
 }

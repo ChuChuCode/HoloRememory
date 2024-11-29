@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace HR.Object.Player{
 public class FreeCamera : MonoBehaviour
 {
     [SerializeField] GameObject parent;
@@ -45,4 +46,6 @@ public class FreeCamera : MonoBehaviour
         }
         transform.position = position;
     }
+}
+
 }

@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using HR.Network.Game;
 
+namespace HR.UI{
 public class MiniMap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,IPointerMoveHandler
 {
     //Camera that renders to the texture
@@ -101,4 +101,6 @@ public class MiniMap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,IPo
             }
         }
     }
+}
+
 }

@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+namespace HR.Network.Select{
 public class CharacterSelectItem : MonoBehaviour
 {
     public Image characterImage;
@@ -34,4 +34,6 @@ public class CharacterSelectItem : MonoBehaviour
         audioSource.clip = audioClip;
         audioSource.Play();
     }
+}
+
 }

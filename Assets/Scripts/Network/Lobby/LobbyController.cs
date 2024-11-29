@@ -6,6 +6,7 @@ using TMPro;
 using Steamworks;
 using UnityEngine.UI;
 
+namespace HR.Network.Lobby{
 public class LobbyController : MonoBehaviour
 {
     public bool AllReady;
@@ -299,4 +300,6 @@ public class LobbyController : MonoBehaviour
     {
         LocalPlayerController.CanTeamJoin(TeamID);
     }
+}
+
 }

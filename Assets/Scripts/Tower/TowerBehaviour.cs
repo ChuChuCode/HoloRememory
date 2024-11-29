@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
+namespace HR.Object.Map{
 public class TowerBehaviour : Health
 {
     [Header("Gizmos")]
@@ -121,4 +119,6 @@ public class TowerBehaviour : Health
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(transform.position, attack_radius);
     }
+}
+
 }

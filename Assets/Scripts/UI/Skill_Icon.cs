@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
+using HR.Network.Game;
 
+namespace HR.UI{
 public class Skill_Icon : MonoBehaviour
 {
     [SerializeField] Image skill_Image;
@@ -67,4 +68,6 @@ public class Skill_Icon : MonoBehaviour
         GameController.Instance.LocalPlayer.Skill_Up(skill);
         Level_Up_Button.SetActive(false);
     }
+}
+
 }

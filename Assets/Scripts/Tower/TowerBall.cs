@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+namespace HR.Object.Map{
 public class TowerBall : MonoBehaviour
 {
     public Transform Target;
@@ -32,4 +31,6 @@ public class TowerBall : MonoBehaviour
             Destroy(gameObject);
         }
     }
+}
+
 }

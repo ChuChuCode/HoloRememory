@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
+namespace HR.GUI{
 public class SetTeamInspector : EditorWindow
 {
     [MenuItem("Window/Set Team")]
@@ -38,4 +39,6 @@ public class SetTeamInspector : EditorWindow
             }
         GUILayout.EndHorizontal();
     }
+}
+
 }

@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using Steamworks;
 
+namespace HR.Network.Lobby{
 public class Network_LobbyPlayer : MonoBehaviour
 {
     public string PlayerName;
@@ -85,4 +86,6 @@ public class Network_LobbyPlayer : MonoBehaviour
         AvatarRecieved = true;
         return texture;
     }
+}
+
 }

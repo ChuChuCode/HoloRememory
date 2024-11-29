@@ -2,8 +2,10 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
-using System;
+using HR.UI;
+using HR.Network.Game;
 
+namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
 public class CharacterBase: Health
 {
@@ -33,7 +35,16 @@ public class CharacterBase: Health
     protected Vector3 mouseProject;
     protected virtual void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
+        // Outline NavMeshAgent Check
+        if (!TryGetComponent<NavMeshAgent>(out agent))
+        {
+            Debug.LogError("CharacterBase must have a NavMeshAgent Component.",agent);
+        }
+        // Outline Component Check
+        if (!TryGetComponent<Outline>(out Outline _))
+        {
+            Debug.LogError("CharacterBase must have a Outline Component.");
+        }
         // Health Initial
         InitialHealth();
     }
@@ -352,4 +363,6 @@ public class CharacterBase: Health
                 return;
         }
     }
+}
+
 }

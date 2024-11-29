@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+namespace HR.Object.Player{
 public class Ability_Indicator : MonoBehaviour
 {
     Vector3 mouseProject;
@@ -20,4 +21,6 @@ public class Ability_Indicator : MonoBehaviour
         // mouseProject.y = transform.position.y;
         transform.LookAt(mouseProject);
     }
+}
+
 }

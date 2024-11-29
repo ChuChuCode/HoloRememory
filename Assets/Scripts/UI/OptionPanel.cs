@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace HR.UI{
 public class OptionPanel : MonoBehaviour
 {
     public static OptionPanel Instance;
@@ -13,4 +14,6 @@ public class OptionPanel : MonoBehaviour
             Instance = this;
         }
     }
+}
+
 }

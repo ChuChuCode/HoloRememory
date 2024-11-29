@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using HR.Object;
+using HR.Object.Minion;
 
 public class SubaruMovementController_old : Health
 {

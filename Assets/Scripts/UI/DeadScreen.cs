@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
-
+namespace HR.UI{
 public class DeadScreen : MonoBehaviour
 {
     public static DeadScreen instance ;
@@ -25,4 +25,5 @@ public class DeadScreen : MonoBehaviour
     {
         colorAdjustments.saturation.value = isDead ? -100f : 0;
     }
+}
 }

@@ -4,8 +4,11 @@ using Mirror;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 using Steamworks;
-using System.Linq;
+using HR.UI;
+using HR.Network.Select;
+using HR.Network.Game;
 
+namespace HR.Network{
 public class Network_Manager : NetworkManager
 {
     [Header("Lobby")]
@@ -93,4 +96,6 @@ public class Network_Manager : NetworkManager
         print("Change Scene");
         ServerChangeScene(SceneName);
     }
+}
+
 }

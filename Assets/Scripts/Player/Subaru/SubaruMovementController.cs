@@ -4,7 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Mirror;
+using HR.UI;
+using HR.Network.Game;
+using HR.Object.Minion;
 
+namespace HR.Object.Player{
 public class SubaruMovementController : CharacterBase
 {
     public List<Duck_AI> duck_array = new List<Duck_AI>();
@@ -286,4 +290,6 @@ public class SubaruMovementController : CharacterBase
         InitialHealth();
         yield return null;
     }
+}
+
 }

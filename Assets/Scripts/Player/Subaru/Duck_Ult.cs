@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using HR.Object.Player;
 
 public class Duck_Ult : MonoBehaviour
 {

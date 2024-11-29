@@ -5,7 +5,10 @@ using Mirror;
 using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using HR.Network.Lobby;
+using HR.Network.Select;
 
+namespace HR.Network{
 public class PlayerObject : NetworkBehaviour
 {
      // PlayerData
@@ -171,4 +174,6 @@ public class PlayerObject : NetworkBehaviour
             SelectController.Instance.UpdatePlayerUI();
         }
     }
+}
+
 }

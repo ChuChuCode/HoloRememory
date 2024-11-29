@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using HR.Object;
 
+namespace HR.UI{
 public class Selectable : MonoBehaviour
 {
     public static Selectable instance;
@@ -118,4 +120,6 @@ public class Selectable : MonoBehaviour
             ob.gameObject.GetComponent<Outline>().OutlineColor = Color.red;
         }
     }
+}
+
 }

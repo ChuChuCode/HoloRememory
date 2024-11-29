@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Steamworks;
 using System.Linq;
 
+namespace HR.Network.Select{
 public class SelectController : MonoBehaviour
 {
     public static SelectController Instance;
@@ -325,4 +326,6 @@ public class SelectController : MonoBehaviour
         yield return new WaitForSeconds(1);
         CheckIfAllReady();
     }
+}
+
 }

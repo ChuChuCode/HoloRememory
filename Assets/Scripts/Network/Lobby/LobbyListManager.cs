@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
 
+namespace HR.Network.Lobby{
 public class LobbyListManager : MonoBehaviour
 {
     public static LobbyListManager instance;
@@ -60,4 +61,6 @@ public class LobbyListManager : MonoBehaviour
         lobbyMenu.SetActive(false);
         
     }
+}
+
 }

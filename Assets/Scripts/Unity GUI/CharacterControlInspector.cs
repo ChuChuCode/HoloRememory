@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using HR.Object.Player;
 
+namespace HR.GUI{
 [CustomEditor(typeof(SubaruMovementController))]
 public class CharacterControlInspector : Editor
 {
@@ -74,4 +74,6 @@ public class CharacterControlInspector : Editor
         GUILayout.EndHorizontal();
         base.OnInspectorGUI();
     }
+}
+
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace HR.UI{
 public class ChangeMiniMapLayer : MonoBehaviour
 {
     bool isChange = false;
@@ -12,4 +13,6 @@ public class ChangeMiniMapLayer : MonoBehaviour
             gameObject.layer = LayerMask.NameToLayer("MiniMap");
         }
     }
+}
+
 }

@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using HR.Object.Map;
 
+namespace HR.GUI{
 [CustomEditor(typeof(TowerBehaviour))]
 public class TowerOnInspector : Editor
 {
@@ -16,4 +16,6 @@ public class TowerOnInspector : Editor
         }
         base.OnInspectorGUI();
     }
+}
+
 }

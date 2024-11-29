@@ -5,7 +5,9 @@ using Mirror;
 using Steamworks;
 using System;
 using UnityEngine.UI;
+using HR.Network.Lobby;
 
+namespace HR.Network{
 public class SteamLobby : MonoBehaviour
 {
     public static SteamLobby Instance;
@@ -121,4 +123,6 @@ public class SteamLobby : MonoBehaviour
     {
         LobbyListManager.instance.DisplayLobbies(lobbyIDs,callback);
     }
+}
+
 }

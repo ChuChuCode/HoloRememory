@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
+namespace HR.Object.Player{
 public class CameraShake : MonoBehaviour
 {
     public static CameraShake Instance {get; private set;}
@@ -35,4 +36,6 @@ public class CameraShake : MonoBehaviour
             }
         }
     }
+}
+
 }

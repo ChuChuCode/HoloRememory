@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+namespace HR.UI{
 public class Bar : MonoBehaviour
 {
     [SerializeField] Slider slider;
@@ -32,4 +32,5 @@ public class Bar : MonoBehaviour
     {
         text.text = slider.value.ToString() + "/" + slider.maxValue.ToString();
     }
+}
 }

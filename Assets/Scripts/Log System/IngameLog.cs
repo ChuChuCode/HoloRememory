@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
+namespace HR.Log {
 public class IngameLog : MonoBehaviour
 {
     uint qsize = 15;  // number of messages to keep
@@ -33,4 +32,6 @@ public class IngameLog : MonoBehaviour
         GUILayout.Label("\n" + string.Join("\n", myLogQueue.ToArray()));
         GUILayout.EndArea();
     }
+}
+
 }

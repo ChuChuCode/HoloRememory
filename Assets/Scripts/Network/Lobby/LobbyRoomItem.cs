@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Steamworks;
 using TMPro;
 
+namespace HR.Network.Lobby{
 public class LobbyRoomItem : MonoBehaviour
 {
     [Header("Data")]
@@ -29,3 +29,4 @@ public class LobbyRoomItem : MonoBehaviour
     }
 }
 
+}

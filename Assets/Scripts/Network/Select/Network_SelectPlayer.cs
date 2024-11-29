@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+
+namespace HR.Network.Select{
 public class Network_SelectPlayer : MonoBehaviour
 {
     public string PlayerName;
@@ -25,4 +25,6 @@ public class Network_SelectPlayer : MonoBehaviour
     {
         PlayerIcon.sprite = sprite;
     }
+}
+
 }

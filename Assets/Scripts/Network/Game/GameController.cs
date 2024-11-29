@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+using HR.Object.Player;
+
+namespace HR.Network.Game{
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
@@ -40,4 +41,6 @@ public class GameController : MonoBehaviour
     {
         
     }
+}
+
 }

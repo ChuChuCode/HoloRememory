@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using HR.Object;
 
+namespace HR.UI{
 public class MianInfoUI : MonoBehaviour
 {
     public static MianInfoUI instance;
@@ -25,4 +27,5 @@ public class MianInfoUI : MonoBehaviour
         HP.SetMaxValue(health.maxHealth);
         HP.SetValue(health.currentHealth);
     }
+}
 }

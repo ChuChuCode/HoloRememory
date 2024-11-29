@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace HR.UI{
 public class TransitionScene : MonoBehaviour
 {
     public static TransitionScene Instance;
@@ -24,4 +25,6 @@ public class TransitionScene : MonoBehaviour
         yield return new WaitForSeconds(time);
         animator.SetBool("isFade",false);
     }
+}
+
 }
