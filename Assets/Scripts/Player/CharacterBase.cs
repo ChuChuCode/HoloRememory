@@ -159,6 +159,7 @@ public class CharacterBase: Health
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
             RaycastHit hit;
+            
             if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
             {
                 // If Layer is Land -> Spawn Particle
@@ -372,7 +373,6 @@ public class CharacterBase: Health
         if (Target != null)
         {
             agent.destination = Target.position;
-            // transform.LookAt(transform.position + new Vector3(Target.position.x,0,Target.position.z));
         }
     }
     protected void Attack()
@@ -384,7 +384,9 @@ public class CharacterBase: Health
         {
             agent.isStopped = true;
             // Face to Target
-            transform.LookAt(transform.position + new Vector3(Target.position.x,0,Target.position.z));
+            Vector3 moveVelocity = Target.position - transform.position;
+            moveVelocity.y = 0;
+            transform.LookAt(transform.position + moveVelocity );
             // Normal Attack here
             NormalAttack();
         }

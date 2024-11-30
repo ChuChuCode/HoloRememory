@@ -17,7 +17,7 @@ public class SubaruMovementController : CharacterBase
     [SerializeField] Duck_AI Duck_prefab;
     [SerializeField] Duck_Ult Duck_Ult;
     [SerializeField] Animator animator;
-
+    [SerializeField] SubaruAnimationMethod AnimationMethod;
     int isRunHash;
 
     [Header("Skill Timer")]
@@ -241,11 +241,13 @@ public class SubaruMovementController : CharacterBase
     }
     protected override void NormalAttack()
     {
-        
+        AnimationMethod.Target = Target;
+        animator.Play("Attack");
     }
     public override void Death()
     {
         float dead_start_time = Time.time;
+        Target = null;
         StartCoroutine(nameof(DeadCountDown),dead_start_time);
     }
     IEnumerator DeadCountDown(float dead_start_time)

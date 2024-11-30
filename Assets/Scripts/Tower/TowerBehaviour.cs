@@ -1,3 +1,4 @@
+using HR.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -37,7 +38,9 @@ public class TowerBehaviour : Health
 
     public override void GetDamage(int damage)
     {
-        
+        base.GetDamage(damage);
+        // Update UI
+        Selectable.instance.updateInfo(this);
     }
 
     public override void InitialHealth()

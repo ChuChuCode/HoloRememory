@@ -327,6 +327,7 @@ MonoBehaviour:
   - {fileID: 8311601850566683335, guid: deded17e70c474193b2d338eb6a219c1, type: 3}
   - {fileID: 5571838552065712847, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}
   - {fileID: 9093653501188938057, guid: 38a025b286fae6040813c1c9e2629f65, type: 3}
+  - {fileID: 3261997175043891804, guid: 93a4640fe1ff5764db4677f954300fc7, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -2458,6 +2459,7 @@ GameObject:
   - component: {fileID: 2071532153}
   - component: {fileID: 2071532152}
   - component: {fileID: 2071532151}
+  - component: {fileID: 2071532154}
   m_Layer: 0
   m_Name: Network Manager Kcp
   m_TagString: Untagged
@@ -2573,6 +2575,51 @@ MonoBehaviour:
   SelectPlayer: {fileID: 0}
   characterSelectComponentsList: []
   Player_List: []
+--- !u!114 &2071532154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2071532147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8aab4c8111b7c411b9b92cf3dbc5bd4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  headlessStartMode: 0
+  editorAutoStart: 0
+  sendRate: 60
+  offlineScene: 
+  onlineScene: 
+  offlineSceneLoadDelay: 0
+  transport: {fileID: 0}
+  networkAddress: localhost
+  maxConnections: 100
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 60
+  authenticator: {fileID: 0}
+  playerPrefab: {fileID: 0}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 0
+  spawnPrefabs: []
+  exceptionsDisconnect: 1
+  snapshotSettings:
+    bufferTimeMultiplier: 2
+    bufferLimit: 32
+    catchupNegativeThreshold: -1
+    catchupPositiveThreshold: 1
+    catchupSpeed: 0.019999999552965164
+    slowdownSpeed: 0.03999999910593033
+    driftEmaDuration: 1
+    dynamicAdjustment: 1
+    dynamicAdjustmentTolerance: 1
+    deliveryTimeEmaDuration: 2
+  evaluationMethod: 0
+  evaluationInterval: 3
+  timeInterpolationGui: 0
 --- !u!1 &2122783667
 GameObject:
   m_ObjectHideFlags: 0
