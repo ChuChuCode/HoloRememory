@@ -4,6 +4,9 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using HR.UI;
 using HR.Network.Game;
+using Unity.VisualScripting;
+using UnityEditor;
+using System.Linq;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
@@ -31,8 +34,14 @@ public class CharacterBase: Health
     [SerializeField] protected GameObject Free_CameParent;
     [Header("Move Target")]
     [Tooltip("Particle that show move target")]
-    [SerializeField] protected ParticleSystem Target;
+    [SerializeField] protected ParticleSystem Target_Particle;
     protected Vector3 mouseProject;
+    [SerializeField] protected LayerMask MouseTargetLayer;
+
+    [SerializeField] protected Transform Target;
+    protected Ray ray;
+    [Header("Attack")]
+    [SerializeField] protected float Attack_Range;
     protected virtual void Awake()
     {
         // Outline NavMeshAgent Check
@@ -61,6 +70,8 @@ public class CharacterBase: Health
         DontDestroyOnLoad(gameObject);
         // Set layer
         Selectable.instance.playerLayerID = gameObject.layer;
+        // Remove layer to mouse raycast only Enemy and Land
+        MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (!isLocalPlayer) return;
         // Set LocalPlayer for MiniMap
         GameController.Instance.LocalPlayer = this;
@@ -106,10 +117,14 @@ public class CharacterBase: Health
     }
     protected virtual void Update()
     {
-        // Move
-        CharacterMove();
         // Passive skill
         Passive();
+        // RayCast Mouse
+        Get_Project_Mouse();
+        // Move
+        CharacterMove();
+        // Normal Attack
+        Attack();
     }
     /// <summary>This is invoked when Mouse Right Click Down.</summary>
     public virtual void OnRightMouseClick()
@@ -143,7 +158,15 @@ public class CharacterBase: Health
         else
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
-            Instantiate(Target,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
+            {
+                // If Layer is Land -> Spawn Particle
+                if (hit.transform.root.gameObject.layer == LayerMask.NameToLayer("Land"))
+                {
+                    Instantiate(Target_Particle,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
+                }
+            }
         }
     }
     /// <summary>This is invoked when Mouse Left Click Down.</summary>
@@ -179,6 +202,7 @@ public class CharacterBase: Health
             OnRKeyUp();
         }
     }
+    #region Skill Method
     // Q skill
     /// <summary>This is invoked when QKey Click Down.</summary>
     public virtual void OnQKeyDown()
@@ -223,6 +247,7 @@ public class CharacterBase: Health
     {
         IsPressed_R = false;
     }
+    #endregion
     // Camera Change
     /// <summary>This is invoked when YKey Click Down.</summary>
     public virtual void OnYKeyClick()
@@ -261,7 +286,7 @@ public class CharacterBase: Health
             OptionPanel.Instance.gameObject.SetActive(true);
         }
     }
-    // Skill Preview Hide
+    #region Skill UI
     /// <summary>Hide Q skill preview.</summary>
     protected virtual void Hide_Q_UI(){}
     /// <summary>Hide W skill preview.</summary>
@@ -270,6 +295,7 @@ public class CharacterBase: Health
     protected virtual void Hide_E_UI(){}
     /// <summary>Hide R skill preview.</summary>
     protected virtual void Hide_R_UI(){}
+    #endregion
     // Passive Skill
     /// <summary>This method relate to Passive Skill.</summary>
     public virtual void Passive(){}
@@ -278,7 +304,7 @@ public class CharacterBase: Health
     {
         Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        ray = Camera.main.ScreenPointToRay(mousePos);
         if (Physics.Raycast(ray, out hit))
         {
             mouseProject = hit.point;
@@ -289,9 +315,9 @@ public class CharacterBase: Health
     {
         // check mouse raycast
         Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
+        ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        if (Physics.Raycast(ray, out hit,Mathf.Infinity,~LayerMask.NameToLayer("Land")))
+        if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
         {
             mouseProject = hit.point;
         }
@@ -314,29 +340,68 @@ public class CharacterBase: Health
         if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed() && !EventSystem.current.IsPointerOverGameObject())
         {
             // Spawn Particle -> Spawn in OnRightMouseClick
-            // Instantiate(Target,mouseProject + new Vector3(0,1f,0), Quaternion.identity);
-            Vector3 moveVelocity = mouseProject - transform.position;
-            // Rotate Immediately
-            agent.velocity = moveVelocity.normalized * agent.speed;
-            // Walk goal
-            agent.destination = mouseProject;
-            moveVelocity.y = 0;
-            transform.LookAt(transform.position + moveVelocity);
+            // Instantiate(Target_Particle,mouseProject + new Vector3(0,1f,0), Quaternion.identity);
+
+            // Calculate mouse Project
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
+            {
+                Vector3 AgentDestination;
+                if (hit.transform.root.gameObject.layer == LayerMask.NameToLayer("Land"))
+                {
+                    AgentDestination = hit.point;
+                    Target = null;
+                }
+                // Enemy Layer -> Set Enemy Transform and Calculate in CharacterMove()
+                else
+                {
+                    AgentDestination = hit.transform.root.position;
+                    Target = hit.transform.root;
+                }
+                Vector3 moveVelocity = AgentDestination - transform.position;
+            
+                // Rotate Immediately
+                agent.velocity = moveVelocity.normalized * agent.speed;
+                // Walk goal
+                agent.destination = AgentDestination;
+                moveVelocity.y = 0;
+                // transform.LookAt(transform.position + moveVelocity);
+            }
+        }
+        // If has target -> Update Target Position
+        if (Target != null)
+        {
+            agent.destination = Target.position;
+            // transform.LookAt(transform.position + new Vector3(Target.position.x,0,Target.position.z));
         }
     }
-
+    protected void Attack()
+    {
+        // Check if Enemy reach attack range
+        if (Target == null) return;
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, Attack_Range);
+        if (hitColliders.Any(item => item.transform.root.name == Target.name))
+        {
+            agent.isStopped = true;
+            // Face to Target
+            transform.LookAt(transform.position + new Vector3(Target.position.x,0,Target.position.z));
+            // Normal Attack here
+            NormalAttack();
+        }
+    }
+    protected virtual void NormalAttack(){}
     /// Minimap Method
     public void Set_Destination(Vector3 position,bool SpawnParticle)
     {
         // Spawn Particle
-        if (SpawnParticle) Instantiate(Target,position + new Vector3(0,0.01f,0), Quaternion.identity);
+        if (SpawnParticle) Instantiate(Target_Particle,position + new Vector3(0,0.01f,0), Quaternion.identity);
         Vector3 moveVelocity = position - transform.position;
         // Rotate Immediately
         agent.velocity = moveVelocity.normalized * agent.speed;
         // Walk goal
         agent.destination = position;
         moveVelocity.y = 0;
-        transform.LookAt(transform.position + moveVelocity);
+        // transform.LookAt(transform.position + moveVelocity);
     }
     public void Set_FreeCamera(Vector3 position)
     {
@@ -362,6 +427,11 @@ public class CharacterBase: Health
                 R_Level += 1;
                 return;
         }
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, Attack_Range);
     }
 }
 

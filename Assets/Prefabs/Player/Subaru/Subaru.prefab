@@ -1041,7 +1041,12 @@ MonoBehaviour:
   R_Level: 0
   Fixed_Cam: {fileID: 985031338423989986}
   Free_CameParent: {fileID: 935481825553640263}
-  Target: {fileID: 3508981945991229934, guid: 7d22d2f886e1d4e63985f741719e7b3b, type: 3}
+  Target_Particle: {fileID: 3508981945991229934, guid: 7d22d2f886e1d4e63985f741719e7b3b, type: 3}
+  MouseTargetLayer:
+    serializedVersion: 2
+    m_Bits: 448
+  Target: {fileID: 0}
+  Attack_Range: 3
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}
   Duck_Ult: {fileID: 3088117104640011826, guid: 2a3b0cc2d73b44e1fa2d014b19bf1812, type: 3}

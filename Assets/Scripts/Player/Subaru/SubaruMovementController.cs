@@ -208,8 +208,6 @@ public class SubaruMovementController : CharacterBase
             Death();
             return;
         }
-        // Update Mouse raycast -> MousePosition
-        Get_Project_Mouse();
         // Check Free Camera Reset -> Camera_Reset
         Camera_Reset();
         // If stand Animation => stop move and rotate
@@ -227,17 +225,6 @@ public class SubaruMovementController : CharacterBase
         HandleMoveAnmation();
         
         base.Update();
-
-        if (InputSystem.instance.playerInput.Player.Camera_Reset.WasPressedThisFrame())
-            Debug.Log("Was Just Pressed");
-
-        if (InputSystem.instance.playerInput.Player.Camera_Reset.IsPressed())
-            Debug.Log("Is Currently Pressed");
-
-        if (InputSystem.instance.playerInput.Player.Camera_Reset.WasReleasedThisFrame())
-            Debug.Log("Was Just Released");
-        if (InputSystem.instance.playerInput.Player.Camera_Reset.triggered)
-            Debug.Log("Triggered");
     }
     public override void InitialHealth()
     {
@@ -252,7 +239,10 @@ public class SubaruMovementController : CharacterBase
         MianInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
     }
-
+    protected override void NormalAttack()
+    {
+        
+    }
     public override void Death()
     {
         float dead_start_time = Time.time;
