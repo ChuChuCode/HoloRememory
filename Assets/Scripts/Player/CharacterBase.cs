@@ -114,6 +114,12 @@ public class CharacterBase: Health
 
         // Option
         InputSystem.instance.playerInput.Player.Option.started += _ => OnEscKeyClick();
+
+        // Store
+        InputSystem.instance.playerInput.Player.StoreKey.started += _ => OnPKeyClick();
+
+        // Recall
+        InputSystem.instance.playerInput.Player.Recall.started += _ => OnBKeyClick();
     }
     protected virtual void Update()
     {
@@ -287,6 +293,10 @@ public class CharacterBase: Health
             OptionPanel.Instance.gameObject.SetActive(true);
         }
     }
+    public virtual void OnPKeyClick()
+    {}
+    public virtual void OnBKeyClick()
+    {}
     #region Skill UI
     /// <summary>Hide Q skill preview.</summary>
     protected virtual void Hide_Q_UI(){}

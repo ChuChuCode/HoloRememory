@@ -125,6 +125,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Recall"",
+                    ""type"": ""Button"",
+                    ""id"": ""08957b56-0216-4b90-8fc4-5f1e62e62d5d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -240,12 +249,23 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""242d1db6-3858-459e-b2f4-3664271f05ab"",
-                    ""path"": """",
+                    ""id"": ""9084eb4e-c67b-4e1f-b187-ca3491354e06"",
+                    ""path"": ""<Keyboard>/p"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""StoreKey"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1a4db47a-2f26-40b0-9641-0d77decde29c"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Recall"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -447,6 +467,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Camera_Reset = m_Player.FindAction("Camera_Reset", throwIfNotFound: true);
         m_Player_Option = m_Player.FindAction("Option", throwIfNotFound: true);
         m_Player_StoreKey = m_Player.FindAction("StoreKey", throwIfNotFound: true);
+        m_Player_Recall = m_Player.FindAction("Recall", throwIfNotFound: true);
         // Player_old
         m_Player_old = asset.FindActionMap("Player_old", throwIfNotFound: true);
         m_Player_old_Move = m_Player_old.FindAction("Move", throwIfNotFound: true);
@@ -532,6 +553,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Camera_Reset;
     private readonly InputAction m_Player_Option;
     private readonly InputAction m_Player_StoreKey;
+    private readonly InputAction m_Player_Recall;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -547,6 +569,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Camera_Reset => m_Wrapper.m_Player_Camera_Reset;
         public InputAction @Option => m_Wrapper.m_Player_Option;
         public InputAction @StoreKey => m_Wrapper.m_Player_StoreKey;
+        public InputAction @Recall => m_Wrapper.m_Player_Recall;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -589,6 +612,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @StoreKey.started += instance.OnStoreKey;
             @StoreKey.performed += instance.OnStoreKey;
             @StoreKey.canceled += instance.OnStoreKey;
+            @Recall.started += instance.OnRecall;
+            @Recall.performed += instance.OnRecall;
+            @Recall.canceled += instance.OnRecall;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -626,6 +652,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @StoreKey.started -= instance.OnStoreKey;
             @StoreKey.performed -= instance.OnStoreKey;
             @StoreKey.canceled -= instance.OnStoreKey;
+            @Recall.started -= instance.OnRecall;
+            @Recall.performed -= instance.OnRecall;
+            @Recall.canceled -= instance.OnRecall;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -743,6 +772,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnCamera_Reset(InputAction.CallbackContext context);
         void OnOption(InputAction.CallbackContext context);
         void OnStoreKey(InputAction.CallbackContext context);
+        void OnRecall(InputAction.CallbackContext context);
     }
     public interface IPlayer_oldActions
     {

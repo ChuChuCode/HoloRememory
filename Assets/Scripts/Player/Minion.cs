@@ -4,6 +4,7 @@ using HR.Object;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using HR.UI;
 
 namespace HR.Object.Minion{
 public class Minion : Health
@@ -24,7 +25,7 @@ public class Minion : Health
     [SerializeField] float deadTime = 1f;
     float distance;
     float timer = 1f;
-    // Start is called before the first frame update
+    [SerializeField] Bar healthBar;
     void Start()
     {
         // Outline NavMeshAgent Check
@@ -115,11 +116,24 @@ public class Minion : Health
                 return;
         }
     }
+    public override void InitialHealth()
+    {
+        currentHealth = maxHealth;
+        healthBar.SetMaxValue(maxHealth);
+    }
+    public override void GetDamage(int damage)
+    {
+        currentHealth -= damage;
+        healthBar.SetValue(currentHealth);
+
+        // Update UI
+        Selectable.instance.updateInfo(this);
+    }
     public override void Death()
     {
         // Set Health to 0
         currentHealth = 0;
-        // healthBar.SetValue(0);
+        healthBar.SetValue(0);
         Destroy(gameObject);
     }
 }
