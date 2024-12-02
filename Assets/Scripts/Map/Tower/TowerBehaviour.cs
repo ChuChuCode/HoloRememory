@@ -64,6 +64,7 @@ public class TowerBehaviour : Health
                     {
                         if (hitColliders[index].transform.root.GetComponent<Health>().currentHealth > 0)
                         {
+                            /// need minion find first then other
                             enemy = hitColliders[index].transform.root;
                             current_State = State.Attack;
                             return;

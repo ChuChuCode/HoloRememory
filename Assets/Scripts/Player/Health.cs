@@ -1,5 +1,8 @@
 using Mirror;
+using UnityEngine;
 namespace HR.Object{
+
+[RequireComponent (typeof (Outline))]
 public class Health : NetworkBehaviour
 {
     [SyncVar] public int maxHealth ;

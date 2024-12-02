@@ -1506,7 +1506,7 @@ PrefabInstance:
       addedObject: {fileID: 8713174955817428959}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 664dee156702c490eb87a4b43272f708, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6476755161181809231}
+      addedObject: {fileID: 4764411735773831749}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 664dee156702c490eb87a4b43272f708, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4220339246979338142}
@@ -1595,6 +1595,7 @@ MonoBehaviour:
   syncInterval: 0
   maxHealth: 300
   currentHealth: 0
+  isDead: 0
   player: {fileID: 0}
   agent: {fileID: 5707987594537908091}
   rd: {fileID: 8713174955817428959}
@@ -1652,7 +1653,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 0
---- !u!114 &6476755161181809231
+--- !u!114 &4764411735773831749
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1665,7 +1666,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 0
-  outlineColor: {r: 0.007843138, g: 1, b: 0, a: 1}
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
   outlineWidth: 2
   precomputeOutline: 0
   bakeKeys: []
