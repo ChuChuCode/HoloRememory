@@ -2,24 +2,35 @@ using UnityEngine;
 using Mirror;
 using HR.Object.Minion;
 using HR.UI;
+using System.Collections;
 
 public class MinionSpawner : NetworkBehaviour
 {
     [SerializeField] Minion Minion_Prefab;
     [SerializeField] string layerName;
-    int time_interval = 30;
     [SerializeField] Transform EnemyTarget;
-    [SerializeField] int SpawnTime = 10;
+    [SerializeField] int first_SpawnTime = 10;
+    [SerializeField] int spawntime_interval = 30;
+    [SerializeField] int SpawnNumber = 6;
     int next_SpawnTime;
+
     void Start()
     {
-        next_SpawnTime = SpawnTime;
+        next_SpawnTime = first_SpawnTime;
     }
     void Update()
     {
         if (GameDuration.Instance.timer > next_SpawnTime)
         {
-            next_SpawnTime += time_interval;
+            next_SpawnTime += spawntime_interval;
+            
+            StartCoroutine(nameof(SpawnOnce));
+        }
+    }
+    IEnumerator SpawnOnce()
+    {   
+        for (int i = 0 ; i < SpawnNumber ; i++)
+        {
             // Spawn Minion
             Minion temp_Minion = Instantiate(Minion_Prefab,transform.position,transform.rotation);
             // Set Target
@@ -27,10 +38,7 @@ public class MinionSpawner : NetworkBehaviour
             // Set Layer
             temp_Minion.gameObject.layer = LayerMask.NameToLayer(layerName);
             NetworkServer.Spawn(temp_Minion.gameObject);
+            yield return new WaitForSeconds(1f);
         }
-    }
-    void SpawnOnce()
-    {
-
     }
 }

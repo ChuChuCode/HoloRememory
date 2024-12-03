@@ -7,7 +7,7 @@ public class Health : NetworkBehaviour
 {
     [SyncVar] public int maxHealth ;
     [SyncVar] public int currentHealth;
-    [SyncVar] public bool isDead;
+    [SyncVar] public bool isDead = false;
     public virtual void InitialHealth()
     {
         currentHealth = maxHealth;

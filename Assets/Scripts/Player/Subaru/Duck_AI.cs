@@ -260,7 +260,6 @@ public class Duck_AI : Health
                     // Delete from list
                     player.duck_array.Remove(this);
                     Death();
-                    
                 }
                 return;
 
