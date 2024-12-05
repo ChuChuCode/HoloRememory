@@ -16,14 +16,18 @@ public class Minion : Health
         Dead
     };
     NavMeshAgent agent;
+    [SerializeField] Animator animator;
+    [Header("Final Destination")]
     public Transform FinalDestination;
     GameObject Target;
     int Layer_Enemy;
     [SerializeField] State current_State;
+    [Header("Attack")]
     [SerializeField] float max_distance = 7f;
     [SerializeField] float attack_radius = 5f;
-    [SerializeField] float deadTime = 1f;
     float distance;
+    [Header("Dead")]
+    [SerializeField] float deadTime = 1f;
     float timer = 1f;
     [SerializeField] Bar healthBar;
     void Start()
@@ -45,10 +49,10 @@ public class Minion : Health
     // Update is called once per frame
     void Update()
     {
-        if (isDead) return;
         if (currentHealth <= 0) 
         {
             if (!isDead) timer = deadTime;
+            Target = null;
             isDead = true;
             agent.isStopped = true;
             current_State = State.Dead;
@@ -106,7 +110,7 @@ public class Minion : Health
 
                 return;
             case State.Dead:
-                // if (timer == deadTime) animator.Play("Dead");
+                if (timer == deadTime) animator.Play("Dead");
                 // Delete Object when timer is done
                 timer -= Time.deltaTime;
                 if (timer <= 0f )
@@ -135,6 +139,23 @@ public class Minion : Health
         currentHealth = 0;
         healthBar.SetValue(0);
         Destroy(gameObject);
+    }
+    public void Update_Enemy_Layer(int layer)
+    {
+        // If layer == Team1
+        if (LayerMask.NameToLayer("Team1") == layer)
+        {
+            Layer_Enemy = LayerMask.NameToLayer("Team2");
+        }
+        // If layer == Team2
+        else if (LayerMask.NameToLayer("Team2") == layer)
+        {
+            Layer_Enemy = LayerMask.NameToLayer("Team1");
+        }
+        else
+        {
+            Debug.Log("This Minion Set wrong Layer.");
+        }
     }
 }
 

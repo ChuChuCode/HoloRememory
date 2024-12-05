@@ -37,6 +37,8 @@ public class MinionSpawner : NetworkBehaviour
             temp_Minion.FinalDestination = EnemyTarget;
             // Set Layer
             temp_Minion.gameObject.layer = LayerMask.NameToLayer(layerName);
+            // Update Enemy Layer
+            temp_Minion.Update_Enemy_Layer(LayerMask.NameToLayer(layerName));
             NetworkServer.Spawn(temp_Minion.gameObject);
             yield return new WaitForSeconds(1f);
         }
