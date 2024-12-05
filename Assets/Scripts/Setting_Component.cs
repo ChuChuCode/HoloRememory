@@ -1,19 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace HR.Global{
+public enum Audio_Type 
+{
+    MIXER_MASTER,
+    MIXER_MUSIC,
+    MIXER_SFX,
+    MIXER_VOICE
+}
 public class Setting_Component : MonoBehaviour
 {
-    [SerializeField] int Audio_Master;
-    [SerializeField] int Audio_Music;
-    [SerializeField] int Audio_SFX;
-    [SerializeField] int Audio_Voice;
+    public static Setting_Component Instance;
+    [SerializeField] AudioMixer mixer;
+    public int Audio_Master;
+    public int Audio_Music;
+    public int Audio_SFX;
+    public int Audio_Voice;
+    
+    const string MIXER_MASTER = "Master";
+    const string MIXER_MUSIC = "Music";
+    const string MIXER_SFX = "SFX";
+    const string MIXER_VOICE = "Voice";
     void Start()
     {
+        if (Instance is null) Instance = this;
         GetDataFromPlayerPrefs();
+        // Set Mixer
+        SetMixer(Audio_Type.MIXER_MASTER,Audio_Master);
+        SetMixer(Audio_Type.MIXER_MUSIC,Audio_Music);
+        SetMixer(Audio_Type.MIXER_SFX,Audio_SFX);
+        SetMixer(Audio_Type.MIXER_VOICE,Audio_Voice);
     }
-    void GetDataFromPlayerPrefs()
+    public void GetDataFromPlayerPrefs()
     {
         /// Audio
         // Master
@@ -28,32 +47,35 @@ public class Setting_Component : MonoBehaviour
 
     }
 
-    public bool SaveDataToPlayerPrefs<T>(string key, T value)
+    public void SaveDataToPlayerPrefs()
     {
-        switch (key)
+        /// Audio
+        // Audio_Master
+        PlayerPrefs.SetInt("Audio_Master",Audio_Master);
+        // Audio_Music
+        PlayerPrefs.SetInt("Audio_Music",Audio_Music);
+        // Audio_SFX
+        PlayerPrefs.SetInt("Audio_SFX",Audio_SFX);
+        // Audio_Voice
+        PlayerPrefs.SetInt("Audio_Voice",Audio_Voice);
+
+    }
+    public void SetMixer(Audio_Type type,float value)
+    {
+        switch (type)
         {
-            /// Audio
-            case "Audio_Master":
-            case "Audio_Music":
-            case "Audio_SFX":
-            case "Audio_Voice":
-                // Check value type
-                if ( !(value is int i_value)) return false;
-
-                // Check value range
-                if (i_value < 0 || i_value > 100) return false;
-
-                // Set local parameter
-                if (key is "Audio_Master") Audio_Master = i_value;
-                else if (key is "Audio_Music") Audio_Music = i_value;
-                else if (key is "Audio_SFX") Audio_SFX = i_value;
-                else if (key is "Audio_Voice") Audio_Voice = i_value;
-
-                // Set to PlayerPrefs
-                PlayerPrefs.SetInt(key,i_value);
-                return true;
-            default:
-                return false;
+            case Audio_Type.MIXER_MASTER:
+                mixer.SetFloat(MIXER_MASTER,Mathf.Log(value)*20);
+                break;
+            case Audio_Type.MIXER_MUSIC:
+                mixer.SetFloat(MIXER_MUSIC,Mathf.Log(value)*20);
+                break;
+            case Audio_Type.MIXER_SFX:
+                mixer.SetFloat(MIXER_SFX,Mathf.Log(value)*20);
+                break;
+            case Audio_Type.MIXER_VOICE:
+                mixer.SetFloat(MIXER_VOICE,Mathf.Log(value)*20);
+                break;
         }
     }
 }

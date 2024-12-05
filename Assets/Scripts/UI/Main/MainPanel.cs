@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace HR.UI{
-public class MainButtonControl : MonoBehaviour
+public class MainPanel : MonoBehaviour
 {
     [SerializeField] GameObject Game_UI;
     [SerializeField] GameObject Setting_UI;
