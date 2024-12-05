@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace HR.Global{
 public class Setting_Component : MonoBehaviour
 {
     [SerializeField] int Audio_Master;
@@ -55,4 +56,6 @@ public class Setting_Component : MonoBehaviour
                 return false;
         }
     }
+}
+
 }

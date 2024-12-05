@@ -5,8 +5,8 @@ using UnityEngine.EventSystems;
 using HR.UI;
 using HR.Network.Game;
 using Unity.VisualScripting;
-using UnityEditor;
 using System.Linq;
+using HR.Global;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
@@ -59,11 +59,11 @@ public class CharacterBase: Health
     }
     protected virtual void OnEnable() 
     {
-        InputSystem.instance.playerInput.Player.Enable();
+        InputComponent.instance.playerInput.Player.Enable();
     }
     protected virtual void OnDisable()
     {
-        InputSystem.instance.playerInput.Player.Disable();
+        InputComponent.instance.playerInput.Player.Disable();
     }
     protected virtual void Start()
     {
@@ -78,12 +78,12 @@ public class CharacterBase: Health
         Free_CameParent.SetActive(true);
 
         // Right Mouse
-        InputSystem.instance.playerInput.Player.Right_Mouse.started += _ => OnRightMouseClick();
+        InputComponent.instance.playerInput.Player.Right_Mouse.started += _ => OnRightMouseClick();
         //playerInput.Player.Right_Mouse.canceled += OnRightMouseClick;
         //playerInput.Player.Right_Mouse.performed += OnRightMouseClick;
 
         // Left Mouse
-        InputSystem.instance.playerInput.Player.Left_Mouse.started += _ => OnLeftMouseClick();
+        InputComponent.instance.playerInput.Player.Left_Mouse.started += _ => OnLeftMouseClick();
 
         // Mous Position
         //playerInput.Player.MousePosition.started += OnMousePositionInput;
@@ -91,35 +91,35 @@ public class CharacterBase: Health
         //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
 
         // Q skill
-        InputSystem.instance.playerInput.Player.Q.started += _ => OnQKeyDown();
-        InputSystem.instance.playerInput.Player.Q.canceled += _ => OnQKeyUp();
+        InputComponent.instance.playerInput.Player.Q.started += _ => OnQKeyDown();
+        InputComponent.instance.playerInput.Player.Q.canceled += _ => OnQKeyUp();
         
         // W skill
-        InputSystem.instance.playerInput.Player.W.started += _ => OnWKeyDown();
-        InputSystem.instance.playerInput.Player.W.canceled += _ => OnWKeyUp();
+        InputComponent.instance.playerInput.Player.W.started += _ => OnWKeyDown();
+        InputComponent.instance.playerInput.Player.W.canceled += _ => OnWKeyUp();
         
         // E skill
-        InputSystem.instance.playerInput.Player.E.started += _ => OnEKeyDown();
-        InputSystem.instance.playerInput.Player.E.canceled += _ => OnEKeyUp();
+        InputComponent.instance.playerInput.Player.E.started += _ => OnEKeyDown();
+        InputComponent.instance.playerInput.Player.E.canceled += _ => OnEKeyUp();
 
         // R skill
-        InputSystem.instance.playerInput.Player.R.started += _ => OnRKeyDown();
-        InputSystem.instance.playerInput.Player.R.canceled += _ => OnRKeyUp();
+        InputComponent.instance.playerInput.Player.R.started += _ => OnRKeyDown();
+        InputComponent.instance.playerInput.Player.R.canceled += _ => OnRKeyUp();
 
         // Camera Change
-        InputSystem.instance.playerInput.Player.Camera_Change.started += _ => OnYKeyClick();
+        InputComponent.instance.playerInput.Player.Camera_Change.started += _ => OnYKeyClick();
 
         // Camera Reset
-        InputSystem.instance.playerInput.Player.Camera_Reset.started += _ => OnSpaceKeyClick();
+        InputComponent.instance.playerInput.Player.Camera_Reset.started += _ => OnSpaceKeyClick();
 
         // Option
-        InputSystem.instance.playerInput.Player.Option.started += _ => OnEscKeyClick();
+        InputComponent.instance.playerInput.Player.Option.started += _ => OnEscKeyClick();
 
         // Store
-        InputSystem.instance.playerInput.Player.StoreKey.started += _ => OnPKeyClick();
+        InputComponent.instance.playerInput.Player.StoreKey.started += _ => OnPKeyClick();
 
         // Recall
-        InputSystem.instance.playerInput.Player.Recall.started += _ => OnBKeyClick();
+        InputComponent.instance.playerInput.Player.Recall.started += _ => OnBKeyClick();
     }
     protected virtual void Update()
     {
@@ -313,7 +313,7 @@ public class CharacterBase: Health
     /// <summary>This is invoked when Mouse Move. Now use "Get_Project_Mouse" to Update Project Point.</summary>
     public virtual void OnMousePositionInput()
     {
-        Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
+        Vector3 mousePos = InputComponent.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         RaycastHit hit;
         ray = Camera.main.ScreenPointToRay(mousePos);
         if (Physics.Raycast(ray, out hit))
@@ -325,7 +325,7 @@ public class CharacterBase: Health
     protected void Get_Project_Mouse()
     {
         // check mouse raycast
-        Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
+        Vector3 mousePos = InputComponent.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
@@ -336,7 +336,7 @@ public class CharacterBase: Health
     protected void Camera_Reset()
     {
         // Camera Reset
-        if ( InputSystem.instance.playerInput.Player.Camera_Reset.IsPressed())
+        if ( InputComponent.instance.playerInput.Player.Camera_Reset.IsPressed())
         {
             if (Free_CameParent.activeSelf)
             {
@@ -348,7 +348,7 @@ public class CharacterBase: Health
     {
         // Move
         // !EventSystem.current.IsPointerOverGameObject() to prevent on UI hover
-        if ( InputSystem.instance.playerInput.Player.Right_Mouse.IsPressed() && !EventSystem.current.IsPointerOverGameObject())
+        if ( InputComponent.instance.playerInput.Player.Right_Mouse.IsPressed() && !EventSystem.current.IsPointerOverGameObject())
         {
             // Spawn Particle -> Spawn in OnRightMouseClick
             // Instantiate(Target_Particle,mouseProject + new Vector3(0,1f,0), Quaternion.identity);

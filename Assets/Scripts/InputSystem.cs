@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class InputSystem : MonoBehaviour
+namespace HR.Global{
+public class InputComponent : MonoBehaviour
 {
-    public static InputSystem instance ;
+    public static InputComponent instance ;
     public PlayerInputActions playerInput;
     
     void Awake()
@@ -20,4 +21,6 @@ public class InputSystem : MonoBehaviour
             Cursor.SetCursor(PlayerSettings.defaultCursor, Vector2.zero, CursorMode.ForceSoftware);
         #endif
     }
+}
+
 }

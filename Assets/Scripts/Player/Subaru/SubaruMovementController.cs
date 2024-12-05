@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +6,7 @@ using Mirror;
 using HR.UI;
 using HR.Network.Game;
 using HR.Object.Minion;
+using HR.Global;
 
 namespace HR.Object.Player{
 public class SubaruMovementController : CharacterBase
@@ -200,7 +200,7 @@ public class SubaruMovementController : CharacterBase
             }
             isDead = true;
             // Unregister control
-            InputSystem.instance.playerInput.Player.Disable();
+            InputComponent.instance.playerInput.Player.Disable();
 
             // UI Update -> Ally Icon
             
@@ -276,7 +276,7 @@ public class SubaruMovementController : CharacterBase
         agent.isStopped = false;
         animator.Play("Idle");
         // Register control
-        InputSystem.instance.playerInput.Player.Enable();
+        InputComponent.instance.playerInput.Player.Enable();
         isDead = false;
         // Health
         InitialHealth();

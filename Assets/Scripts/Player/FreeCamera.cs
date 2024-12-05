@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using HR.Global;
 
 namespace HR.Object.Player{
 public class FreeCamera : MonoBehaviour
@@ -18,7 +17,7 @@ public class FreeCamera : MonoBehaviour
     }
     void Update()
     {
-        Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
+        Vector3 mousePos = InputComponent.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         Vector3 position = transform.position;
         // Up
         if (mousePos.y >= Screen.height - screenSizeThickness)

@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using HR.Global;
 
 namespace HR.Object.Player{
 public class Ability_Indicator : MonoBehaviour
@@ -11,7 +9,7 @@ public class Ability_Indicator : MonoBehaviour
     void Update()
     {
         // check mouse raycast
-        Vector3 mousePos = InputSystem.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
+        Vector3 mousePos = InputComponent.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         if (Physics.Raycast(ray.origin,ray.direction, out hit,Mathf.Infinity,~LayerMask.NameToLayer("Land")))
