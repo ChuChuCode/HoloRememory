@@ -106,7 +106,12 @@ public class Minion : Health
                     return;
                 }
                 agent.isStopped = true;
+                // Face to Target
+                Vector3 FaceVector = Target.transform.position - transform.position;
+                FaceVector.y = 0;
+                transform.LookAt(transform.position + FaceVector );
                 // Attack
+                print("attack");
 
                 return;
             case State.Dead:

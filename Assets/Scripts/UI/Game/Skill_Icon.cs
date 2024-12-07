@@ -49,16 +49,16 @@ public class Skill_Icon : MonoBehaviour
         switch (skill)
         {
             case "Q":
-                GameController.Instance.LocalPlayer.OnQKeyDown();
+                GameController.Instance.LocalPlayer.QKeyDown();
                 return;
             case "W":
-                GameController.Instance.LocalPlayer.OnWKeyDown();
+                GameController.Instance.LocalPlayer.WKeyDown();
                 return;
             case "E":
-                GameController.Instance.LocalPlayer.OnEKeyDown();
+                GameController.Instance.LocalPlayer.EKeyDown();
                 return;
             case "R":
-                GameController.Instance.LocalPlayer.OnRKeyDown();
+                GameController.Instance.LocalPlayer.RKeyDown();
                 return;
         }
     }
@@ -66,7 +66,10 @@ public class Skill_Icon : MonoBehaviour
     public void Skill_Up(string skill)
     {
         GameController.Instance.LocalPlayer.Skill_Up(skill);
-        Level_Up_Button.SetActive(false);
+    }
+    public void Show_LevelUp()
+    {
+        Level_Up_Button.SetActive(true);
     }
 }
 

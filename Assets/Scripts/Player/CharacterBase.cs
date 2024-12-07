@@ -4,7 +4,6 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using HR.UI;
 using HR.Network.Game;
-using Unity.VisualScripting;
 using System.Linq;
 using HR.Global;
 
@@ -73,6 +72,7 @@ public class CharacterBase: Health
         // Remove layer to mouse raycast only Enemy and Land
         MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (!isLocalPlayer) return;
+        MainInfoUI.instance.Show_LevelUp();
         // Set LocalPlayer for MiniMap
         GameController.Instance.LocalPlayer = this;
         Free_CameParent.SetActive(true);
@@ -91,20 +91,20 @@ public class CharacterBase: Health
         //playerInput.Player.MousePosition.canceled += OnMousePositionInput;
 
         // Q skill
-        InputComponent.instance.playerInput.Player.Q.started += _ => OnQKeyDown();
-        InputComponent.instance.playerInput.Player.Q.canceled += _ => OnQKeyUp();
+        InputComponent.instance.playerInput.Player.Q.started += _ => QKeyDown();
+        InputComponent.instance.playerInput.Player.Q.canceled += _ => QKeyUp();
         
         // W skill
-        InputComponent.instance.playerInput.Player.W.started += _ => OnWKeyDown();
-        InputComponent.instance.playerInput.Player.W.canceled += _ => OnWKeyUp();
+        InputComponent.instance.playerInput.Player.W.started += _ => WKeyDown();
+        InputComponent.instance.playerInput.Player.W.canceled += _ => WKeyUp();
         
         // E skill
-        InputComponent.instance.playerInput.Player.E.started += _ => OnEKeyDown();
-        InputComponent.instance.playerInput.Player.E.canceled += _ => OnEKeyUp();
+        InputComponent.instance.playerInput.Player.E.started += _ => EKeyDown();
+        InputComponent.instance.playerInput.Player.E.canceled += _ => EKeyUp();
 
         // R skill
-        InputComponent.instance.playerInput.Player.R.started += _ => OnRKeyDown();
-        InputComponent.instance.playerInput.Player.R.canceled += _ => OnRKeyUp();
+        InputComponent.instance.playerInput.Player.R.started += _ => RKeyDown();
+        InputComponent.instance.playerInput.Player.R.canceled += _ => RKeyUp();
 
         // Camera Change
         InputComponent.instance.playerInput.Player.Camera_Change.started += _ => OnYKeyClick();
@@ -185,75 +185,99 @@ public class CharacterBase: Health
             // Hide Q preview
             Hide_Q_UI();
             // Use Q Skill
-            OnQKeyUp();
+            QKeyUp();
         }
         else if (IsPressed_W)
         {
             // Hide W preview
             Hide_W_UI();
             // Use W Skill
-            OnWKeyUp();
+            WKeyUp();
         }
         else if (IsPressed_E)
         {
             // Hide E preview
             Hide_E_UI();
             // Use E Skill
-            OnEKeyUp();
+            EKeyUp();
         }
         else if (IsPressed_R)
         {
             // Hide R preview
             Hide_R_UI();
             // Use R Skill
-            OnRKeyUp();
+            RKeyUp();
         }
     }
     #region Skill Method
     // Q skill
     /// <summary>This is invoked when QKey Click Down.</summary>
-    public virtual void OnQKeyDown()
+    public void QKeyDown()
     {
+        if (Q_Level == 0) return;
+        OnQKeyDown();
         IsPressed_Q = true;
     }
     /// <summary>This is invoked when QKey Click Up.</summary>
-    public virtual void OnQKeyUp()
+    public void QKeyUp()
     {
+        if (!IsPressed_Q) return;
+        OnQKeyUp();
         IsPressed_Q = false;
     }
     // W skill
     /// <summary>This is invoked when WKey Click Down.</summary>
-    public virtual void OnWKeyDown()
+    public virtual void WKeyDown()
     {
+        if (W_Level == 0) return;
+        OnWKeyDown();
         IsPressed_W = true;
     }
     /// <summary>This is invoked when WKey Click Up.</summary>
-    public virtual void OnWKeyUp()
+    public virtual void WKeyUp()
     {
+        if (!IsPressed_W) return;
+        OnWKeyUp();
         IsPressed_W = false;
     }
     // E skill
     /// <summary>This is invoked when EKey Click Down.</summary>
-    public virtual void OnEKeyDown()
+    public virtual void EKeyDown()
     {
+        if (E_Level == 0) return;
+        OnEKeyDown();
         IsPressed_E = true;
     }
     /// <summary>This is invoked when EKey Click Up.</summary>
-    public virtual void OnEKeyUp()
+    public virtual void EKeyUp()
     {
+        if (!IsPressed_E) return;
+        OnEKeyUp();
         IsPressed_E = false;
     }
     // R skill
     /// <summary>This is invoked when RKey Click Down.</summary>
-    public virtual void OnRKeyDown()
+    public virtual void RKeyDown()
     {
+        if (R_Level == 0) return;
+        OnRKeyDown();
         IsPressed_R = true;
     }
     /// <summary>This is invoked when RKey Click Up.</summary>
-    public virtual void OnRKeyUp()
+    public virtual void RKeyUp()
     {
+        if (!IsPressed_R) return;
+        OnRKeyUp();
         IsPressed_R = false;
     }
+    public virtual void OnQKeyDown(){}
+    public virtual void OnQKeyUp(){}
+    public virtual void OnWKeyDown(){}
+    public virtual void OnWKeyUp(){}
+    public virtual void OnEKeyDown(){}
+    public virtual void OnEKeyUp(){}
+    public virtual void OnRKeyDown(){}
+    public virtual void OnRKeyUp(){}
     #endregion
     // Camera Change
     /// <summary>This is invoked when YKey Click Down.</summary>

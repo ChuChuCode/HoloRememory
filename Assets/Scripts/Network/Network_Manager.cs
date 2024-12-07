@@ -77,11 +77,11 @@ public class Network_Manager : NetworkManager
                 // Set UI
                 if (player.netIdentity.isOwned)
                 {
-                    MianInfoUI.instance.Character_Image.sprite = characterModelComponent.CharacterImage;
-                    MianInfoUI.instance.Q.Set_Skill_Icon(characterModelComponent.Q_skill_Image);
-                    MianInfoUI.instance.W.Set_Skill_Icon(characterModelComponent.W_skill_Image);
-                    MianInfoUI.instance.E.Set_Skill_Icon(characterModelComponent.E_skill_Image);
-                    MianInfoUI.instance.R.Set_Skill_Icon(characterModelComponent.R_skill_Image);
+                    MainInfoUI.instance.Character_Image.sprite = characterModelComponent.CharacterImage;
+                    MainInfoUI.instance.Q.Set_Skill_Icon(characterModelComponent.Q_skill_Image);
+                    MainInfoUI.instance.W.Set_Skill_Icon(characterModelComponent.W_skill_Image);
+                    MainInfoUI.instance.E.Set_Skill_Icon(characterModelComponent.E_skill_Image);
+                    MainInfoUI.instance.R.Set_Skill_Icon(characterModelComponent.R_skill_Image);
                 }
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance);
 

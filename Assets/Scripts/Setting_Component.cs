@@ -18,7 +18,7 @@ public class Setting_Component : MonoBehaviour
     public int Audio_Music;
     public int Audio_SFX;
     public int Audio_Voice;
-    [SerializeField] float scale = 10000f;
+    [SerializeField] int scale = 10000;
     [Header("Constant String")]
     const string MIXER_MASTER = "Master";
     const string MIXER_MUSIC = "Music";
@@ -38,13 +38,13 @@ public class Setting_Component : MonoBehaviour
     {
         /// Audio
         // Master
-        Audio_Master = PlayerPrefs.GetInt("Audio_Master",5000);
+        Audio_Master = PlayerPrefs.GetInt("Audio_Master",scale);
         // Music
-        Audio_Music = PlayerPrefs.GetInt("Audio_Music",5000);
+        Audio_Music = PlayerPrefs.GetInt("Audio_Music",scale);
         // SFX
-        Audio_SFX = PlayerPrefs.GetInt("Audio_SFX",5000);
+        Audio_SFX = PlayerPrefs.GetInt("Audio_SFX",scale);
         // Voice
-        Audio_Voice = PlayerPrefs.GetInt("Audio_Voice",5000);
+        Audio_Voice = PlayerPrefs.GetInt("Audio_Voice",scale);
 
 
     }

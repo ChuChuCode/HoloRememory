@@ -134,6 +134,42 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Q Level Up"",
+                    ""type"": ""Button"",
+                    ""id"": ""ec861798-ab6b-4715-a463-fa5a2eb0e046"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""W Level Up"",
+                    ""type"": ""Button"",
+                    ""id"": ""bb056036-f581-4106-ac82-b47837ded1d6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""E Level Up"",
+                    ""type"": ""Button"",
+                    ""id"": ""fc53271a-9f77-477b-b11b-4372a8b6e39f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""R Level Up"",
+                    ""type"": ""Button"",
+                    ""id"": ""53e869e0-8d78-48f6-8e82-d58da917dacf"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -264,10 +300,142 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/b"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Recall"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""7ab51633-3126-48da-829a-99ff34a050b2"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Q Level Up"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""4d99baa7-b438-4826-8022-463857fa2fe4"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Q Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""2f4c6f6a-807c-47b5-a422-fceb5b463592"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Q Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""1caad774-2604-4044-80b9-f3d25941834c"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""W Level Up"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""3f0fffb1-ea1e-4522-ad24-c8a847ed909e"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""W Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""2f0eb57b-f271-4042-b538-18eb0064adc1"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""W Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""6893034a-06ad-4d09-b39d-e0d2a1193c86"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""E Level Up"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""8dcca466-cfb1-4d24-8f53-3d560b2c4db3"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""E Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""4cea380d-c674-4d17-9cc8-04e87a5183a4"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""E Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""1b560419-2ea8-43e0-8fdc-77ecb93aca25"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""R Level Up"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""618371cc-124e-49c3-9551-b4339e7ccaae"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""R Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""4c4a6e1a-4191-44b9-a06d-196be9efc9a4"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""R Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -468,6 +636,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Option = m_Player.FindAction("Option", throwIfNotFound: true);
         m_Player_StoreKey = m_Player.FindAction("StoreKey", throwIfNotFound: true);
         m_Player_Recall = m_Player.FindAction("Recall", throwIfNotFound: true);
+        m_Player_QLevelUp = m_Player.FindAction("Q Level Up", throwIfNotFound: true);
+        m_Player_WLevelUp = m_Player.FindAction("W Level Up", throwIfNotFound: true);
+        m_Player_ELevelUp = m_Player.FindAction("E Level Up", throwIfNotFound: true);
+        m_Player_RLevelUp = m_Player.FindAction("R Level Up", throwIfNotFound: true);
         // Player_old
         m_Player_old = asset.FindActionMap("Player_old", throwIfNotFound: true);
         m_Player_old_Move = m_Player_old.FindAction("Move", throwIfNotFound: true);
@@ -554,6 +726,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Option;
     private readonly InputAction m_Player_StoreKey;
     private readonly InputAction m_Player_Recall;
+    private readonly InputAction m_Player_QLevelUp;
+    private readonly InputAction m_Player_WLevelUp;
+    private readonly InputAction m_Player_ELevelUp;
+    private readonly InputAction m_Player_RLevelUp;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -570,6 +746,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Option => m_Wrapper.m_Player_Option;
         public InputAction @StoreKey => m_Wrapper.m_Player_StoreKey;
         public InputAction @Recall => m_Wrapper.m_Player_Recall;
+        public InputAction @QLevelUp => m_Wrapper.m_Player_QLevelUp;
+        public InputAction @WLevelUp => m_Wrapper.m_Player_WLevelUp;
+        public InputAction @ELevelUp => m_Wrapper.m_Player_ELevelUp;
+        public InputAction @RLevelUp => m_Wrapper.m_Player_RLevelUp;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -615,6 +795,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Recall.started += instance.OnRecall;
             @Recall.performed += instance.OnRecall;
             @Recall.canceled += instance.OnRecall;
+            @QLevelUp.started += instance.OnQLevelUp;
+            @QLevelUp.performed += instance.OnQLevelUp;
+            @QLevelUp.canceled += instance.OnQLevelUp;
+            @WLevelUp.started += instance.OnWLevelUp;
+            @WLevelUp.performed += instance.OnWLevelUp;
+            @WLevelUp.canceled += instance.OnWLevelUp;
+            @ELevelUp.started += instance.OnELevelUp;
+            @ELevelUp.performed += instance.OnELevelUp;
+            @ELevelUp.canceled += instance.OnELevelUp;
+            @RLevelUp.started += instance.OnRLevelUp;
+            @RLevelUp.performed += instance.OnRLevelUp;
+            @RLevelUp.canceled += instance.OnRLevelUp;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -655,6 +847,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Recall.started -= instance.OnRecall;
             @Recall.performed -= instance.OnRecall;
             @Recall.canceled -= instance.OnRecall;
+            @QLevelUp.started -= instance.OnQLevelUp;
+            @QLevelUp.performed -= instance.OnQLevelUp;
+            @QLevelUp.canceled -= instance.OnQLevelUp;
+            @WLevelUp.started -= instance.OnWLevelUp;
+            @WLevelUp.performed -= instance.OnWLevelUp;
+            @WLevelUp.canceled -= instance.OnWLevelUp;
+            @ELevelUp.started -= instance.OnELevelUp;
+            @ELevelUp.performed -= instance.OnELevelUp;
+            @ELevelUp.canceled -= instance.OnELevelUp;
+            @RLevelUp.started -= instance.OnRLevelUp;
+            @RLevelUp.performed -= instance.OnRLevelUp;
+            @RLevelUp.canceled -= instance.OnRLevelUp;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -773,6 +977,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnOption(InputAction.CallbackContext context);
         void OnStoreKey(InputAction.CallbackContext context);
         void OnRecall(InputAction.CallbackContext context);
+        void OnQLevelUp(InputAction.CallbackContext context);
+        void OnWLevelUp(InputAction.CallbackContext context);
+        void OnELevelUp(InputAction.CallbackContext context);
+        void OnRLevelUp(InputAction.CallbackContext context);
     }
     public interface IPlayer_oldActions
     {

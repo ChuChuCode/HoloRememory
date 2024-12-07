@@ -5,9 +5,9 @@ using UnityEngine.UI;
 using HR.Object;
 
 namespace HR.UI{
-public class MianInfoUI : MonoBehaviour
+public class MainInfoUI : MonoBehaviour
 {
-    public static MianInfoUI instance;
+    public static MainInfoUI instance;
     public Image Character_Image;
     public Skill_Icon Q;
     public Skill_Icon W;
@@ -26,6 +26,13 @@ public class MianInfoUI : MonoBehaviour
     {
         HP.SetMaxValue(health.maxHealth);
         HP.SetValue(health.currentHealth);
+    }
+    public void Show_LevelUp()
+    {
+        Q.Show_LevelUp();
+        W.Show_LevelUp();
+        E.Show_LevelUp();
+        R.Show_LevelUp();
     }
 }
 }
