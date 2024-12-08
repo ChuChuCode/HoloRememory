@@ -72,6 +72,7 @@ public class CharacterBase: Health
         // Remove layer to mouse raycast only Enemy and Land
         MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (!isLocalPlayer) return;
+        // Show Level Up button
         MainInfoUI.instance.Show_LevelUp();
         // Set LocalPlayer for MiniMap
         GameController.Instance.LocalPlayer = this;
@@ -120,6 +121,12 @@ public class CharacterBase: Health
 
         // Recall
         InputComponent.instance.playerInput.Player.Recall.started += _ => OnBKeyClick();
+        
+        // Skill Up Modifier
+        InputComponent.instance.playerInput.Player.QLevelUp.started += _ => OnQKeyModifierDown();
+        InputComponent.instance.playerInput.Player.WLevelUp.started += _ => OnWKeyModifierDown();
+        InputComponent.instance.playerInput.Player.ELevelUp.started += _ => OnEKeyModifierDown();
+        InputComponent.instance.playerInput.Player.RLevelUp.started += _ => OnRKeyModifierDown();
     }
     protected virtual void Update()
     {
@@ -278,6 +285,38 @@ public class CharacterBase: Health
     public virtual void OnEKeyUp(){}
     public virtual void OnRKeyDown(){}
     public virtual void OnRKeyUp(){}
+    public void OnQKeyModifierDown()
+    {
+        // If gameobject is show
+        if (MainInfoUI.instance.Q.Level_Up_Button.gameObject.activeSelf)
+        {
+            MainInfoUI.instance.Q.Level_Up_Button.onClick.Invoke();
+        }
+    }
+    public void OnWKeyModifierDown()
+    {
+        // If gameobject is show
+        if (MainInfoUI.instance.W.Level_Up_Button.gameObject.activeSelf)
+        {
+            MainInfoUI.instance.W.Level_Up_Button.onClick.Invoke();
+        }
+    }
+    public void OnEKeyModifierDown()
+    {
+        // If gameobject is show
+        if (MainInfoUI.instance.E.Level_Up_Button.gameObject.activeSelf)
+        {
+            MainInfoUI.instance.E.Level_Up_Button.onClick.Invoke();
+        }
+    }
+    public void OnRKeyModifierDown()
+    {
+        // If gameobject is show
+        if (MainInfoUI.instance.R.Level_Up_Button.gameObject.activeSelf)
+        {
+            MainInfoUI.instance.R.Level_Up_Button.onClick.Invoke();
+        }
+    }
     #endregion
     // Camera Change
     /// <summary>This is invoked when YKey Click Down.</summary>

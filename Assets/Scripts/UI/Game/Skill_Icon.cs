@@ -11,7 +11,7 @@ public class Skill_Icon : MonoBehaviour
     [SerializeField] Image skill_Image;
     [SerializeField] Image skill_Image_Gray;
     [SerializeField] TMP_Text coolDown_TIme;
-    [SerializeField] GameObject Level_Up_Button;
+    public Button Level_Up_Button;
     public void Set_Skill_Icon(Sprite Skill_Image)
     {
         skill_Image.sprite = Skill_Image;
@@ -69,7 +69,7 @@ public class Skill_Icon : MonoBehaviour
     }
     public void Show_LevelUp()
     {
-        Level_Up_Button.SetActive(true);
+        Level_Up_Button.gameObject.SetActive(true);
     }
 }
 

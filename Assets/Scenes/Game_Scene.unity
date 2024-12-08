@@ -1002,7 +1002,7 @@ MonoBehaviour:
   skill_Image: {fileID: 1726173694}
   skill_Image_Gray: {fileID: 613837871}
   coolDown_TIme: {fileID: 926093872}
-  Level_Up_Button: {fileID: 1792124608}
+  Level_Up_Button: {fileID: 1792124610}
 --- !u!114 &150418145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2666,7 +2666,7 @@ MonoBehaviour:
   skill_Image: {fileID: 1193460850}
   skill_Image_Gray: {fileID: 1489194653}
   coolDown_TIme: {fileID: 977442109}
-  Level_Up_Button: {fileID: 2008256520}
+  Level_Up_Button: {fileID: 2008256522}
 --- !u!114 &427206521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10784,7 +10784,7 @@ MonoBehaviour:
   skill_Image: {fileID: 2110327866}
   skill_Image_Gray: {fileID: 1071190337}
   coolDown_TIme: {fileID: 924377752}
-  Level_Up_Button: {fileID: 1130010193}
+  Level_Up_Button: {fileID: 1130010195}
 --- !u!114 &1374410722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12408,7 +12408,7 @@ MonoBehaviour:
   skill_Image: {fileID: 1103600474}
   skill_Image_Gray: {fileID: 1952281701}
   coolDown_TIme: {fileID: 1628493520}
-  Level_Up_Button: {fileID: 2093598174}
+  Level_Up_Button: {fileID: 2093598176}
 --- !u!114 &1560518390
 MonoBehaviour:
   m_ObjectHideFlags: 0
