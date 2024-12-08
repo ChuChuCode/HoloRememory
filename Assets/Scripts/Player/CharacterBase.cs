@@ -9,23 +9,18 @@ using HR.Global;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(CharacterSkillBase))]
 public class CharacterBase: Health
 {
     [Header("Agent")]
     protected NavMeshAgent agent;
+    protected CharacterSkillBase skillComponent;
 
     [Header("Skill Pressed")]
     [SerializeField] protected bool IsPressed_Q = false;
     [SerializeField] protected bool IsPressed_W = false;
     [SerializeField] protected bool IsPressed_E = false;
     [SerializeField] protected bool IsPressed_R = false;
-    [Header("Character Level")]
-    [SerializeField] protected int Character_Level = 1;
-    [Header("Skill Level")]
-    [SerializeField] protected int Q_Level = 0;
-    [SerializeField] protected int W_Level = 0;
-    [SerializeField] protected int E_Level = 0;
-    [SerializeField] protected int R_Level = 0;
     [Header("Camera")]
     [Tooltip("Fix Camera on Character")]
     [SerializeField] protected GameObject Fixed_Cam;
@@ -43,7 +38,7 @@ public class CharacterBase: Health
     [SerializeField] protected float Attack_Range;
     protected virtual void Awake()
     {
-        // Outline NavMeshAgent Check
+        // NavMeshAgent Check
         if (!TryGetComponent<NavMeshAgent>(out agent))
         {
             Debug.LogError("CharacterBase must have a NavMeshAgent Component.",agent);
@@ -52,6 +47,11 @@ public class CharacterBase: Health
         if (!TryGetComponent<Outline>(out Outline _))
         {
             Debug.LogError("CharacterBase must have a Outline Component.");
+        }
+        //  CharacterSkillBase Check
+        if (!TryGetComponent<CharacterSkillBase>(out skillComponent))
+        {
+            Debug.LogError("CharacterBase must have a CharacterSkillBase Component.",skillComponent);
         }
         // Health Initial
         InitialHealth();
@@ -73,7 +73,7 @@ public class CharacterBase: Health
         MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (!isLocalPlayer) return;
         // Show Level Up button
-        MainInfoUI.instance.Show_LevelUp();
+        MainInfoUI.instance.Show_LevelUp(skillComponent);
         // Set LocalPlayer for MiniMap
         GameController.Instance.LocalPlayer = this;
         Free_CameParent.SetActive(true);
@@ -221,7 +221,7 @@ public class CharacterBase: Health
     /// <summary>This is invoked when QKey Click Down.</summary>
     public void QKeyDown()
     {
-        if (Q_Level == 0) return;
+        if (skillComponent.Q_Level == 0) return;
         OnQKeyDown();
         IsPressed_Q = true;
     }
@@ -236,7 +236,7 @@ public class CharacterBase: Health
     /// <summary>This is invoked when WKey Click Down.</summary>
     public virtual void WKeyDown()
     {
-        if (W_Level == 0) return;
+        if (skillComponent.W_Level == 0) return;
         OnWKeyDown();
         IsPressed_W = true;
     }
@@ -251,7 +251,7 @@ public class CharacterBase: Health
     /// <summary>This is invoked when EKey Click Down.</summary>
     public virtual void EKeyDown()
     {
-        if (E_Level == 0) return;
+        if (skillComponent.E_Level == 0) return;
         OnEKeyDown();
         IsPressed_E = true;
     }
@@ -266,7 +266,7 @@ public class CharacterBase: Health
     /// <summary>This is invoked when RKey Click Down.</summary>
     public virtual void RKeyDown()
     {
-        if (R_Level == 0) return;
+        if (skillComponent.R_Level == 0) return;
         OnRKeyDown();
         IsPressed_R = true;
     }
@@ -287,7 +287,7 @@ public class CharacterBase: Health
     public virtual void OnRKeyUp(){}
     public void OnQKeyModifierDown()
     {
-        // If gameobject is show
+        // If Q Button is shown
         if (MainInfoUI.instance.Q.Level_Up_Button.gameObject.activeSelf)
         {
             MainInfoUI.instance.Q.Level_Up_Button.onClick.Invoke();
@@ -295,7 +295,7 @@ public class CharacterBase: Health
     }
     public void OnWKeyModifierDown()
     {
-        // If gameobject is show
+        // If W Button is shown
         if (MainInfoUI.instance.W.Level_Up_Button.gameObject.activeSelf)
         {
             MainInfoUI.instance.W.Level_Up_Button.onClick.Invoke();
@@ -303,7 +303,7 @@ public class CharacterBase: Health
     }
     public void OnEKeyModifierDown()
     {
-        // If gameobject is show
+        // If E Button is shown
         if (MainInfoUI.instance.E.Level_Up_Button.gameObject.activeSelf)
         {
             MainInfoUI.instance.E.Level_Up_Button.onClick.Invoke();
@@ -311,7 +311,7 @@ public class CharacterBase: Health
     }
     public void OnRKeyModifierDown()
     {
-        // If gameobject is show
+        // If R Button is shown
         if (MainInfoUI.instance.R.Level_Up_Button.gameObject.activeSelf)
         {
             MainInfoUI.instance.R.Level_Up_Button.onClick.Invoke();
@@ -490,16 +490,16 @@ public class CharacterBase: Health
         switch (skill)
         {
             case "Q":
-                Q_Level += 1;
+                skillComponent.Q_Level += 1;
                 return;
             case "W":
-                W_Level += 1;
+                skillComponent.W_Level += 1;
                 return;
             case "E":
-                E_Level += 1;
+                skillComponent.E_Level += 1;
                 return;
             case "R":
-                R_Level += 1;
+                skillComponent.R_Level += 1;
                 return;
         }
     }

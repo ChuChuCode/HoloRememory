@@ -3,7 +3,7 @@ using UnityEngine;
 using HR.Object.Player;
 
 namespace HR.GUI{
-[CustomEditor(typeof(SubaruMovementController))]
+[CustomEditor(typeof(CharacterBase),true)]
 public class CharacterControlInspector : Editor
 {
     #region SerializedProperties

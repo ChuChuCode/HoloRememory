@@ -19,7 +19,7 @@ public class Duck_AI : Health
         Special,
         Dead
     };
-    public SubaruMovementController player;
+    public SubaruController player;
     GameObject enemy;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Rigidbody rd;

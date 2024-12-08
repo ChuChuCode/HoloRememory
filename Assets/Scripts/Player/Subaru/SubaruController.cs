@@ -9,7 +9,7 @@ using HR.Object.Minion;
 using HR.Global;
 
 namespace HR.Object.Player{
-public class SubaruMovementController : CharacterBase
+public class SubaruController : CharacterBase
 {
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     int max_duck_num = 6;

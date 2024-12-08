@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using HR.Network.Game;
+using HR.Object.Player;
 
 namespace HR.UI{
 public class Skill_Icon : MonoBehaviour
@@ -11,7 +12,12 @@ public class Skill_Icon : MonoBehaviour
     [SerializeField] Image skill_Image;
     [SerializeField] Image skill_Image_Gray;
     [SerializeField] TMP_Text coolDown_TIme;
+    [SerializeField] string skill;
     public Button Level_Up_Button;
+    void Start()
+    {
+        skill = gameObject.name;
+    }
     public void Set_Skill_Icon(Sprite Skill_Image)
     {
         skill_Image.sprite = Skill_Image;
@@ -44,7 +50,7 @@ public class Skill_Icon : MonoBehaviour
         return DecimalTime.ToString();
     }
     // Skill UI Button UnityAction
-    public void Use_Skill(string skill)
+    public void Use_Skill()
     {
         switch (skill)
         {
@@ -63,13 +69,29 @@ public class Skill_Icon : MonoBehaviour
         }
     }
     // Skill Up Button
-    public void Skill_Up(string skill)
+    public void Skill_Up()
     {
         GameController.Instance.LocalPlayer.Skill_Up(skill);
     }
-    public void Show_LevelUp()
+    public void Show_LevelUp(CharacterSkillBase skillComponent)
     {
-        Level_Up_Button.gameObject.SetActive(true);
+        bool canShow = false;
+        switch (skill)
+        {
+            case "Q":
+                canShow = skillComponent.Q_Show_LevelUp();
+                break;
+            case "W":
+                canShow = skillComponent.W_Show_LevelUp();
+                break;
+            case "E":
+                canShow = skillComponent.E_Show_LevelUp();
+                break;
+            case "R":
+                canShow = skillComponent.R_Show_LevelUp();
+                break;
+        }
+        Level_Up_Button.gameObject.SetActive(canShow);
     }
 }
 

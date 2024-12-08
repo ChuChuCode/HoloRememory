@@ -1040,6 +1040,7 @@ GameObject:
   - component: {fileID: 4015481502940484996}
   - component: {fileID: -3260993302242929228}
   - component: {fileID: 4687151441908504746}
+  - component: {fileID: 3009765592814595727}
   - component: {fileID: 8030685103550228832}
   - component: {fileID: 3006667629081473162}
   - component: {fileID: 2025118370715580960}
@@ -1118,11 +1119,6 @@ MonoBehaviour:
   IsPressed_W: 0
   IsPressed_E: 0
   IsPressed_R: 0
-  Character_Level: 1
-  Q_Level: 0
-  W_Level: 0
-  E_Level: 0
-  R_Level: 0
   Fixed_Cam: {fileID: 985031338423989986}
   Free_CameParent: {fileID: 935481825553640263}
   Target_Particle: {fileID: 3508981945991229934, guid: 7d22d2f886e1d4e63985f741719e7b3b, type: 3}
@@ -1137,6 +1133,27 @@ MonoBehaviour:
   animator: {fileID: 1946654108785073176}
   AnimationMethod: {fileID: 3252265101689514867}
   R_UI: {fileID: 1132648660810081901}
+--- !u!114 &3009765592814595727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8311601850566683335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1eab2972a076db428d19f55f0f4a6d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  Character_Level: 1
+  Experience_List: 
+  Q_Level: 0
+  W_Level: 0
+  E_Level: 0
+  R_Level: 0
 --- !u!114 &8030685103550228832
 MonoBehaviour:
   m_ObjectHideFlags: 0
