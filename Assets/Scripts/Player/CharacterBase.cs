@@ -72,6 +72,8 @@ public class CharacterBase: Health
         // Remove layer to mouse raycast only Enemy and Land
         MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (!isLocalPlayer) return;
+        // Set Level
+        skillComponent.AddExp(0);
         // Show Level Up button
         MainInfoUI.instance.Show_LevelUp(skillComponent);
         // Set LocalPlayer for MiniMap

@@ -7,14 +7,17 @@ public class SubaruSkill : CharacterSkillBase
 {
     public override bool Q_Show_LevelUp()
     {
+        if (Q_Level == 4) return false;
         return true;
     }
     public override bool W_Show_LevelUp()
     {
+        if (W_Level == 4) return false;
         return true;
     }
     public override bool E_Show_LevelUp()
     {
+        if (E_Level == 4) return false;
         return true;
     }
     public override bool R_Show_LevelUp()
