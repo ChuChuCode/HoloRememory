@@ -1568,6 +1568,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  exp: 0
   maxHealth: 1000
   currentHealth: 0
   isDead: 0
@@ -3255,7 +3256,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Character_Image: {fileID: 331078640}
   Level_Text: {fileID: 848097270}
-  Level: {fileID: 688588956}
+  Level: {fileID: 995981601}
   Q: {fileID: 1374410721}
   W: {fileID: 150418144}
   E: {fileID: 427206520}
@@ -6192,6 +6193,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  exp: 0
   maxHealth: 1000
   currentHealth: 0
   isDead: 0
@@ -8286,6 +8288,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  exp: 0
   maxHealth: 1000
   currentHealth: 0
   isDead: 0
@@ -10583,6 +10586,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  exp: 0
   maxHealth: 1000
   currentHealth: 0
   isDead: 0

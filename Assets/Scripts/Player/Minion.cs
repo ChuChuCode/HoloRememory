@@ -19,7 +19,7 @@ public class Minion : Health
     [SerializeField] Animator animator;
     [Header("Final Destination")]
     public Transform FinalDestination;
-    GameObject Target;
+    [SerializeField] GameObject Target;
     int Layer_Enemy;
     [SerializeField] State current_State;
     [Header("Attack")]
@@ -49,6 +49,7 @@ public class Minion : Health
     // Update is called once per frame
     void Update()
     {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, max_distance, Layer_Enemy);
         if (currentHealth <= 0) 
         {
             if (!isDead) timer = deadTime;
@@ -57,15 +58,17 @@ public class Minion : Health
             agent.isStopped = true;
             current_State = State.Dead;
         }
-        if (Target != null && Target.GetComponent<Health>().currentHealth <= 0) 
+        else
         {
-            Target = null;
-            current_State = State.Walk;
+            if (Target != null && Target.GetComponent<Health>().currentHealth <= 0) 
+            {
+                Target = null;
+                current_State = State.Walk;
+            }
         }
         switch (current_State)
         {
             case State.Walk:
-                Collider[] hitColliders = Physics.OverlapSphere(transform.position, max_distance, Layer_Enemy);
                 if(hitColliders.Length > 0)
                 {
                     Target = hitColliders[0].gameObject;
@@ -111,11 +114,11 @@ public class Minion : Health
                 FaceVector.y = 0;
                 transform.LookAt(transform.position + FaceVector );
                 // Attack
-                print("attack");
+                // print("attack");
 
                 return;
             case State.Dead:
-                if (timer == deadTime) animator.Play("Dead");
+                // if (timer == deadTime) animator.Play("Dead");
                 // Delete Object when timer is done
                 timer -= Time.deltaTime;
                 if (timer <= 0f )
@@ -130,13 +133,14 @@ public class Minion : Health
         currentHealth = maxHealth;
         healthBar.SetMaxValue(maxHealth);
     }
-    public override void GetDamage(int damage)
+    public override int GetDamage(int damage)
     {
-        currentHealth -= damage;
+        int exp = base.GetDamage(damage);
         healthBar.SetValue(currentHealth);
 
         // Update UI
         Selectable.instance.updateInfo(this);
+        return exp;
     }
     public override void Death()
     {
@@ -162,6 +166,12 @@ public class Minion : Health
             Debug.Log("This Minion Set wrong Layer.");
         }
     }
+    void OnDrawGizmosSelected()
+    {
+        // Draw a yellow sphere at the transform's position
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, max_distance);
+    }
 }
-
+    
 }

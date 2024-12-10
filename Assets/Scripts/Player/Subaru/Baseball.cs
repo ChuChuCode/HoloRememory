@@ -6,6 +6,7 @@ using Mirror;
 namespace HR.Object.Player{
 public class Baseball : NetworkBehaviour
 {
+    public CharacterSkillBase BallOwner;
     public Transform Target;
     float speed = 10f;
     [SerializeField] int AttackDamage = 20;
@@ -29,7 +30,9 @@ public class Baseball : NetworkBehaviour
         if (other.transform.root == Target)
         {
             Health health = other.transform.root.GetComponent<Health>();
-            health.GetDamage(AttackDamage);
+            int exp = health.GetDamage(AttackDamage);
+            // Gain exp if dead
+            BallOwner.AddExp(exp);
             Destroy(gameObject);
         }
     }

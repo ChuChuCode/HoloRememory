@@ -36,11 +36,12 @@ public class TowerBehaviour : Health
         top.gameObject.SetActive(false);
     }
 
-    public override void GetDamage(int damage)
+    public override int GetDamage(int damage)
     {
-        base.GetDamage(damage);
+        int exp = base.GetDamage(damage);
         // Update UI
         Selectable.instance.updateInfo(this);
+        return exp;
     }
 
     public override void InitialHealth()

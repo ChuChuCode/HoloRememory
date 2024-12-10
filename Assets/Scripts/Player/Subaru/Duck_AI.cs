@@ -65,6 +65,7 @@ public class Duck_AI : Health
         bool isAttack = animator.GetBool("isAttack");
         // Search Enemy use sphere
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, attack_radius, Layer_Enemy);
+        
         // if health < 0 -> to dead mode
         if (currentHealth <= 0) 
         {
@@ -287,13 +288,14 @@ public class Duck_AI : Health
         currentHealth = maxHealth;
         healthBar.SetMaxValue(maxHealth);
     }
-    public override void GetDamage(int damage)
+    public override int GetDamage(int damage)
     {
-        currentHealth -= damage;
+        int exp = base.GetDamage(damage);
         healthBar.SetValue(currentHealth);
 
         // Update UI
         Selectable.instance.updateInfo(this);
+        return exp;
     }
 
     public override void Death()

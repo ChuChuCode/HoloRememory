@@ -192,10 +192,6 @@ public class SubaruMovementController_old : Health
     {
         currentHealth = maxHealth;
     }
-    public override void GetDamage(int damage)
-    {
-        currentHealth -= damage;
-    }
 
     public override void Death()
     {

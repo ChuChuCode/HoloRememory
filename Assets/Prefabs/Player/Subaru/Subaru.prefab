@@ -1112,6 +1112,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  exp: 0
   maxHealth: 500
   currentHealth: 0
   isDead: 0
@@ -1126,7 +1127,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 448
   Target: {fileID: 0}
-  Attack_Range: 3
+  Attack_Range: 5
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}
   Duck_Ult: {fileID: 3088117104640011826, guid: 2a3b0cc2d73b44e1fa2d014b19bf1812, type: 3}
@@ -1148,12 +1149,16 @@ MonoBehaviour:
   syncDirection: 1
   syncMode: 0
   syncInterval: 0
-  Character_Level: 1
+  Character_Level: 0
   Experience_List: 
   Q_Level: 0
   W_Level: 0
   E_Level: 0
   R_Level: 0
+  Q_MaxLevel: 4
+  W_MaxLevel: 4
+  E_MaxLevel: 4
+  R_MaxLevel: 3
 --- !u!114 &8030685103550228832
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -24,6 +24,7 @@ public class SubaruAnimationMethod : NetworkBehaviour
     {
         Baseball ball = Instantiate(Ball_Prefab,Ball_In_GameObject.transform.position,Quaternion.identity);
         ball.Target = Target;
+        ball.BallOwner = transform.root.GetComponent<CharacterSkillBase>();
     }
 }
 

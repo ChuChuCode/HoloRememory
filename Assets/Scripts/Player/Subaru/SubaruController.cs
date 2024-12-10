@@ -227,12 +227,13 @@ public class SubaruController : CharacterBase
         MainInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
     }
-    public override void GetDamage(int damage)
+    public override int GetDamage(int damage)
     {
-        base.GetDamage(damage);
+        int exp = base.GetDamage(damage);
         // Update UI
         MainInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
+        return exp;
     }
     protected override void NormalAttack()
     {

@@ -74,8 +74,6 @@ public class CharacterBase: Health
         if (!isLocalPlayer) return;
         // Set Level
         skillComponent.AddExp(0);
-        // Show Level Up button
-        MainInfoUI.instance.Show_LevelUp(skillComponent);
         // Set LocalPlayer for MiniMap
         GameController.Instance.LocalPlayer = this;
         Free_CameParent.SetActive(true);
@@ -505,7 +503,7 @@ public class CharacterBase: Health
                 return;
         }
     }
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(transform.position, Attack_Range);

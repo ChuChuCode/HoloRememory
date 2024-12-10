@@ -40,5 +40,9 @@ public class MainInfoUI : MonoBehaviour
     {
         Level_Text.text = level.ToString();
     }
+    public void Set_Level_Raito(float ratio)
+    {
+        Level.fillAmount = ratio;
+    }
 }
 }
