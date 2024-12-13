@@ -35,8 +35,14 @@ public class MinionSpawner : NetworkBehaviour
             Minion temp_Minion = Instantiate(Minion_Prefab,transform.position,transform.rotation);
             // Set Target
             temp_Minion.FinalDestination = EnemyTarget;
-            // Set Layer
-            temp_Minion.gameObject.layer = LayerMask.NameToLayer(layerName);
+            // Set Layer for all child
+            // Set Layer to all
+            Transform[] children = temp_Minion.GetComponentsInChildren<Transform>(includeInactive: true);
+            foreach(Transform child in children)
+            {
+                child.gameObject.layer = LayerMask.NameToLayer(layerName);
+            }
+
             // Update Enemy Layer
             temp_Minion.Update_Enemy_Layer(LayerMask.NameToLayer(layerName));
             NetworkServer.Spawn(temp_Minion.gameObject);

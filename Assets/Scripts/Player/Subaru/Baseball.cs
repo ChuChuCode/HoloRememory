@@ -20,7 +20,8 @@ public class Baseball : NetworkBehaviour
             return;
         }
         // Get Component center
-        Vector3 Center = Target.position;
+        Collider collider = Target.GetComponentInChildren<Collider>();
+        Vector3 Center = collider.bounds.center;
         Vector3 direction = Center - transform.position;
         transform.position += direction.normalized * speed * Time.deltaTime;
     }
@@ -30,9 +31,7 @@ public class Baseball : NetworkBehaviour
         if (other.transform.root == Target)
         {
             Health health = other.transform.root.GetComponent<Health>();
-            int exp = health.GetDamage(AttackDamage);
-            // Gain exp if dead
-            BallOwner.AddExp(exp);
+            health.GetDamage(AttackDamage);
             Destroy(gameObject);
         }
     }

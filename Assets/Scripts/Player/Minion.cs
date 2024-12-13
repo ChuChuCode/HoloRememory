@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using HR.UI;
+using HR.Object.Player;
 
 namespace HR.Object.Minion{
 public class Minion : Health
@@ -20,10 +21,10 @@ public class Minion : Health
     [Header("Final Destination")]
     public Transform FinalDestination;
     [SerializeField] GameObject Target;
-    int Layer_Enemy;
+    [SerializeField] LayerMask Layer_Enemy;
     [SerializeField] State current_State;
     [Header("Attack")]
-    [SerializeField] float max_distance = 7f;
+    [SerializeField] float max_distance = 8f;
     [SerializeField] float attack_radius = 5f;
     float distance;
     [Header("Dead")]
@@ -49,7 +50,7 @@ public class Minion : Health
     // Update is called once per frame
     void Update()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, max_distance, Layer_Enemy);
+
         if (currentHealth <= 0) 
         {
             if (!isDead) timer = deadTime;
@@ -58,20 +59,14 @@ public class Minion : Health
             agent.isStopped = true;
             current_State = State.Dead;
         }
-        else
-        {
-            if (Target != null && Target.GetComponent<Health>().currentHealth <= 0) 
-            {
-                Target = null;
-                current_State = State.Walk;
-            }
-        }
         switch (current_State)
         {
             case State.Walk:
+                Collider[] hitColliders = Physics.OverlapSphere(transform.position, max_distance, Layer_Enemy);
                 if(hitColliders.Length > 0)
                 {
-                    Target = hitColliders[0].gameObject;
+                    // Collider might be in child gameobject
+                    Target = hitColliders[0].transform.root.gameObject;
                     current_State = State.Chase;
                     return;
                 }
@@ -79,6 +74,18 @@ public class Minion : Health
                 agent.SetDestination(FinalDestination.position);
                 return;
             case State.Chase:
+                if (Target == null)
+                {
+                    current_State = State.Walk;
+                    return;
+                }
+                // Check Target
+                if (Target != null && Target.GetComponent<Health>().currentHealth <= 0 ) 
+                {
+                    Target = null;
+                    current_State = State.Walk;
+                    return;
+                }
                 // Check Distance
                 distance = Vector3.Distance(transform.position, Target.transform.position);
                 if (distance > max_distance)
@@ -95,6 +102,13 @@ public class Minion : Health
                 agent.SetDestination(Target.transform.position);
                 return;
             case State.Attack:
+                // Check Target
+                if (Target != null && Target.GetComponent<Health>().currentHealth <= 0) 
+                {
+                    Target = null;
+                    current_State = State.Walk;
+                    return;
+                }
                 // Check Distance
                 distance = Vector3.Distance(transform.position, Target.transform.position);
                 if (distance > max_distance)
@@ -119,6 +133,10 @@ public class Minion : Health
                 return;
             case State.Dead:
                 // if (timer == deadTime) animator.Play("Dead");
+                if (timer == deadTime) 
+                {
+                    Detect_Surround();
+                }
                 // Delete Object when timer is done
                 timer -= Time.deltaTime;
                 if (timer <= 0f )
@@ -133,14 +151,13 @@ public class Minion : Health
         currentHealth = maxHealth;
         healthBar.SetMaxValue(maxHealth);
     }
-    public override int GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
-        int exp = base.GetDamage(damage);
+        base.GetDamage(damage);
         healthBar.SetValue(currentHealth);
 
         // Update UI
         Selectable.instance.updateInfo(this);
-        return exp;
     }
     public override void Death()
     {
@@ -151,19 +168,18 @@ public class Minion : Health
     }
     public void Update_Enemy_Layer(int layer)
     {
-        // If layer == Team1
-        if (LayerMask.NameToLayer("Team1") == layer)
+        Layer_Enemy &= ~(1 << layer);
+    }
+    void Detect_Surround()
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, max_distance, Layer_Enemy);
+        foreach (Collider collider in hitColliders)
         {
-            Layer_Enemy = LayerMask.NameToLayer("Team2");
-        }
-        // If layer == Team2
-        else if (LayerMask.NameToLayer("Team2") == layer)
-        {
-            Layer_Enemy = LayerMask.NameToLayer("Team1");
-        }
-        else
-        {
-            Debug.Log("This Minion Set wrong Layer.");
+            CharacterSkillBase tempSkill = collider.transform.root.GetComponent<CharacterSkillBase>();
+            if (tempSkill != null)
+            {
+                tempSkill.AddExp(exp);
+            }
         }
     }
     void OnDrawGizmosSelected()

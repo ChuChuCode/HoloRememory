@@ -222,14 +222,14 @@ public class CharacterBase: Health
     public void QKeyDown()
     {
         if (skillComponent.Q_Level == 0) return;
-        OnQKeyDown();
+        if (!OnQKeyDown()) return;
         IsPressed_Q = true;
     }
     /// <summary>This is invoked when QKey Click Up.</summary>
     public void QKeyUp()
     {
         if (!IsPressed_Q) return;
-        OnQKeyUp();
+        if (!OnQKeyUp()) return;
         IsPressed_Q = false;
     }
     // W skill
@@ -237,14 +237,14 @@ public class CharacterBase: Health
     public virtual void WKeyDown()
     {
         if (skillComponent.W_Level == 0) return;
-        OnWKeyDown();
+        if (!OnWKeyDown()) return;
         IsPressed_W = true;
     }
     /// <summary>This is invoked when WKey Click Up.</summary>
     public virtual void WKeyUp()
     {
         if (!IsPressed_W) return;
-        OnWKeyUp();
+        if (!OnWKeyUp()) return;
         IsPressed_W = false;
     }
     // E skill
@@ -252,14 +252,14 @@ public class CharacterBase: Health
     public virtual void EKeyDown()
     {
         if (skillComponent.E_Level == 0) return;
-        OnEKeyDown();
+        if (!OnEKeyDown()) return;
         IsPressed_E = true;
     }
     /// <summary>This is invoked when EKey Click Up.</summary>
     public virtual void EKeyUp()
     {
         if (!IsPressed_E) return;
-        OnEKeyUp();
+        if (!OnEKeyUp()) return;
         IsPressed_E = false;
     }
     // R skill
@@ -267,24 +267,32 @@ public class CharacterBase: Health
     public virtual void RKeyDown()
     {
         if (skillComponent.R_Level == 0) return;
-        OnRKeyDown();
+        if (!OnRKeyDown()) return;
         IsPressed_R = true;
     }
     /// <summary>This is invoked when RKey Click Up.</summary>
     public virtual void RKeyUp()
     {
         if (!IsPressed_R) return;
-        OnRKeyUp();
+        if (!OnRKeyUp()) return;
         IsPressed_R = false;
     }
-    public virtual void OnQKeyDown(){}
-    public virtual void OnQKeyUp(){}
-    public virtual void OnWKeyDown(){}
-    public virtual void OnWKeyUp(){}
-    public virtual void OnEKeyDown(){}
-    public virtual void OnEKeyUp(){}
-    public virtual void OnRKeyDown(){}
-    public virtual void OnRKeyUp(){}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnQKeyDown(){return true;}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnQKeyUp(){return true;}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnWKeyDown(){return true;}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnWKeyUp(){return true;}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnEKeyDown(){return true;}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnEKeyUp(){return true;}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnRKeyDown(){return true;}
+    /// <summary>Return false to avoid skill use.</summary>
+    public virtual bool OnRKeyUp(){return true;}
     public void OnQKeyModifierDown()
     {
         // If Q Button is shown
@@ -421,6 +429,7 @@ public class CharacterBase: Health
             if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
             {
                 Vector3 AgentDestination;
+                // Land Layer -> Set Hit point as Destination
                 if (hit.transform.root.gameObject.layer == LayerMask.NameToLayer("Land"))
                 {
                     AgentDestination = hit.point;
@@ -452,7 +461,8 @@ public class CharacterBase: Health
     {
         // Check if Enemy reach attack range
         if (Target == null) return;
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, Attack_Range);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, Attack_Range,MouseTargetLayer);
+        // If Target is in range -> stop and attack
         if (hitColliders.Any(item => item.transform.root.name == Target.name))
         {
             agent.isStopped = true;

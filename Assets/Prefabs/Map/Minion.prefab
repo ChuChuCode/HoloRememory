@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8585676022701472006}
-  - component: {fileID: 4825198502672263540}
   - component: {fileID: 7418272310503872269}
   - component: {fileID: 3193295569074801873}
   - component: {fileID: 5256066505408782799}
@@ -17,7 +16,7 @@ GameObject:
   - component: {fileID: -8863116197495372499}
   - component: {fileID: 3329852012298167037}
   m_Layer: 0
-  m_Name: Mioion
+  m_Name: Minion
   m_TagString: Selectable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40,27 +39,6 @@ Transform:
   - {fileID: 5150567508180232514}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &4825198502672263540
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 949071490613845438}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.63391316
-  m_Center: {x: -0.0043907166, y: 0.88, z: 0.013171256}
 --- !u!114 &7418272310503872269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,11 +111,16 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  exp: 100
   maxHealth: 100
   currentHealth: 0
   isDead: 0
   animator: {fileID: 0}
   FinalDestination: {fileID: 0}
+  Target: {fileID: 0}
+  Layer_Enemy:
+    serializedVersion: 2
+    m_Bits: 192
   current_State: 0
   max_distance: 7
   attack_radius: 5
@@ -213,19 +196,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalScale.x
-      value: 60.000004
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalScale.y
-      value: 60.000004
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalScale.z
-      value: 60.000004
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.123
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalPosition.y
@@ -237,19 +220,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -267,20 +250,73 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -5477749408508380018, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_Name
       value: Minion Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: 8417361359673230750, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_UpdateWhenOffscreen
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 66.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 66.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 66.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8879528566716807029, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1022236053127613959}
   m_SourcePrefab: {fileID: 100100000, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
 --- !u!4 &2356263037402220546 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
   m_PrefabInstance: {fileID: 2826459303463055337}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &3168546302368567992 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+  m_PrefabInstance: {fileID: 2826459303463055337}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &1022236053127613959
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3168546302368567992}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.71
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &8348394151353527230
 PrefabInstance:
   m_ObjectHideFlags: 0

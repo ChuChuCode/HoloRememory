@@ -95,20 +95,21 @@ public class SubaruController : CharacterBase
         R_UI.SetActive(false);
     }
     /// Q skill
-    public override void OnQKeyDown()
+    public override bool OnQKeyDown()
     {
-        if (Time.time - duck_rush_timer < duck_rush_cd) return;
-        if (duck_array.Count == 0) return;
+        if (Time.time - duck_rush_timer < duck_rush_cd) return false;
+        if (duck_array.Count == 0) return false;
         // Show UI preview
         foreach (var duck in duck_array)
         {
             duck.Q_UI_Set(true);
         }
+        return true;
     }
-    public override void OnQKeyUp()
+    public override bool OnQKeyUp()
     {
         // If count = 0 when key Up 
-        if (duck_array.Count == 0) return;
+        if (duck_array.Count == 0) return false;
         animator.SetTrigger("Special");
         duck_rush_timer = Time.time;
         
@@ -118,19 +119,21 @@ public class SubaruController : CharacterBase
             duck.rush_trigger = true;
             duck.Q_UI_Set(false);
         }
+        return true;
     }
     /// R skill 
-    public override void OnRKeyDown()
+    public override bool OnRKeyDown()
     {
-        if (Time.time - duck_ult_timer < duck_ult_cd) return;
-        if (duck_array.Count == 0) return;
+        if (Time.time - duck_ult_timer < duck_ult_cd) return false;
+        if (duck_array.Count == 0) return false;
         // Show UI preview
         R_UI.SetActive(true);
+        return true;
     }
-    public override void OnRKeyUp()
+    public override bool OnRKeyUp()
     {
-        if (!IsPressed_R) return;
-        if (duck_array.Count == 0) return;
+        if (!IsPressed_R) return false;
+        if (duck_array.Count == 0) return false;
         animator.SetTrigger("Special");
         duck_ult_timer = Time.time;
         // Delete Duck
@@ -142,6 +145,7 @@ public class SubaruController : CharacterBase
         R_UI.SetActive(false);
         // Spawn Ult Duck
         Duck_Ult duck = Instantiate(Duck_Ult,transform.position + new Vector3(0f,10f,0f) ,Quaternion.identity);
+        return true;
     }
     void HandleMoveAnmation()
     {
@@ -227,13 +231,12 @@ public class SubaruController : CharacterBase
         MainInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
     }
-    public override int GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
-        int exp = base.GetDamage(damage);
+        base.GetDamage(damage);
         // Update UI
         MainInfoUI.instance.updateInfo(this);
         Selectable.instance.updateInfo(this);
-        return exp;
     }
     protected override void NormalAttack()
     {

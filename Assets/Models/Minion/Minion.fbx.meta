@@ -7,6 +7,16 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Blue
+    second: {fileID: 2100000, guid: c675725756b16cd4dafc151e056e9e4d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Light Blue
+    second: {fileID: 2100000, guid: e9f442003bc0ff04882c0a1ce865169d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Main
     second: {fileID: 2100000, guid: c675725756b16cd4dafc151e056e9e4d, type: 2}
   - first:
@@ -80,7 +90,7 @@ ModelImporter:
     useFileScale: 1
     strictVertexDataChecks: 0
   tangentSpace:
-    normalSmoothAngle: 60
+    normalSmoothAngle: 128
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4

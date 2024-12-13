@@ -20,7 +20,7 @@ public class Duck_AI : Health
         Dead
     };
     public SubaruController player;
-    GameObject enemy;
+    [SerializeField] GameObject enemy;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Rigidbody rd;
     Animator animator;
@@ -32,7 +32,7 @@ public class Duck_AI : Health
     [SerializeField] State current_State;
     [SerializeField] float time = 1f;
     [Header("Enemy Layer")]
-    int Layer_Enemy;
+    [SerializeField] LayerMask Layer_Enemy;
     [Header("Q Skill")]
     [SerializeField] GameObject Q_UI;
     public Vector3 rush_position;
@@ -210,7 +210,7 @@ public class Duck_AI : Health
                 return;
             case State.Attack:
                 // no enemy nearby(dead or run away)
-                if (hitColliders.Length == 0)
+                if (enemy != null && enemy.GetComponent<Health>().currentHealth <= 0) 
                 {
                     // reset enemy
                     enemy = null;
@@ -268,7 +268,7 @@ public class Duck_AI : Health
     }
     GameObject Search_Nearest(Collider[] hitColliders)
     {
-        GameObject target = hitColliders[0].gameObject;
+        GameObject target = hitColliders[0].transform.root.gameObject;
         float distance = Vector3.Distance(transform.position, hitColliders[0].transform.position);
 
         for (int i = 1; i < hitColliders.Length; i++)
@@ -288,14 +288,13 @@ public class Duck_AI : Health
         currentHealth = maxHealth;
         healthBar.SetMaxValue(maxHealth);
     }
-    public override int GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
-        int exp = base.GetDamage(damage);
+        base.GetDamage(damage);
         healthBar.SetValue(currentHealth);
 
         // Update UI
         Selectable.instance.updateInfo(this);
-        return exp;
     }
 
     public override void Death()
@@ -307,20 +306,7 @@ public class Duck_AI : Health
     }
     public void Update_Enemy_Layer(int duck_layer)
     {
-        // If duck layer == Team1
-        if (LayerMask.NameToLayer("Team1") == duck_layer)
-        {
-            Layer_Enemy = LayerMask.NameToLayer("Team2");
-        }
-        // If duck layer == Team2
-        else if (LayerMask.NameToLayer("Team2") == duck_layer)
-        {
-            Layer_Enemy = LayerMask.NameToLayer("Team1");
-        }
-        else
-        {
-            Debug.Log("This Duck Set wrong Layer.");
-        }
+        Layer_Enemy &= ~(1 << duck_layer);
     }
     public void Q_UI_Set(bool isShow)
     {

@@ -16,15 +16,9 @@ public class Health : NetworkBehaviour
         currentHealth = maxHealth;
     }
     // Get Damage and return exp
-    public virtual int GetDamage(int damage)
+    public virtual void GetDamage(int damage)
     {
         currentHealth -= damage;
-        
-        if (currentHealth <= 0)
-        {
-            return exp;
-        }
-        return 0;
     }
     public virtual void Death(){}
     

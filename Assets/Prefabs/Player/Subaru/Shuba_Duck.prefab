@@ -922,6 +922,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 535426753707815958, guid: 664dee156702c490eb87a4b43272f708, type: 3}
+      propertyPath: m_UpdateWhenOffscreen
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 645907036462143397, guid: 664dee156702c490eb87a4b43272f708, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -1593,6 +1597,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  exp: 0
   maxHealth: 300
   currentHealth: 0
   isDead: 0
@@ -1601,6 +1606,9 @@ MonoBehaviour:
   rd: {fileID: 8713174955817428959}
   current_State: 0
   time: 1
+  Layer_Enemy:
+    serializedVersion: 2
+    m_Bits: 192
   Q_UI: {fileID: 8004377025486390647}
   rush_position: {x: 0, y: 0, z: 0}
   rush_trigger: 0

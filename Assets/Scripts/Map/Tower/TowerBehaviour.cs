@@ -36,12 +36,11 @@ public class TowerBehaviour : Health
         top.gameObject.SetActive(false);
     }
 
-    public override int GetDamage(int damage)
+    public override void GetDamage(int damage)
     {
-        int exp = base.GetDamage(damage);
+        base.GetDamage(damage);
         // Update UI
         Selectable.instance.updateInfo(this);
-        return exp;
     }
 
     public override void InitialHealth()
@@ -101,7 +100,10 @@ public class TowerBehaviour : Health
                 }                
                 // Set Line
                 lineRenderer.positionCount = 2;
-                Vector3 Center = enemy.position + new Vector3(0, enemy.GetComponent<NavMeshAgent>().height/2 - enemy.GetComponent<NavMeshAgent>().baseOffset ,0);
+                // Set Collider Center
+                Collider collider = enemy.GetComponentInChildren<Collider>();
+                Vector3 Center = collider.bounds.center;
+                // Vector3 Center = enemy.position + new Vector3(0, enemy.GetComponent<NavMeshAgent>().height/2 - enemy.GetComponent<NavMeshAgent>().baseOffset ,0);
                 lineRenderer.SetPosition(1, Center);
                 // Set Model
                 top.LookAt(enemy.position);

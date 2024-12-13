@@ -17,7 +17,9 @@ public class TowerBall : MonoBehaviour
             return;
         }
         // Get Component center
-        Vector3 Center = Target.position + new Vector3(0, Target.GetComponent<NavMeshAgent>().height/2 - Target.GetComponent<NavMeshAgent>().baseOffset ,0);
+        Collider collider = Target.GetComponentInChildren<Collider>();
+        Vector3 Center = collider.bounds.center;
+        // Vector3 Center = Target.position + new Vector3(0, Target.GetComponent<NavMeshAgent>().height/2 - Target.GetComponent<NavMeshAgent>().baseOffset ,0);
         Vector3 direction = Center - transform.position;
         transform.position += direction.normalized * speed * Time.deltaTime;
     }
