@@ -1,7 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using HR.Object;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using HR.UI;
@@ -43,11 +40,9 @@ public class Minion : Health
         {
             Debug.LogError("CharacterBase must have a Outline Component.");
         }
-        current_State = State.Walk;InitialHealth();
+        current_State = State.Walk;
         InitialHealth();
     }
-
-    // Update is called once per frame
     void Update()
     {
 
@@ -148,7 +143,7 @@ public class Minion : Health
     }
     public override void InitialHealth()
     {
-        currentHealth = maxHealth;
+        base.InitialHealth();
         healthBar.SetMaxValue(maxHealth);
     }
     public override void GetDamage(int damage)
@@ -172,14 +167,21 @@ public class Minion : Health
     }
     void Detect_Surround()
     {
+        List<CharacterSkillBase> tempCharacterSkill = new List<CharacterSkillBase>();
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, max_distance, Layer_Enemy);
         foreach (Collider collider in hitColliders)
         {
             CharacterSkillBase tempSkill = collider.transform.root.GetComponent<CharacterSkillBase>();
             if (tempSkill != null)
             {
-                tempSkill.AddExp(exp);
+                tempCharacterSkill.Add(tempSkill);
             }
+        }
+        foreach (CharacterSkillBase tempSkill in tempCharacterSkill)
+        {
+            // Check character around
+            int exp_new = (tempCharacterSkill.Count == 1) ? exp : (int)(exp*0.7);
+            tempSkill.AddExp(exp_new);
         }
     }
     void OnDrawGizmosSelected()

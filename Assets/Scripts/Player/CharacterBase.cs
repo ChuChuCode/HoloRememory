@@ -123,10 +123,15 @@ public class CharacterBase: Health
         InputComponent.instance.playerInput.Player.Recall.started += _ => OnBKeyClick();
         
         // Skill Up Modifier
-        InputComponent.instance.playerInput.Player.QLevelUp.started += _ => OnQKeyModifierDown();
-        InputComponent.instance.playerInput.Player.WLevelUp.started += _ => OnWKeyModifierDown();
-        InputComponent.instance.playerInput.Player.ELevelUp.started += _ => OnEKeyModifierDown();
-        InputComponent.instance.playerInput.Player.RLevelUp.started += _ => OnRKeyModifierDown();
+        InputComponent.instance.playerInput.Player.QLevelUp.canceled += _ => OnQKeyModifierUp();
+        InputComponent.instance.playerInput.Player.WLevelUp.canceled += _ => OnWKeyModifierUp();
+        InputComponent.instance.playerInput.Player.ELevelUp.canceled += _ => OnEKeyModifierUp();
+        InputComponent.instance.playerInput.Player.RLevelUp.canceled += _ => OnRKeyModifierUp();
+
+        // Tab for Player Info
+        InputComponent.instance.playerInput.Player.Tab.started += _ => OnTabKeyDown();
+        InputComponent.instance.playerInput.Player.Tab.canceled += _ => OnTabKeyUp();
+
     }
     protected virtual void Update()
     {
@@ -293,7 +298,7 @@ public class CharacterBase: Health
     public virtual bool OnRKeyDown(){return true;}
     /// <summary>Return false to avoid skill use.</summary>
     public virtual bool OnRKeyUp(){return true;}
-    public void OnQKeyModifierDown()
+    public void OnQKeyModifierUp()
     {
         // If Q Button is shown
         if (MainInfoUI.instance.Q.Level_Up_Button.gameObject.activeSelf)
@@ -301,7 +306,7 @@ public class CharacterBase: Health
             MainInfoUI.instance.Q.Level_Up_Button.onClick.Invoke();
         }
     }
-    public void OnWKeyModifierDown()
+    public void OnWKeyModifierUp()
     {
         // If W Button is shown
         if (MainInfoUI.instance.W.Level_Up_Button.gameObject.activeSelf)
@@ -309,7 +314,7 @@ public class CharacterBase: Health
             MainInfoUI.instance.W.Level_Up_Button.onClick.Invoke();
         }
     }
-    public void OnEKeyModifierDown()
+    public void OnEKeyModifierUp()
     {
         // If E Button is shown
         if (MainInfoUI.instance.E.Level_Up_Button.gameObject.activeSelf)
@@ -317,7 +322,7 @@ public class CharacterBase: Health
             MainInfoUI.instance.E.Level_Up_Button.onClick.Invoke();
         }
     }
-    public void OnRKeyModifierDown()
+    public void OnRKeyModifierUp()
     {
         // If R Button is shown
         if (MainInfoUI.instance.R.Level_Up_Button.gameObject.activeSelf)
@@ -368,6 +373,16 @@ public class CharacterBase: Health
     {}
     public virtual void OnBKeyClick()
     {}
+    public virtual void OnTabKeyDown()
+    {
+        // Show UI
+        
+        // Update Info
+    }
+    public virtual void OnTabKeyUp()
+    {
+        // Close UI
+    }
     #region Skill UI
     /// <summary>Hide Q skill preview.</summary>
     protected virtual void Hide_Q_UI(){}

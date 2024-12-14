@@ -170,6 +170,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Tab"",
+                    ""type"": ""Button"",
+                    ""id"": ""29d76f8f-58f6-4f15-a742-89f98c4f69a1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -436,6 +445,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""R Level Up"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b58a7099-5fab-4169-8610-889d7ebe379f"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Tab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -640,6 +660,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_WLevelUp = m_Player.FindAction("W Level Up", throwIfNotFound: true);
         m_Player_ELevelUp = m_Player.FindAction("E Level Up", throwIfNotFound: true);
         m_Player_RLevelUp = m_Player.FindAction("R Level Up", throwIfNotFound: true);
+        m_Player_Tab = m_Player.FindAction("Tab", throwIfNotFound: true);
         // Player_old
         m_Player_old = asset.FindActionMap("Player_old", throwIfNotFound: true);
         m_Player_old_Move = m_Player_old.FindAction("Move", throwIfNotFound: true);
@@ -730,6 +751,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_WLevelUp;
     private readonly InputAction m_Player_ELevelUp;
     private readonly InputAction m_Player_RLevelUp;
+    private readonly InputAction m_Player_Tab;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -750,6 +772,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @WLevelUp => m_Wrapper.m_Player_WLevelUp;
         public InputAction @ELevelUp => m_Wrapper.m_Player_ELevelUp;
         public InputAction @RLevelUp => m_Wrapper.m_Player_RLevelUp;
+        public InputAction @Tab => m_Wrapper.m_Player_Tab;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -807,6 +830,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @RLevelUp.started += instance.OnRLevelUp;
             @RLevelUp.performed += instance.OnRLevelUp;
             @RLevelUp.canceled += instance.OnRLevelUp;
+            @Tab.started += instance.OnTab;
+            @Tab.performed += instance.OnTab;
+            @Tab.canceled += instance.OnTab;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -859,6 +885,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @RLevelUp.started -= instance.OnRLevelUp;
             @RLevelUp.performed -= instance.OnRLevelUp;
             @RLevelUp.canceled -= instance.OnRLevelUp;
+            @Tab.started -= instance.OnTab;
+            @Tab.performed -= instance.OnTab;
+            @Tab.canceled -= instance.OnTab;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -981,6 +1010,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnWLevelUp(InputAction.CallbackContext context);
         void OnELevelUp(InputAction.CallbackContext context);
         void OnRLevelUp(InputAction.CallbackContext context);
+        void OnTab(InputAction.CallbackContext context);
     }
     public interface IPlayer_oldActions
     {
