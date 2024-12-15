@@ -115,15 +115,15 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   isDead: 0
+  current_State: 0
   animator: {fileID: 0}
-  FinalDestination: {fileID: 0}
+  MainDestination: {fileID: 0}
   Target: {fileID: 0}
   Layer_Enemy:
     serializedVersion: 2
     m_Bits: 192
-  current_State: 0
-  max_distance: 7
-  attack_radius: 5
+  Search_radius: 6
+  attack_radius: 3
   deadTime: 1
   healthBar: {fileID: 8290235579187651660}
 --- !u!54 &-8863116197495372499

@@ -1,9 +1,9 @@
 using UnityEngine;
 
 namespace HR.UI{
-public class OptionPanel : MonoBehaviour
+public class CharacterInfoPanel : MonoBehaviour
 {
-    public static OptionPanel Instance;
+    public static CharacterInfoPanel Instance;
     // Start is called before the first frame update
     void Awake()
     {

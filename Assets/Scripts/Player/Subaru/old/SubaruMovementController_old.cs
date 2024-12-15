@@ -171,9 +171,9 @@ public class SubaruMovementController_old : Health
             duck_spawn_timer = Time.time ;
             Vector3 pos = transform.position + 
                         new Vector3(
-                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius,
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_distance,
                             0f,
-                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_distance);
             Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
             // duck.player = this; -> type change
             duck_array.Add(duck);

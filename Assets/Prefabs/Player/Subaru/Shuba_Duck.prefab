@@ -1601,18 +1601,21 @@ MonoBehaviour:
   maxHealth: 300
   currentHealth: 0
   isDead: 0
-  player: {fileID: 0}
-  agent: {fileID: 5707987594537908091}
-  rd: {fileID: 8713174955817428959}
-  current_State: 0
-  time: 1
+  current_State: 
+  animator: {fileID: 883360396524798469}
+  MainDestination: {fileID: 0}
+  Target: {fileID: 0}
   Layer_Enemy:
     serializedVersion: 2
     m_Bits: 192
+  Search_radius: 5
+  attack_radius: 2
+  deadTime: 1
+  healthBar: {fileID: 6221899985002140448}
+  rd: {fileID: 8713174955817428959}
   Q_UI: {fileID: 8004377025486390647}
   rush_position: {x: 0, y: 0, z: 0}
   rush_trigger: 0
-  healthBar: {fileID: 6221899985002140448}
 --- !u!95 &883360396524798469
 Animator:
   serializedVersion: 5

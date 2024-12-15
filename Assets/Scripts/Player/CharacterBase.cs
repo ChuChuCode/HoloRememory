@@ -1,4 +1,3 @@
-using UnityEngine.InputSystem;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
@@ -359,8 +358,7 @@ public class CharacterBase: Health
     public virtual void OnEscKeyClick()
     {
         // Show/Hide UI
-        GameObject OptionUI = OptionPanel.Instance.gameObject;
-        if (OptionUI.activeSelf)
+        if (OptionPanel.Instance.gameObject.activeSelf)
         {
             OptionPanel.Instance.gameObject.SetActive(false);
         }
@@ -376,12 +374,13 @@ public class CharacterBase: Health
     public virtual void OnTabKeyDown()
     {
         // Show UI
-        
+        CharacterInfoPanel.Instance.gameObject.SetActive(true);
         // Update Info
     }
     public virtual void OnTabKeyUp()
     {
         // Close UI
+        CharacterInfoPanel.Instance.gameObject.SetActive(false);
     }
     #region Skill UI
     /// <summary>Hide Q skill preview.</summary>

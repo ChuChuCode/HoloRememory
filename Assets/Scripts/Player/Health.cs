@@ -1,25 +1,26 @@
 using Mirror;
-using UnityEditor.EditorTools;
 using UnityEngine;
 namespace HR.Object{
 
 [RequireComponent (typeof (Outline))]
 public class Health : NetworkBehaviour
 {
-    // Get exp when be killed
+    /// <summary>Get exp when be killed.</summary>
     public int exp;
     [SyncVar] public int maxHealth ;
     [SyncVar] public int currentHealth;
     [SyncVar] public bool isDead = false;
+    /// <summary>Set Health to maxHealth.</summary>
     public virtual void InitialHealth()
     {
         currentHealth = maxHealth;
     }
-    // Get Damage and return exp
+    /// <summary>Let gameobject get damage.</summary>
     public virtual void GetDamage(int damage)
     {
         currentHealth -= damage;
     }
+    /// <summary>Do things when Dead.</summary>
     public virtual void Death(){}
     
 }

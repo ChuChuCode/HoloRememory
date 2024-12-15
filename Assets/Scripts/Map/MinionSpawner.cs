@@ -34,7 +34,7 @@ public class MinionSpawner : NetworkBehaviour
             // Spawn Minion
             Minion temp_Minion = Instantiate(Minion_Prefab,transform.position,transform.rotation);
             // Set Target
-            temp_Minion.FinalDestination = EnemyTarget;
+            temp_Minion.MainDestination = EnemyTarget;
             // Set Layer for all child
             // Set Layer to all
             Transform[] children = temp_Minion.GetComponentsInChildren<Transform>(includeInactive: true);

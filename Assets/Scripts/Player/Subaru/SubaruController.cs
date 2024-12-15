@@ -11,15 +11,16 @@ using HR.Global;
 namespace HR.Object.Player{
 public class SubaruController : CharacterBase
 {
-    public List<Duck_AI> duck_array = new List<Duck_AI>();
-    int max_duck_num = 6;
-    [Header("Duck Skills")]
-    [SerializeField] Duck_AI Duck_prefab;
-    [SerializeField] Duck_Ult Duck_Ult;
+    [Header("Animator")]
     [SerializeField] Animator animator;
     [SerializeField] SubaruAnimationMethod AnimationMethod;
+    [Header("Passive")]
+    public List<Duck_AI> duck_array = new List<Duck_AI>();
+    [SerializeField] Duck_AI Duck_prefab;
+    int max_duck_num = 6;
+    [Header("Duck Skills")]
+    [SerializeField] Duck_Ult Duck_Ult;
     int isRunHash;
-
     [Header("Skill Timer")]
     float duck_spawn_cd = 10f;
     float duck_spawn_timer = 0f;
@@ -55,9 +56,9 @@ public class SubaruController : CharacterBase
             {
                 pos = transform.position + 
                         new Vector3(
-                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius,
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_distance,
                             0f,
-                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_radius);
+                            UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_distance);
             }
             while (!NavMesh.SamplePosition(pos,out hit, 1.0f, NavMesh.AllAreas));
             pos = hit.position;
@@ -76,7 +77,7 @@ public class SubaruController : CharacterBase
 
             NetworkServer.Spawn(duck.gameObject);
             // Set Info
-            duck.player = this;
+            duck.MainDestination = transform;
             // Add to list
             duck_array.Add(duck);
         }
