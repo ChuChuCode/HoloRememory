@@ -1,6 +1,5 @@
 |   InputSystem.cs
 |   Setting_Component.cs
-|   tree.txt
 |   
 +---Editor
 |       CharacterControlInspector.cs
