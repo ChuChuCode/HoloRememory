@@ -515,17 +515,19 @@ public class CharacterBase: Health
         {
             case "Q":
                 skillComponent.Q_Level += 1;
-                return;
+                break;
             case "W":
                 skillComponent.W_Level += 1;
-                return;
+                break;
             case "E":
                 skillComponent.E_Level += 1;
-                return;
+                break;
             case "R":
                 skillComponent.R_Level += 1;
-                return;
+                break;
         }
+        // Check if still need to level up
+        skillComponent.AddExp(0);
     }
     void OnDrawGizmosSelected()
     {

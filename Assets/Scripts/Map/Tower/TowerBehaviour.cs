@@ -77,6 +77,8 @@ public class TowerBehaviour : Health
             case State.Attack:
                 if (enemy == null || enemy.GetComponent<Health>().currentHealth <= 0) 
                 {
+                    enemy = null;
+                    lineRenderer.positionCount = 1;
                     current_State = State.Idle;
                     return;
                 }
@@ -87,6 +89,7 @@ public class TowerBehaviour : Health
                 {
                     current_State = State.Idle;
                     enemy = null;
+                    lineRenderer.positionCount = 1;
                     return;
                 }
                 // shoot attack if is not in CD

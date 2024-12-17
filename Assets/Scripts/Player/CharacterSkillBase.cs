@@ -26,30 +26,30 @@ public class CharacterSkillBase : NetworkBehaviour
         // Set Level exp
         Experience_List = new List<int>
         {
-            0,    // Lv.1
-            280,  // Lv.2
-            380,  // Lv.3
-            480,  // Lv.4
-            580,  // Lv.5
-            680,  // Lv.6
-            780,  // Lv.7
-            880,  // Lv.8
-            980,  // Lv.9
-            1080, // Lv.10
-            1180, // Lv.11
-            1280, // Lv.12
-            1380, // Lv.13
-            1480, // Lv.14
-            1580, // Lv.15
-            1680, // Lv.16
-            1780, // Lv.17
-            1880  // Lv.18
+            0,     // Lv.1  0
+            280,   // Lv.2  280
+            660,   // Lv.3  380
+            1140,  // Lv.4  480
+            1720,  // Lv.5  580
+            2400,  // Lv.6  680
+            3180,  // Lv.7  780
+            4060,  // Lv.8  880
+            5040,  // Lv.9  980
+            6120,  // Lv.10 1080
+            7300,  // Lv.11 1180
+            8580,  // Lv.12 1280
+            9960,  // Lv.13 1380
+            11440, // Lv.14 1480
+            13020, // Lv.15 1580
+            14700, // Lv.16 1680
+            16480, // Lv.17 1780
+            18360  // Lv.18 1880
         };
     }
     // Calculate Level
     int Detect_Level()
     {
-        for (int level = 0 ; level < Experience_List.Count ;level++)
+        for (int level = 1 ; level < Experience_List.Count ;level++)
         {
             if (Character_exp < Experience_List[level])
             {
@@ -70,8 +70,8 @@ public class CharacterSkillBase : NetworkBehaviour
     {
         Character_exp += exp;
         int new_Level = Detect_Level();
-        // Level Up Detect
-        if (Character_Level != new_Level)
+        // Level Up Detect Up
+        if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
         {
             Character_Level = new_Level;
             // Show Level Up button

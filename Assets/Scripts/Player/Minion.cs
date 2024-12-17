@@ -52,13 +52,8 @@ public class Minion : MinionBase
     }
     void State_Chase()
     {
-        if (Target == null)
-        {
-            current_State = WALK;
-            return;
-        }
         // Check Target
-        if (Target != null && Target.GetComponent<Health>().currentHealth <= 0 ) 
+        if (Target == null || Target.GetComponent<Health>().currentHealth <= 0 ) 
         {
             Target = null;
             current_State = WALK;
@@ -82,7 +77,7 @@ public class Minion : MinionBase
     void State_Attack()
     {
         // Check Target
-        if (Target != null && Target.GetComponent<Health>().currentHealth <= 0) 
+        if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
         {
             Target = null;
             current_State = WALK;

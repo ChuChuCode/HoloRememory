@@ -187,7 +187,7 @@ public class Duck_AI : MinionBase
             return;
         }
         // no enemy nearby(dead or run away)
-        if (Target != null && Target.GetComponent<Health>().currentHealth <= 0) 
+        if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
         {
             // reset enemy
             Target = null;
