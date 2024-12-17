@@ -2,6 +2,8 @@
  A Hololive MOBA game
  (still at the start of Core system.)
 
+## Directory tree view
+[See here](https://github.com/ChuChuCode/HoloRememory/blob/main/tree.txt)
 
 ## Develope Process
 
