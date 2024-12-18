@@ -11,6 +11,8 @@ namespace HR.Object.Player{
 [RequireComponent(typeof(CharacterSkillBase))]
 public class CharacterBase: Health
 {
+    [Header("Animator")]
+    [SerializeField] protected Animator animator;
     [Header("Agent")]
     protected NavMeshAgent agent;
     protected CharacterSkillBase skillComponent;
@@ -456,7 +458,7 @@ public class CharacterBase: Health
                     Target = hit.transform.root;
                 }
                 Vector3 moveVelocity = AgentDestination - transform.position;
-            
+
                 // Rotate Immediately
                 agent.velocity = moveVelocity.normalized * agent.speed;
                 // Walk goal
@@ -474,11 +476,17 @@ public class CharacterBase: Health
     protected void Attack()
     {
         // Check if Enemy reach attack range
-        if (Target == null) return;
+        if (Target == null) 
+        {
+            animator.SetTrigger("AttackStop");
+            return;
+        }
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, Attack_Range,MouseTargetLayer);
         // If Target is in range -> stop and attack
         if (hitColliders.Any(item => item.transform.root.name == Target.name))
         {
+            // Not Move
+            agent.destination = transform.position;
             agent.isStopped = true;
             // Face to Target
             Vector3 moveVelocity = Target.position - transform.position;
@@ -488,7 +496,10 @@ public class CharacterBase: Health
             NormalAttack();
         }
     }
-    protected virtual void NormalAttack(){}
+    protected virtual void NormalAttack()
+    {
+        animator.Play("Attack");
+    }
     /// Minimap Method
     public void Set_Destination(Vector3 position,bool SpawnParticle)
     {

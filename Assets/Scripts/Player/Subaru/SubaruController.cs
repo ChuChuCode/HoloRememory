@@ -11,8 +11,6 @@ using HR.Global;
 namespace HR.Object.Player{
 public class SubaruController : CharacterBase
 {
-    [Header("Animator")]
-    [SerializeField] Animator animator;
     [SerializeField] SubaruAnimationMethod AnimationMethod;
     [Header("Passive")]
     public List<Duck_AI> duck_array = new List<Duck_AI>();

@@ -1128,11 +1128,11 @@ MonoBehaviour:
     m_Bits: 448
   Target: {fileID: 0}
   Attack_Range: 5
+  animator: {fileID: 1946654108785073176}
+  AnimationMethod: {fileID: 3252265101689514867}
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}
   Duck_Ult: {fileID: 3088117104640011826, guid: 2a3b0cc2d73b44e1fa2d014b19bf1812, type: 3}
-  animator: {fileID: 1946654108785073176}
-  AnimationMethod: {fileID: 3252265101689514867}
   R_UI: {fileID: 1132648660810081901}
 --- !u!114 &3009765592814595727
 MonoBehaviour:
