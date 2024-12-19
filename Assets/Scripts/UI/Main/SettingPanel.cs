@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using HR.Global;
-using TMPro;
 
 namespace HR.UI{
 public class SettingPanel : MonoBehaviour
@@ -38,6 +37,12 @@ public class SettingPanel : MonoBehaviour
     // Back Button
     public void Back()
     {
+        // Set Value Back 
+        Master.value = setting_Component.Audio_Master;
+        Music.value = setting_Component.Audio_Music;
+        SFX.value = setting_Component.Audio_SFX;
+        Voice.value = setting_Component.Audio_Voice;
+
         Main_UI.SetActive(true);
         gameObject.SetActive(false);
     }

@@ -14,7 +14,7 @@ public class CharacterBase: Health
     [Header("Animator")]
     [SerializeField] protected Animator animator;
     [Header("Agent")]
-    protected NavMeshAgent agent;
+    public NavMeshAgent agent;
     protected CharacterSkillBase skillComponent;
 
     [Header("Skill Pressed")]
