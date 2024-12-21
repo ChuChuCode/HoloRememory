@@ -67,13 +67,14 @@ public class MinionBase : Health
         base.InitialHealth();
         healthBar.SetMaxValue(maxHealth);
     }
-    public override void GetDamage(int damage)
+    public override bool GetDamage(int damage)
     {
-        base.GetDamage(damage);
+        bool isdead = base.GetDamage(damage);
         healthBar.SetValue(currentHealth);
 
         // Update UI
         Selectable.instance.updateInfo(this);
+        return isdead;
     }
     public override void Death()
     {

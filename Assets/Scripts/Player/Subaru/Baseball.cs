@@ -31,7 +31,12 @@ public class Baseball : NetworkBehaviour
         if (other.transform.root == Target)
         {
             Health health = other.transform.root.GetComponent<Health>();
-            health.GetDamage(AttackDamage);
+            bool isdead = health.GetDamage(AttackDamage);
+            // Add Money
+            if (isdead)
+            {
+                BallOwner.GetComponent<CharacterBase>().AddMoney(health.coin);
+            }
             Destroy(gameObject);
         }
     }

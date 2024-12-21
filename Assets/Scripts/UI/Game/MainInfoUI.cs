@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using HR.Object;
 using HR.Object.Player;
 
 namespace HR.UI{
@@ -17,6 +16,7 @@ public class MainInfoUI : MonoBehaviour
     public Skill_Icon R;
     [SerializeField] Bar HP;
     [SerializeField] Bar MP;
+    public TMP_Text Moeny_Text;
     void Awake()
     {
         if (instance == null)
@@ -24,10 +24,11 @@ public class MainInfoUI : MonoBehaviour
             instance = this;
         }
     }
-    public void updateInfo(Health health)
+    public void updateInfo(CharacterBase characterBase)
     {
-        HP.SetMaxValue(health.maxHealth);
-        HP.SetValue(health.currentHealth);
+        HP.SetMaxValue(characterBase.maxHealth);
+        HP.SetValue(characterBase.currentHealth);
+        Moeny_Text.text = characterBase.ownMoney.ToString();
     }
     public void Show_LevelUp(CharacterSkillBase skillComponent)
     {

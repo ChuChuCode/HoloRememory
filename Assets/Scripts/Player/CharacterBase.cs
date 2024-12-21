@@ -15,6 +15,8 @@ public class CharacterBase: Health
 {
     [Header("Animator")]
     [SerializeField] protected Animator animator;
+    [Header("Economy")]
+    public int ownMoney = 0;
     [Header("Agent")]
     public NavMeshAgent agent;
     protected CharacterSkillBase skillComponent;
@@ -152,6 +154,12 @@ public class CharacterBase: Health
         CharacterMove();
         // Normal Attack
         Attack();
+    }
+    public override void InitialHealth()
+    {
+        base.InitialHealth();
+        MainInfoUI.instance.updateInfo(this);
+        Selectable.instance.updateInfo(this);
     }
     /// <summary>This is invoked when Mouse Right Click Down.</summary>
     public virtual void OnRightMouseClick()
@@ -597,6 +605,19 @@ public class CharacterBase: Health
         }
     }
     protected virtual void OnRecall(){}
+    public override bool GetDamage(int damage)
+    {
+        bool isdead = base.GetDamage(damage);
+        // Update UI
+        MainInfoUI.instance.updateInfo(this);
+        Selectable.instance.updateInfo(this);
+        return isdead;
+    }
+    public void AddMoney(int money)
+    {
+        ownMoney += money;
+        MainInfoUI.instance.updateInfo(this);
+    }
 }
 
 }

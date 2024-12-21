@@ -224,19 +224,6 @@ public class SubaruController : CharacterBase
         
         base.Update();
     }
-    public override void InitialHealth()
-    {
-        base.InitialHealth();
-        MainInfoUI.instance.updateInfo(this);
-        Selectable.instance.updateInfo(this);
-    }
-    public override void GetDamage(int damage)
-    {
-        base.GetDamage(damage);
-        // Update UI
-        MainInfoUI.instance.updateInfo(this);
-        Selectable.instance.updateInfo(this);
-    }
     protected override void NormalAttack()
     {
         AnimationMethod.Target = Target;
