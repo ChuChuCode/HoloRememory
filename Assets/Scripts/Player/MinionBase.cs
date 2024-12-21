@@ -16,7 +16,7 @@ public class MinionBase : Health
     
     [SerializeField] protected string current_State = "";
     [SerializeField] protected Dictionary<string, Action> CharacterState;
-    protected NavMeshAgent agent;
+    public NavMeshAgent agent;
     [SerializeField] protected Animator animator;
     [Tooltip("Follow Player or go to a fixed destination")]
     public Transform MainDestination;

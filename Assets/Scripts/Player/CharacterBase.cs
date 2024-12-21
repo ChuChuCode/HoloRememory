@@ -5,6 +5,8 @@ using HR.UI;
 using HR.Network.Game;
 using System.Linq;
 using HR.Global;
+using System.Collections;
+using UnityEngine.VFX;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
@@ -37,6 +39,10 @@ public class CharacterBase: Health
     protected Ray ray;
     [Header("Attack")]
     [SerializeField] protected float Attack_Range;
+    [Header("Recall")]
+    float RecallTime = 8f;
+    [SerializeField] protected VisualEffect RecallEffect;
+    [SerializeField] protected bool isRecall = false;
     protected virtual void Awake()
     {
         // NavMeshAgent Check
@@ -78,6 +84,8 @@ public class CharacterBase: Health
         // Set LocalPlayer for MiniMap
         GameController.Instance.LocalPlayer = this;
         Free_CameParent.SetActive(true);
+        // Set Recall time and IEnumerator
+        RecallEffect.SetFloat("Duration",RecallTime);
 
         // Right Mouse
         InputComponent.instance.playerInput.Player.Right_Mouse.started += _ => OnRightMouseClick();
@@ -236,6 +244,7 @@ public class CharacterBase: Health
     {
         if (!IsPressed_Q) return;
         if (!OnQKeyUp()) return;
+        Stop_Recall();
         IsPressed_Q = false;
     }
     // W skill
@@ -251,6 +260,7 @@ public class CharacterBase: Health
     {
         if (!IsPressed_W) return;
         if (!OnWKeyUp()) return;
+        Stop_Recall();
         IsPressed_W = false;
     }
     // E skill
@@ -266,7 +276,9 @@ public class CharacterBase: Health
     {
         if (!IsPressed_E) return;
         if (!OnEKeyUp()) return;
+        Stop_Recall();
         IsPressed_E = false;
+        
     }
     // R skill
     /// <summary>This is invoked when RKey Click Down.</summary>
@@ -281,6 +293,7 @@ public class CharacterBase: Health
     {
         if (!IsPressed_R) return;
         if (!OnRKeyUp()) return;
+        Stop_Recall();
         IsPressed_R = false;
     }
     /// <summary>Return false to avoid skill use.</summary>
@@ -372,7 +385,14 @@ public class CharacterBase: Health
     public virtual void OnPKeyClick()
     {}
     public virtual void OnBKeyClick()
-    {}
+    {
+        if (isRecall) return;
+        isRecall = true;
+        // Wait 8 seconds and warp back to spawn point (Just like dead)
+        StartCoroutine(nameof(WaitRecall));
+        // Particle Show
+        RecallEffect.gameObject.SetActive(true);
+    }
     public virtual void OnTabKeyDown()
     {
         // Show UI
@@ -466,6 +486,7 @@ public class CharacterBase: Health
                 moveVelocity.y = 0;
                 // transform.LookAt(transform.position + moveVelocity);
             }
+            Stop_Recall();
         }
         // If has target -> Update Target Position
         if (Target != null)
@@ -545,6 +566,37 @@ public class CharacterBase: Health
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(transform.position, Attack_Range);
     }
+    protected IEnumerator WaitRecall()
+    {
+        agent.destination = transform.position;
+        // agent.isStopped = true;
+        // Play Recall Animation
+        // animator.Play("Recall");
+        yield return new WaitForSeconds(RecallTime);
+        if (gameObject.layer == LayerMask.NameToLayer("Team1"))
+        {
+            agent.Warp(GameController.Instance.Team1_transform.position);
+        }
+        else if (gameObject.layer == LayerMask.NameToLayer("Team2"))
+        {
+            agent.Warp(GameController.Instance.Team2_transform.position);
+        }
+        isRecall = false;
+        // Particle Hide
+        RecallEffect.gameObject.SetActive(false);
+        OnRecall();
+    }
+    protected void Stop_Recall()
+    {
+        if (isRecall)
+        {
+            isRecall = false;
+            StopCoroutine(nameof(WaitRecall));
+            // Particle Hide
+            RecallEffect.gameObject.SetActive(false);
+        }
+    }
+    protected virtual void OnRecall(){}
 }
 
 }

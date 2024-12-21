@@ -280,6 +280,26 @@ public class SubaruController : CharacterBase
         InitialHealth();
         yield return null;
     }
+    protected override void OnRecall()
+    {
+        // Teleport all ducks
+        foreach (Duck_AI duck in duck_array)
+        {
+            NavMeshHit hit;
+            Vector3 pos;
+            do
+            {
+            pos = transform.position + 
+                    new Vector3(
+                        UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_distance,
+                        0f,
+                        UnityEngine.Random.Range(-1f,1f) * Duck_AI.master_distance);
+            }
+            while (!NavMesh.SamplePosition(pos,out hit, 1.0f, NavMesh.AllAreas));
+            pos = hit.position;
+            duck.agent.Warp(pos);
+        }
+    }
 }
 
 }
