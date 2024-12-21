@@ -15,6 +15,8 @@ https://github.com/user-attachments/assets/bacd0b02-695c-4b88-ae72-ea82a0c3d24d
 
 https://github.com/user-attachments/assets/ed48286b-b466-44ac-91bf-22b84b566c42
 
+https://github.com/user-attachments/assets/3cd2f99b-2775-4463-ac24-7120eb699621
+
 ### Multi-Game UI
 https://github.com/user-attachments/assets/1ccf9ee0-8711-4749-9381-8c02f1ad2ee2
 
