@@ -1,4 +1,4 @@
-using HR.Global;
+ using HR.Global;
 using UnityEngine;
 
 namespace HR.UI{

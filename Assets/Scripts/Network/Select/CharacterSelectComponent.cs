@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace HR.Network.Select{
-[CreateAssetMenu(fileName = "CharacterSelectComponent", menuName = "SelectMenu/CharacterComponent", order = 1)]
+[CreateAssetMenu(fileName = "CharacterSelectComponent", menuName = "HoloRememory/SelectMenu/CharacterComponent", order = 1)]
 public class CharacterSelectComponent : ScriptableObject
 {
     public int ID;

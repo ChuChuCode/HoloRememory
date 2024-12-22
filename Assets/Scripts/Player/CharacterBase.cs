@@ -45,6 +45,7 @@ public class CharacterBase: Health
     float RecallTime = 8f;
     [SerializeField] protected VisualEffect RecallEffect;
     [SerializeField] protected bool isRecall = false;
+    public Equipment_Component[] equipments = new Equipment_Component[6];
     protected virtual void Awake()
     {
         // NavMeshAgent Check
@@ -83,8 +84,10 @@ public class CharacterBase: Health
         if (!isLocalPlayer) return;
         // Set Level
         skillComponent.AddExp(0);
-        // Set LocalPlayer for MiniMap
+        // Set LocalPlayer for MiniMap, ShowPath, StorePanel
         GameController.Instance.LocalPlayer = this;
+        ShowPath.Instance.LocalPlayer = this;
+        StorePanel.Instance.LocalPlayer = this;
         Free_CameParent.SetActive(true);
         // Set Recall time and IEnumerator
         RecallEffect.SetFloat("Duration",RecallTime);
@@ -391,7 +394,17 @@ public class CharacterBase: Health
         }
     }
     public virtual void OnPKeyClick()
-    {}
+    {
+        // Show/Hide UI
+        if (StorePanel.Instance.gameObject.activeSelf)
+        {
+            StorePanel.Instance.gameObject.SetActive(false);
+        }
+        else
+        {
+            StorePanel.Instance.gameObject.SetActive(true);
+        }
+    }
     public virtual void OnBKeyClick()
     {
         if (isRecall) return;
@@ -617,6 +630,7 @@ public class CharacterBase: Health
     {
         ownMoney += money;
         MainInfoUI.instance.updateInfo(this);
+        StorePanel.Instance.Update_Money(this);
     }
 }
 

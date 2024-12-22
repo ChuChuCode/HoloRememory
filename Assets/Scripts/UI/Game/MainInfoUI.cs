@@ -7,15 +7,20 @@ namespace HR.UI{
 public class MainInfoUI : MonoBehaviour
 {
     public static MainInfoUI instance;
+    [Header("Image and Level")]
     public Image Character_Image;
     public TMP_Text Level_Text;
     public Image Level;
+    [Header("Skill and HP")]
     public Skill_Icon Q;
     public Skill_Icon W;
     public Skill_Icon E;
     public Skill_Icon R;
     [SerializeField] Bar HP;
     [SerializeField] Bar MP;
+    [Header("Equipment and Money")]
+    public Image[] EquipmentImage = new Image[6];
+    public Image image;
     public TMP_Text Moeny_Text;
     void Awake()
     {
@@ -44,6 +49,13 @@ public class MainInfoUI : MonoBehaviour
     public void Set_Level_Raito(float ratio)
     {
         Level.fillAmount = ratio;
+    }
+    public void Update_Equipment(CharacterBase characterBase)
+    {
+        for (int i = 0 ; i < characterBase.equipments.Length ; i++)
+        {
+            EquipmentImage[i].sprite = characterBase.equipments[i].EquipmentImage;
+        }
     }
 }
 }
