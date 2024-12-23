@@ -84,10 +84,12 @@ public class CharacterBase: Health
         if (!isLocalPlayer) return;
         // Set Level
         skillComponent.AddExp(0);
+
         // Set LocalPlayer for MiniMap, ShowPath, StorePanel
         GameController.Instance.LocalPlayer = this;
         ShowPath.Instance.LocalPlayer = this;
         StorePanel.Instance.LocalPlayer = this;
+        
         Free_CameParent.SetActive(true);
         // Set Recall time and IEnumerator
         RecallEffect.SetFloat("Duration",RecallTime);

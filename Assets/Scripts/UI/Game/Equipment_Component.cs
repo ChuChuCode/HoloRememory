@@ -7,7 +7,7 @@ public class Equipment_Component : ScriptableObject
     public int EquipmentIndex;
     public string EquipmentName;
     public Sprite EquipmentImage;
-
+    public int costMoney;
 }
 
 }
