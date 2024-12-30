@@ -3,21 +3,22 @@ using UnityEngine.UI;
 using TMPro;
 
 namespace HR.UI{
-public class Equipment_Prefab : MonoBehaviour
+public class StoreSlot : MonoBehaviour
 {
-    public int EquipmentIndex;
+    public Equipment_ScriptableObject equipment;
     public Image EquipmentImage;
     public TMP_Text CostMoney_Text;
-    public void UpdatePrefab(Equipment_Component equipment)
+    public void UpdatePrefab(Equipment_ScriptableObject equipmentSO)
     {
-        EquipmentIndex = equipment.EquipmentIndex;
+        equipment = equipmentSO;
         EquipmentImage.sprite = equipment.EquipmentImage;
         CostMoney_Text.text = equipment.costMoney.ToString();
     }
     public void ButtonClick()
     {
-        StorePanel.Instance.EquipmentButtonClick(EquipmentIndex);
+        StorePanel.Instance.EquipmentButtonClick(equipment);
     }
+    
 }
 
 }

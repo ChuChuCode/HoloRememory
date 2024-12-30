@@ -19,8 +19,7 @@ public class MainInfoUI : MonoBehaviour
     [SerializeField] Bar HP;
     [SerializeField] Bar MP;
     [Header("Equipment and Money")]
-    public Image[] EquipmentImage = new Image[6];
-    public Image image;
+    public EquipmentSlot[] EquipmentImage = new EquipmentSlot[6];
     public TMP_Text Moeny_Text;
     void Awake()
     {
@@ -52,9 +51,9 @@ public class MainInfoUI : MonoBehaviour
     }
     public void Update_Equipment(CharacterBase characterBase)
     {
-        for (int i = 0 ; i < characterBase.equipments.Length ; i++)
+        for (int i = 0 ; i < characterBase.EquipmentSlot.Length ; i++)
         {
-            EquipmentImage[i].sprite = characterBase.equipments[i].EquipmentImage;
+            EquipmentImage[i].Equipment_Image.sprite = characterBase.EquipmentSlot[i]?.EquipmentImage;
         }
     }
 }

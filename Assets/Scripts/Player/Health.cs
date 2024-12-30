@@ -25,6 +25,14 @@ public class Health : NetworkBehaviour
         currentHealth -= damage;
         return beforeHealth > 0 && currentHealth <= 0 ;
     }
+    public virtual void Heal(int health)
+    {
+        currentHealth += health;
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+    }
     /// <summary>Do things when Dead.</summary>
     public virtual void Death(){}
     

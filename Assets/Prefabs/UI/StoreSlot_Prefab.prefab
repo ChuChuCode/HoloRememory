@@ -164,7 +164,7 @@ GameObject:
   - component: {fileID: 2884714686811783062}
   - component: {fileID: 9078267626463176357}
   m_Layer: 5
-  m_Name: Equipment Prefab
+  m_Name: StoreSlot_Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

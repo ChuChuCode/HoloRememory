@@ -9,10 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f0449eb131c3f449a25f81c0ac0354e, type: 3}
-  m_Name: Item1
+  m_Script: {fileID: 11500000, guid: 2463e01746dda254aa2c7b2470e73ad4, type: 3}
+  m_Name: Item
   m_EditorClassIdentifier: 
-  EquipmentIndex: 1
-  EquipmentName: Item1
-  EquipmentImage: {fileID: 21300000, guid: 278f547292e0f481a9645f30d0da539c, type: 3}
+  EquipmentIndex: 2
+  EquipmentName: Temp Item
+  EquipmentImage: {fileID: 21300000, guid: fc8cea2ea7b6d416696315ec2140f313, type: 3}
   costMoney: 100
+  attackValue: 20
+  defenseValue: 10
+  UI_Prefab: {fileID: 0}

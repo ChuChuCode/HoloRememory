@@ -1227,11 +1227,13 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  exp: 0
+  exp: 50
+  coin: 40
   maxHealth: 500
   currentHealth: 0
   isDead: 0
   animator: {fileID: 1946654108785073176}
+  ownMoney: 0
   agent: {fileID: 0}
   IsPressed_Q: 0
   IsPressed_W: 0
@@ -1240,12 +1242,23 @@ MonoBehaviour:
   Fixed_Cam: {fileID: 985031338423989986}
   Free_CameParent: {fileID: 935481825553640263}
   Target_Particle: {fileID: 3508981945991229934, guid: 7d22d2f886e1d4e63985f741719e7b3b, type: 3}
+  mouseProject: {x: 0, y: 0, z: 0}
   MouseTargetLayer:
     serializedVersion: 2
     m_Bits: 448
   Target: {fileID: 0}
   Attack_Range: 5
   RecallEffect: {fileID: 3242365975000804592}
+  isRecall: 0
+  EquipmentSlot:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  attack: 20
+  defense: 10
   AnimationMethod: {fileID: 3252265101689514867}
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}

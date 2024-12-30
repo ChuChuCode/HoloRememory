@@ -34,7 +34,7 @@ public class CharacterBase: Health
     [Header("Move Target")]
     [Tooltip("Particle that show move target")]
     [SerializeField] protected ParticleSystem Target_Particle;
-    protected Vector3 mouseProject;
+    public Vector3 mouseProject;
     [SerializeField] protected LayerMask MouseTargetLayer;
 
     [SerializeField] protected Transform Target;
@@ -45,7 +45,10 @@ public class CharacterBase: Health
     float RecallTime = 8f;
     [SerializeField] protected VisualEffect RecallEffect;
     [SerializeField] protected bool isRecall = false;
-    public Equipment_Component[] equipments = new Equipment_Component[6];
+    public Equipment_ScriptableObject[] EquipmentSlot = new Equipment_ScriptableObject[6];
+    [Header("Stats")]
+    public int attack;
+    public int defense;
     protected virtual void Awake()
     {
         // NavMeshAgent Check
@@ -89,7 +92,7 @@ public class CharacterBase: Health
         GameController.Instance.LocalPlayer = this;
         ShowPath.Instance.LocalPlayer = this;
         StorePanel.Instance.LocalPlayer = this;
-        
+
         Free_CameParent.SetActive(true);
         // Set Recall time and IEnumerator
         RecallEffect.SetFloat("Duration",RecallTime);
@@ -122,6 +125,21 @@ public class CharacterBase: Health
         // R skill
         InputComponent.instance.playerInput.Player.R.started += _ => RKeyDown();
         InputComponent.instance.playerInput.Player.R.canceled += _ => RKeyUp();
+
+        // Equipment Key
+        InputComponent.instance.playerInput.Player.Equipment1.started += _ => UseEquipmentKeyDown(0);
+        InputComponent.instance.playerInput.Player.Equipment2.started += _ => UseEquipmentKeyDown(1);
+        InputComponent.instance.playerInput.Player.Equipment3.started += _ => UseEquipmentKeyDown(2);
+        InputComponent.instance.playerInput.Player.Equipment4.started += _ => UseEquipmentKeyDown(3);
+        InputComponent.instance.playerInput.Player.Equipment5.started += _ => UseEquipmentKeyDown(4);
+        InputComponent.instance.playerInput.Player.Equipment6.started += _ => UseEquipmentKeyDown(5);
+
+        InputComponent.instance.playerInput.Player.Equipment1.canceled += _ => UseEquipmentKeyUp(0);
+        InputComponent.instance.playerInput.Player.Equipment2.canceled += _ => UseEquipmentKeyUp(1);
+        InputComponent.instance.playerInput.Player.Equipment3.canceled += _ => UseEquipmentKeyUp(2);
+        InputComponent.instance.playerInput.Player.Equipment4.canceled += _ => UseEquipmentKeyUp(3);
+        InputComponent.instance.playerInput.Player.Equipment5.canceled += _ => UseEquipmentKeyUp(4);
+        InputComponent.instance.playerInput.Player.Equipment6.canceled += _ => UseEquipmentKeyUp(5);
 
         // Camera Change
         InputComponent.instance.playerInput.Player.Camera_Change.started += _ => OnYKeyClick();
@@ -628,11 +646,92 @@ public class CharacterBase: Health
         Selectable.instance.updateInfo(this);
         return isdead;
     }
+    public override void Heal(int health)
+    {
+        base.Heal(health);
+        // Update UI
+        MainInfoUI.instance.updateInfo(this);
+        Selectable.instance.updateInfo(this);
+    }
+    /// <summary> Add or Spend Money </summary>
     public void AddMoney(int money)
+    {
+        MoneyChange(money);
+    }
+    public void SpendMoney(int money)
+    {
+        MoneyChange(-money);
+    }
+    void MoneyChange(int money)
     {
         ownMoney += money;
         MainInfoUI.instance.updateInfo(this);
         StorePanel.Instance.Update_Money(this);
+    }
+    /// <summary> Buy or Add Equipment </summary>
+    public void AddEquipItem(Equipment_ScriptableObject equipment, int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
+
+        // Initial Equipment
+        EquipmentSlot[slotIndex] = equipment;
+        UpdateStats();
+    }
+    /// <summary> Sell or Delete Equipment </summary>
+    public void DeleteEquipItem(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
+
+        Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
+        if (equipment != null)
+        {
+            // Delete Equipment
+            EquipmentSlot[slotIndex] = null;
+            UpdateStats();
+        }
+    }
+    /// <summary> Use Equipment </summary>
+    public void UseEquipmentKeyDown(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
+
+        Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
+        if (equipment != null)
+        {
+            // Check if the equipment is a potion
+            if (equipment is Potion_ScriptableObject)
+            {
+                // Clear the equipment slot
+                DeleteEquipItem(slotIndex);
+            }
+            equipment.ItemKeyDown(this);
+            // Update UI
+            MainInfoUI.instance.Update_Equipment(this);
+        }
+    }
+    public void UseEquipmentKeyUp(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
+
+        Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
+        if (equipment != null)
+        {
+            equipment.ItemKeyUp(this);
+            // Update UI
+            MainInfoUI.instance.Update_Equipment(this);
+        }
+    }
+    /// <summary> Update Stats when change Equipment </summary>
+    public void UpdateStats()
+    {
+        foreach (Equipment_ScriptableObject equipment in EquipmentSlot)
+        {
+            if (equipment != null)
+            {
+                // Calculate Stats
+                equipment.CharacterInfoChange(this);
+            }
+        }
     }
 }
 

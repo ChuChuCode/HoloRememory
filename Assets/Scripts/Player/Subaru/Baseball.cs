@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
 namespace HR.Object.Player{
 public class Baseball : NetworkBehaviour
 {
-    public CharacterSkillBase BallOwner;
+    public CharacterBase BallOwner;
     public Transform Target;
     float speed = 10f;
-    [SerializeField] int AttackDamage = 20;
+    [SerializeField] int AttackDamage;
 
     // Update is called once per frame
     void Update()
@@ -35,10 +33,14 @@ public class Baseball : NetworkBehaviour
             // Add Money
             if (isdead)
             {
-                BallOwner.GetComponent<CharacterBase>().AddMoney(health.coin);
+                BallOwner.AddMoney(health.coin);
             }
             Destroy(gameObject);
         }
+    }
+    public void Set_AttackDamage()
+    {
+        AttackDamage = BallOwner.attack;
     }
 }
 }
