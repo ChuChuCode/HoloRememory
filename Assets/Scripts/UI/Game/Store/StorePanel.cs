@@ -55,27 +55,26 @@ public class StorePanel : MonoBehaviour
     {
         return ListEquipments.Find(item => item.EquipmentIndex == EquipmentIndex);
     }
-    public void EquipmentButtonClick(Equipment_ScriptableObject tempEquipment)
+    public bool EquipmentButtonClick(Equipment_ScriptableObject tempEquipment)
     {
-        if (LocalPlayer != null)
+        if (LocalPlayer == null) return false;
+        // Check if the player has enough money
+        if (LocalPlayer.ownMoney < tempEquipment.costMoney) return false;
+        // Check if the player has enough space
+        for (int i = 0; i < LocalPlayer.EquipmentSlot.Length; i++)
         {
-            // Check if the player has enough money
-            if (LocalPlayer.ownMoney < tempEquipment.costMoney) return;
-            // Check if the player has enough space
-            for (int i = 0; i < LocalPlayer.EquipmentSlot.Length; i++)
+            if (LocalPlayer.EquipmentSlot[i] == null)
             {
-                if (LocalPlayer.EquipmentSlot[i] == null)
-                {
-                    // Spend Money
-                    LocalPlayer.SpendMoney(tempEquipment.costMoney);
-                    // Add to EquipmentSlot
-                    LocalPlayer.AddEquipItem(tempEquipment, i);
-                    MainInfoUI.instance.Update_Equipment(LocalPlayer);
-                    return;
-                }
+                // Spend Money
+                LocalPlayer.SpendMoney(tempEquipment.costMoney);
+                // Add to EquipmentSlot
+                LocalPlayer.AddEquipItem(tempEquipment, i);
+                MainInfoUI.instance.Update_Equipment(LocalPlayer);
+                return true;
             }
-            Debug.Log("All equipment slots are full.");
         }
+        Debug.Log("All equipment slots are full.");
+        return false;
     }
     public virtual void SellButtonClick(int slotIndex)
     {

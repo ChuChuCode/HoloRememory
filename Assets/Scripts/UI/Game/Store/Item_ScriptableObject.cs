@@ -1,5 +1,6 @@
 using UnityEngine;
 using HR.Object.Player;
+using HR.Object.Equipment;
 
 namespace HR.UI
 {
@@ -9,13 +10,24 @@ namespace HR.UI
         public int attackValue;
         public int defenseValue;
         [Header("Skill")]
-        public GameObject UI_Prefab;
-        GameObject UI_Object;
+        public ItemUse_UI UI_Prefab;
+        ItemUse_UI UI_Object;
+        [Header("Cooldown")]
+        public float cooldownDuration = 5f; // Cooldown duration in seconds
+        private float lastUseTime;
         public override void ItemKeyDown(CharacterBase characterBase)
         {
+            if (Time.time - lastUseTime < cooldownDuration)
+            {
+                Debug.Log("Item is on cooldown.");
+                return;
+            }
+
             if (UI_Prefab != null)
             {
                 UI_Object = Instantiate(UI_Prefab, characterBase.mouseProject, Quaternion.identity);
+                UI_Object.characterBase = characterBase;
+                lastUseTime = Time.time; // Update the last use time
             }
         }
 
@@ -24,7 +36,7 @@ namespace HR.UI
             if (UI_Object != null)
             {
                 // Use the item logic here
-                Destroy(UI_Object);
+                Destroy(UI_Object.gameObject);
             }
         }
 

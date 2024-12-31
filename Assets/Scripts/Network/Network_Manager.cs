@@ -43,6 +43,13 @@ public class Network_Manager : NetworkManager
     public override void OnServerSceneChanged(string newSceneName)
     {
         // base.ServerChangeScene(newSceneName);
+        if (newSceneName.StartsWith("Select_Scene"))
+        {
+            foreach (PlayerObject player in PlayersInfoList)
+            {
+                player.Ready = false;
+            }
+        }
         if (newSceneName.StartsWith("Game_Scene"))
         {
             foreach (PlayerObject player in PlayersInfoList)

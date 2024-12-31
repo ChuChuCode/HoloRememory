@@ -53,7 +53,7 @@ public class MainInfoUI : MonoBehaviour
     {
         for (int i = 0 ; i < characterBase.EquipmentSlot.Length ; i++)
         {
-            EquipmentImage[i].Equipment_Image.sprite = characterBase.EquipmentSlot[i]?.EquipmentImage;
+            EquipmentImage[i].UpdateImage(characterBase.EquipmentSlot[i]?.EquipmentImage);
         }
     }
 }

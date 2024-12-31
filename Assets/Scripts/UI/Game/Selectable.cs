@@ -102,7 +102,7 @@ public class Selectable : MonoBehaviour
     public void updateInfo(Health health)
     {
         // If UI is open and select is same as the update object -> then update
-        if (select == null) return;
+        if ( select == null) return;
         if ( health != select.GetComponent<Health>() ) return;
         HP.SetMaxValue(select.GetComponent<Health>().maxHealth);
         HP.SetValue(select.GetComponent<Health>().currentHealth);

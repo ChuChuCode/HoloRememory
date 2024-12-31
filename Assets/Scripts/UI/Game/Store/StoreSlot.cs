@@ -16,7 +16,11 @@ public class StoreSlot : MonoBehaviour
     }
     public void ButtonClick()
     {
-        StorePanel.Instance.EquipmentButtonClick(equipment);
+        bool isbought = StorePanel.Instance.EquipmentButtonClick(equipment);
+        if (isbought)
+        {
+            GetComponent<Button>().interactable = false;
+        }
     }
     
 }

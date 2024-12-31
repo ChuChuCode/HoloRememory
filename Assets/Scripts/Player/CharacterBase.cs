@@ -35,6 +35,8 @@ public class CharacterBase: Health
     [Tooltip("Particle that show move target")]
     [SerializeField] protected ParticleSystem Target_Particle;
     public Vector3 mouseProject;
+    // prevent cancel and walk at the same time
+    private bool isSkillCanceled = false;
     [SerializeField] protected LayerMask MouseTargetLayer;
 
     [SerializeField] protected Transform Target;
@@ -193,29 +195,38 @@ public class CharacterBase: Health
             IsPressed_Q = false;
             // Hide Q preview
             Hide_Q_UI();
+            // Set flag to true to prevent walk
+            isSkillCanceled = true;
         }
         else if (IsPressed_W)
         {
             IsPressed_W = false;
             // Hide W preview
             Hide_W_UI();
+            // Set flag to true to prevent walk
+            isSkillCanceled = true;
         }
         else if (IsPressed_E)
         {
             IsPressed_E = false;
             // Hide E preview
             Hide_E_UI();
+            // Set flag to true to prevent walk
+            isSkillCanceled = true;
         }
         else if (IsPressed_R)
         {
             IsPressed_R = false;
             // Hide R preview
             Hide_R_UI();
+            // Set flag to true to prevent walk
+            isSkillCanceled = true;
         }
         // Normal Walk
         else
         {
             if (EventSystem.current.IsPointerOverGameObject()) return;
+            isSkillCanceled = false;
             RaycastHit hit;
             
             if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
@@ -494,10 +505,20 @@ public class CharacterBase: Health
     }
     protected void CharacterMove()
     {
+        if (isSkillCanceled && !InputComponent.instance.playerInput.Player.Right_Mouse.IsPressed())
+        {
+            isSkillCanceled = false;
+        }
         // Move
         // !EventSystem.current.IsPointerOverGameObject() to prevent on UI hover
         if ( InputComponent.instance.playerInput.Player.Right_Mouse.IsPressed() && !EventSystem.current.IsPointerOverGameObject())
         {
+            // Check if a skill was canceled
+            if (isSkillCanceled)
+            {
+                // Reset the flag
+                return;
+            }
             // Spawn Particle -> Spawn in OnRightMouseClick
             // Instantiate(Target_Particle,mouseProject + new Vector3(0,1f,0), Quaternion.identity);
 

@@ -29,7 +29,7 @@ public class Duck_Ult : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        
+        if (other.transform.root.gameObject.layer != LayerMask.NameToLayer("Land")) return;
         ParticleSystem terrianScanner = Instantiate(Scanner, other.ClosestPoint(transform.position),Quaternion.identity);
         var main = terrianScanner.main;
         main.startLifetime = duration;

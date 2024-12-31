@@ -111,7 +111,7 @@ public class PlayerObject : NetworkBehaviour
     public void CanStartGame(string SceneName)
     {
         // Reset Ready for select scene
-        ChangeReady();
+        // ChangeReady();
         if (isOwned)
         {
             CmdCanStartGame(SceneName);

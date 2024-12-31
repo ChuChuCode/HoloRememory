@@ -18,4 +18,5 @@ MonoBehaviour:
   costMoney: 100
   attackValue: 20
   defenseValue: 10
-  UI_Prefab: {fileID: 0}
+  UI_Prefab: {fileID: 7177916609554386311, guid: e015c9f395c43d14ca1766025eb9c5f0, type: 3}
+  cooldownDuration: 5
