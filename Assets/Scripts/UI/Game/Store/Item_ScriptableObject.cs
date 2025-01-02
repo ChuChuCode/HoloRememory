@@ -14,12 +14,12 @@ namespace HR.UI
         ItemUse_UI UI_Object;
         [Header("Cooldown")]
         public float cooldownDuration = 5f; // Cooldown duration in seconds
-        private float lastUseTime;
+        public float lastUseTime;
         public override void ItemKeyDown(CharacterBase characterBase)
         {
+            // Check Cool Down
             if (Time.time - lastUseTime < cooldownDuration)
             {
-                Debug.Log("Item is on cooldown.");
                 return;
             }
 
@@ -27,7 +27,6 @@ namespace HR.UI
             {
                 UI_Object = Instantiate(UI_Prefab, characterBase.mouseProject, Quaternion.identity);
                 UI_Object.characterBase = characterBase;
-                lastUseTime = Time.time; // Update the last use time
             }
         }
 
@@ -35,9 +34,15 @@ namespace HR.UI
         {
             if (UI_Object != null)
             {
+                lastUseTime = Time.time; // Update the last use time
                 // Use the item logic here
-                Destroy(UI_Object.gameObject);
+                Destroy_prefab();
+                UI_Object.Spawn_ItemUse();
             }
+        }
+        public void Destroy_prefab()
+        {
+            Destroy(UI_Object.gameObject);
         }
 
         public override void CharacterInfoChange(CharacterBase characterBase)

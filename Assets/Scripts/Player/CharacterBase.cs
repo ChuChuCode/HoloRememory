@@ -7,6 +7,7 @@ using System.Linq;
 using HR.Global;
 using System.Collections;
 using UnityEngine.VFX;
+using static HR.UI.Skill_Icon;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
@@ -26,6 +27,13 @@ public class CharacterBase: Health
     [SerializeField] protected bool IsPressed_W = false;
     [SerializeField] protected bool IsPressed_E = false;
     [SerializeField] protected bool IsPressed_R = false;
+    [Header("Item Pressed")]
+    [SerializeField] protected bool IsPressed_1 = false;
+    [SerializeField] protected bool IsPressed_2 = false;
+    [SerializeField] protected bool IsPressed_3 = false;
+    [SerializeField] protected bool IsPressed_4 = false;
+    [SerializeField] protected bool IsPressed_5 = false;
+    [SerializeField] protected bool IsPressed_6 = false;
     [Header("Camera")]
     [Tooltip("Fix Camera on Character")]
     [SerializeField] protected GameObject Fixed_Cam;
@@ -39,7 +47,7 @@ public class CharacterBase: Health
     private bool isSkillCanceled = false;
     [SerializeField] protected LayerMask MouseTargetLayer;
 
-    [SerializeField] protected Transform Target;
+    public Transform Target;
     protected Ray ray;
     [Header("Attack")]
     [SerializeField] protected float Attack_Range;
@@ -68,8 +76,7 @@ public class CharacterBase: Health
         {
             Debug.LogError("CharacterBase must have a CharacterSkillBase Component.",skillComponent);
         }
-        // Health Initial
-        InitialHealth();
+
     }
     protected virtual void OnEnable() 
     {
@@ -94,6 +101,10 @@ public class CharacterBase: Health
         GameController.Instance.LocalPlayer = this;
         ShowPath.Instance.LocalPlayer = this;
         StorePanel.Instance.LocalPlayer = this;
+        MainInfoUI.instance.LocalPlayer = this;
+
+        // Health Initial
+        InitialHealth();
 
         Free_CameParent.SetActive(true);
         // Set Recall time and IEnumerator
@@ -183,7 +194,7 @@ public class CharacterBase: Health
     public override void InitialHealth()
     {
         base.InitialHealth();
-        MainInfoUI.instance.updateInfo(this);
+        MainInfoUI.instance.updateInfo();
         Selectable.instance.updateInfo(this);
     }
     /// <summary>This is invoked when Mouse Right Click Down.</summary>
@@ -221,6 +232,72 @@ public class CharacterBase: Health
             Hide_R_UI();
             // Set flag to true to prevent walk
             isSkillCanceled = true;
+        }
+        else if (IsPressed_1)
+        {
+            IsPressed_1 = false;
+            isSkillCanceled = true;
+            // Cancel Element 1
+            if (EquipmentSlot[0] is Item_ScriptableObject)
+            {
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[0];
+                tempItem.Destroy_prefab();
+            }
+        }
+        else if (IsPressed_2)
+        {
+            IsPressed_2 = false;
+            isSkillCanceled = true;
+            // Cancel Element 2
+            if (EquipmentSlot[1] is Item_ScriptableObject)
+            {
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[1];
+                tempItem.Destroy_prefab();
+            }
+        }
+        else if (IsPressed_3)
+        {
+            IsPressed_3 = false;
+            isSkillCanceled = true;
+            // Cancel Element 3
+            if (EquipmentSlot[2] is Item_ScriptableObject)
+            {
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[2];
+                tempItem.Destroy_prefab();
+            }
+        }
+        else if (IsPressed_4)
+        {
+            IsPressed_4 = false;
+            isSkillCanceled = true;
+            // Cancel Element 4
+            if (EquipmentSlot[3] is Item_ScriptableObject)
+            {
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[3];
+                tempItem.Destroy_prefab();
+            }
+        }
+        else if (IsPressed_5)
+        {
+            IsPressed_5 = false;
+            isSkillCanceled = true;
+            // Cancel Element 5
+            if (EquipmentSlot[4] is Item_ScriptableObject)
+            {
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[4];
+                tempItem.Destroy_prefab();
+            }
+        }
+        else if (IsPressed_6)
+        {
+            IsPressed_6 = false;
+            isSkillCanceled = true;
+            // Cancel Element 6
+            if (EquipmentSlot[5] is Item_ScriptableObject)
+            {
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[5];
+                tempItem.Destroy_prefab();
+            }
         }
         // Normal Walk
         else
@@ -270,6 +347,31 @@ public class CharacterBase: Health
             Hide_R_UI();
             // Use R Skill
             RKeyUp();
+        }
+        else if (IsPressed_1)
+        {
+            // Use Equipment 1
+            UseEquipmentKeyUp(0);
+        }
+        else if (IsPressed_2)
+        {
+            UseEquipmentKeyUp(1);
+        }
+        else if (IsPressed_3)
+        {
+            UseEquipmentKeyUp(2);
+        }
+        else if (IsPressed_4)
+        {
+            UseEquipmentKeyUp(3);
+        }
+        else if (IsPressed_5)
+        {
+            UseEquipmentKeyUp(4);
+        }
+        else if (IsPressed_6)
+        {
+            UseEquipmentKeyUp(5);
         }
     }
     #region Skill Method
@@ -414,6 +516,12 @@ public class CharacterBase: Health
     }
     public virtual void OnEscKeyClick()
     {
+        // If Store Panel Show -> Hide
+        if (StorePanel.Instance.gameObject.activeSelf)
+        {
+            StorePanel.Instance.gameObject.SetActive(false);
+            return;
+        }
         // Show/Hide UI
         if (OptionPanel.Instance.gameObject.activeSelf)
         {
@@ -603,20 +711,20 @@ public class CharacterBase: Health
             Free_CameParent.transform.position = position;
         }
     }
-    public void Skill_Up(string skill)
+    public void Skill_Up(Skill_Name skill)
     {
         switch (skill)
         {
-            case "Q":
+            case Skill_Name.Q:
                 skillComponent.Q_Level += 1;
                 break;
-            case "W":
+            case Skill_Name.W:
                 skillComponent.W_Level += 1;
                 break;
-            case "E":
+            case Skill_Name.E:
                 skillComponent.E_Level += 1;
                 break;
-            case "R":
+            case Skill_Name.R:
                 skillComponent.R_Level += 1;
                 break;
         }
@@ -663,7 +771,7 @@ public class CharacterBase: Health
     {
         bool isdead = base.GetDamage(damage);
         // Update UI
-        MainInfoUI.instance.updateInfo(this);
+        MainInfoUI.instance.updateInfo();
         Selectable.instance.updateInfo(this);
         return isdead;
     }
@@ -671,7 +779,7 @@ public class CharacterBase: Health
     {
         base.Heal(health);
         // Update UI
-        MainInfoUI.instance.updateInfo(this);
+        MainInfoUI.instance.updateInfo();
         Selectable.instance.updateInfo(this);
     }
     /// <summary> Add or Spend Money </summary>
@@ -686,7 +794,7 @@ public class CharacterBase: Health
     void MoneyChange(int money)
     {
         ownMoney += money;
-        MainInfoUI.instance.updateInfo(this);
+        MainInfoUI.instance.updateInfo();
         StorePanel.Instance.Update_Money(this);
     }
     /// <summary> Buy or Add Equipment </summary>
@@ -719,6 +827,27 @@ public class CharacterBase: Health
         Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
         if (equipment != null)
         {
+            switch (slotIndex)
+            {
+                case 0:
+                    IsPressed_1 = true;
+                    break;
+                case 1:
+                    IsPressed_2 = true;
+                    break;
+                case 2:
+                    IsPressed_3 = true;
+                    break;
+                case 3:
+                    IsPressed_4 = true;
+                    break;
+                case 4:
+                    IsPressed_5 = true;
+                    break;
+                case 5:
+                    IsPressed_6 = true;
+                    break;
+            }
             // Check if the equipment is a potion
             if (equipment is Potion_ScriptableObject)
             {
@@ -727,19 +856,46 @@ public class CharacterBase: Health
             }
             equipment.ItemKeyDown(this);
             // Update UI
-            MainInfoUI.instance.Update_Equipment(this);
+            MainInfoUI.instance.Update_Equipment();
         }
     }
     public void UseEquipmentKeyUp(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
-
         Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
         if (equipment != null)
         {
+            switch (slotIndex)
+            {
+                case 0:
+                    if (!IsPressed_1) return;
+                    IsPressed_1 = false;
+                    break;
+                case 1:
+                    if (!IsPressed_2) return;
+                    IsPressed_2 = false;
+                    break;
+                case 2:
+                    if (!IsPressed_3) return;
+                    IsPressed_3 = false;
+                    break;
+                case 3:
+                    if (!IsPressed_4) return;
+                    IsPressed_4 = false;
+                    break;
+                case 4:
+                    if (!IsPressed_5) return;
+                    IsPressed_5 = false;
+                    break;
+                case 5:
+                    if (!IsPressed_6) return;
+                    IsPressed_6 = false;
+                    break;
+            }
+            Stop_Recall();
             equipment.ItemKeyUp(this);
             // Update UI
-            MainInfoUI.instance.Update_Equipment(this);
+            MainInfoUI.instance.Update_Equipment();
         }
     }
     /// <summary> Update Stats when change Equipment </summary>

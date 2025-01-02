@@ -21,7 +21,7 @@ public class ItemUse_UI : MonoBehaviour
         }
         transform.position = characterBase.mouseProject;
     }
-    void OnDestroy() 
+    public void Spawn_ItemUse()
     {
         Instantiate(ItemUse_Prfab,transform.position + new Vector3(0,5,0),Quaternion.identity);
     }

@@ -1,9 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using HR.Network.Game;
 
 public class EquipmentSlot : MonoBehaviour
 {
+    enum SlotIndex
+    {
+        _1 = 0,
+        _2 = 1,
+        _3 = 2,
+        _4 = 3,
+        _5 = 4,
+        _6 = 5
+    }
+    [SerializeField] SlotIndex slotIndex;
     [SerializeField] Image Equipment_Image;
     [SerializeField] Image Equipment_Image_Gray;
     [SerializeField] TMP_Text coolDown_TIme;
@@ -34,8 +45,12 @@ public class EquipmentSlot : MonoBehaviour
     string Cal_CoolDown_Text(float timer, float CD_time)
     {
         float Usedtime = Time.time - timer;
-        float NeedTime = CD_time -Usedtime;
+        float NeedTime = CD_time - Usedtime;
         float DecimalTime = Mathf.Round( NeedTime *10f ) / 10f;
         return DecimalTime.ToString();
+    }
+    public void Use_Skill()
+    {
+        GameController.Instance.LocalPlayer.UseEquipmentKeyDown( (int)slotIndex );
     }
 }

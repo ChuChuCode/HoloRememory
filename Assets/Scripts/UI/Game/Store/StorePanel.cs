@@ -69,7 +69,7 @@ public class StorePanel : MonoBehaviour
                 LocalPlayer.SpendMoney(tempEquipment.costMoney);
                 // Add to EquipmentSlot
                 LocalPlayer.AddEquipItem(tempEquipment, i);
-                MainInfoUI.instance.Update_Equipment(LocalPlayer);
+                MainInfoUI.instance.Update_Equipment();
                 return true;
             }
         }
@@ -84,7 +84,7 @@ public class StorePanel : MonoBehaviour
         int refundAmount = Mathf.FloorToInt(tempEquipment.costMoney * 0.8f);
         LocalPlayer.AddMoney(refundAmount);
         LocalPlayer.DeleteEquipItem(slotIndex);
-        MainInfoUI.instance.Update_Equipment(LocalPlayer);
+        MainInfoUI.instance.Update_Equipment();
     }
 }
 

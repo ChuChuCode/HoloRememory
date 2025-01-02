@@ -10,12 +10,15 @@ public class Skill_Icon : MonoBehaviour
     [SerializeField] Image skill_Image;
     [SerializeField] Image skill_Image_Gray;
     [SerializeField] TMP_Text coolDown_TIme;
-    [SerializeField] string skill;
-    public Button Level_Up_Button;
-    void Start()
+    public enum Skill_Name
     {
-        skill = gameObject.name;
+        Q,
+        W,
+        E,
+        R
     }
+    [SerializeField] Skill_Name skill;
+    public Button Level_Up_Button;
     public void Set_Skill_Icon(Sprite Skill_Image)
     {
         skill_Image.sprite = Skill_Image;
@@ -43,7 +46,7 @@ public class Skill_Icon : MonoBehaviour
     string Cal_CoolDown_Text(float timer, float CD_time)
     {
         float Usedtime = Time.time - timer;
-        float NeedTime = CD_time -Usedtime;
+        float NeedTime = CD_time - Usedtime;
         float DecimalTime = Mathf.Round( NeedTime *10f ) / 10f;
         return DecimalTime.ToString();
     }
@@ -52,16 +55,16 @@ public class Skill_Icon : MonoBehaviour
     {
         switch (skill)
         {
-            case "Q":
+            case Skill_Name.Q:
                 GameController.Instance.LocalPlayer.QKeyDown();
                 return;
-            case "W":
+            case Skill_Name.W:
                 GameController.Instance.LocalPlayer.WKeyDown();
                 return;
-            case "E":
+            case Skill_Name.E:
                 GameController.Instance.LocalPlayer.EKeyDown();
                 return;
-            case "R":
+            case Skill_Name.R:
                 GameController.Instance.LocalPlayer.RKeyDown();
                 return;
         }
@@ -76,16 +79,16 @@ public class Skill_Icon : MonoBehaviour
         bool canShow = false;
         switch (skill)
         {
-            case "Q":
+            case Skill_Name.Q:
                 canShow = skillComponent.Q_Show_LevelUp();
                 break;
-            case "W":
+            case Skill_Name.W:
                 canShow = skillComponent.W_Show_LevelUp();
                 break;
-            case "E":
+            case Skill_Name.E:
                 canShow = skillComponent.E_Show_LevelUp();
                 break;
-            case "R":
+            case Skill_Name.R:
                 canShow = skillComponent.R_Show_LevelUp();
                 break;
         }

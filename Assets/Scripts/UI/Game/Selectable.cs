@@ -62,7 +62,8 @@ public class Selectable : MonoBehaviour
             }
         }
         // Left Click
-        if (InputComponent.instance.playerInput.Player.Left_Mouse.WasPressedThisFrame() && !EventSystem.current.IsPointerOverGameObject())
+        if ( InputComponent.instance.playerInput.Player.Left_Mouse.WasPressedThisFrame()
+            && !EventSystem.current.IsPointerOverGameObject())
         {
             // if is hgihlight and click
             if (highlight != null)
@@ -102,7 +103,7 @@ public class Selectable : MonoBehaviour
     public void updateInfo(Health health)
     {
         // If UI is open and select is same as the update object -> then update
-        if ( select == null) return;
+        if ( select == null ) return;
         if ( health != select.GetComponent<Health>() ) return;
         HP.SetMaxValue(select.GetComponent<Health>().maxHealth);
         HP.SetValue(select.GetComponent<Health>().currentHealth);

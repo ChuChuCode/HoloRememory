@@ -222,6 +222,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c29bcc9cdc545d4a8034544532331fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  layer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1001 &4724923026837675934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1598,10 +1601,12 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   exp: 0
+  coin: 0
   maxHealth: 300
   currentHealth: 0
   isDead: 0
   current_State: 
+  agent: {fileID: 0}
   animator: {fileID: 883360396524798469}
   MainDestination: {fileID: 0}
   Target: {fileID: 0}

@@ -1239,7 +1239,7 @@ MonoBehaviour:
   skill_Image: {fileID: 1726173694}
   skill_Image_Gray: {fileID: 613837871}
   coolDown_TIme: {fileID: 926093872}
-  skill: 
+  skill: 1
   Level_Up_Button: {fileID: 1792124610}
 --- !u!114 &150418145
 MonoBehaviour:
@@ -1363,6 +1363,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 998123902}
     m_Modifications:
+    - target: {fileID: 30202191995706658, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 153578097}
     - target: {fileID: 1013636469229821157, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1443,6 +1447,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2419806530720523930, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: slotIndex
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8948612596265050389, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Name
       value: EquipmentSlot_Component (5)
@@ -1466,6 +1474,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a436617ba0fcf994b85a6bc25f7089cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &153578097 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2712257707091489894, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+  m_PrefabInstance: {fileID: 153578094}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &187165607
@@ -1534,8 +1553,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2599,6 +2618,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 998123902}
     m_Modifications:
+    - target: {fileID: 30202191995706658, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 275383035}
     - target: {fileID: 1013636469229821157, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2679,6 +2702,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2419806530720523930, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: slotIndex
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8948612596265050389, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Name
       value: EquipmentSlot_Component (3)
@@ -2702,6 +2729,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a436617ba0fcf994b85a6bc25f7089cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &275383035 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2712257707091489894, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+  m_PrefabInstance: {fileID: 275383032}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &280937250
@@ -3431,7 +3469,7 @@ MonoBehaviour:
   skill_Image: {fileID: 1193460850}
   skill_Image_Gray: {fileID: 1489194653}
   coolDown_TIme: {fileID: 977442109}
-  skill: 
+  skill: 2
   Level_Up_Button: {fileID: 2008256522}
 --- !u!114 &427206521
 MonoBehaviour:
@@ -3928,6 +3966,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1221470787a882b449dea714ced78d11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LocalPlayer: {fileID: 0}
   Character_Image: {fileID: 331078640}
   Level_Text: {fileID: 848097270}
   Level: {fileID: 995981601}
@@ -4410,7 +4449,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5764,7 +5803,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: NaN, z: 1.7438e-41, w: 2.2e-44}
+  m_BoundingSphereOverride: {x: 7.563938e+23, y: NaN, z: 1.578728e-19, w: 1.8466646e+20}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -10578,6 +10617,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 998123902}
     m_Modifications:
+    - target: {fileID: 30202191995706658, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 1159474733}
     - target: {fileID: 1013636469229821157, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -10658,6 +10701,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2419806530720523930, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: slotIndex
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8948612596265050389, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Name
       value: EquipmentSlot_Component (2)
@@ -10681,6 +10728,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a436617ba0fcf994b85a6bc25f7089cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1159474733 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2712257707091489894, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+  m_PrefabInstance: {fileID: 1159474730}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1160502032
@@ -12958,7 +13016,7 @@ MonoBehaviour:
   skill_Image: {fileID: 2110327866}
   skill_Image_Gray: {fileID: 1071190337}
   coolDown_TIme: {fileID: 924377752}
-  skill: Q
+  skill: 0
   Level_Up_Button: {fileID: 1130010195}
 --- !u!114 &1374410722
 MonoBehaviour:
@@ -14855,7 +14913,7 @@ MonoBehaviour:
   skill_Image: {fileID: 1103600474}
   skill_Image_Gray: {fileID: 1952281701}
   coolDown_TIme: {fileID: 1628493520}
-  skill: 
+  skill: 3
   Level_Up_Button: {fileID: 2093598176}
 --- !u!114 &1560518390
 MonoBehaviour:
@@ -15037,8 +15095,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -15547,6 +15605,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 998123902}
     m_Modifications:
+    - target: {fileID: 30202191995706658, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 1620467342}
     - target: {fileID: 1013636469229821157, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -15627,6 +15689,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2419806530720523930, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: slotIndex
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8948612596265050389, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Name
       value: EquipmentSlot_Component (4)
@@ -15650,6 +15716,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a436617ba0fcf994b85a6bc25f7089cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1620467342 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2712257707091489894, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+  m_PrefabInstance: {fileID: 1620467339}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1626754821
@@ -17157,7 +17234,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -19152,6 +19229,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 998123902}
     m_Modifications:
+    - target: {fileID: 30202191995706658, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 2010794240}
     - target: {fileID: 1013636469229821157, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -19232,6 +19313,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2419806530720523930, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: slotIndex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8948612596265050389, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Name
       value: EquipmentSlot_Component (1)
@@ -19255,6 +19340,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a436617ba0fcf994b85a6bc25f7089cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2010794240 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2712257707091489894, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+  m_PrefabInstance: {fileID: 2010794237}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2035599682 stripped
@@ -19847,7 +19943,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 4b66f21097323d44ab40669b2fb9c53d, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -20434,6 +20530,10 @@ PrefabInstance:
     - target: {fileID: 1013636469229821157, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3596693345867758628, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
+      propertyPath: m_Sprite
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8948612596265050389, guid: 6c4560ce125d2e142a04a02489184239, type: 3}
       propertyPath: m_Name
