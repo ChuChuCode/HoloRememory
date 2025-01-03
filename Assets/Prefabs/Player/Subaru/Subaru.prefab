@@ -1233,12 +1233,18 @@ MonoBehaviour:
   currentHealth: 0
   isDead: 0
   animator: {fileID: 1946654108785073176}
-  ownMoney: 0
+  ownMoney: 100
   agent: {fileID: 0}
   IsPressed_Q: 0
   IsPressed_W: 0
   IsPressed_E: 0
   IsPressed_R: 0
+  IsPressed_1: 0
+  IsPressed_2: 0
+  IsPressed_3: 0
+  IsPressed_4: 0
+  IsPressed_5: 0
+  IsPressed_6: 0
   Fixed_Cam: {fileID: 985031338423989986}
   Free_CameParent: {fileID: 935481825553640263}
   Target_Particle: {fileID: 3508981945991229934, guid: 7d22d2f886e1d4e63985f741719e7b3b, type: 3}
@@ -1250,7 +1256,7 @@ MonoBehaviour:
   Attack_Range: 5
   RecallEffect: {fileID: 3242365975000804592}
   isRecall: 0
-  EquipmentSlot:
+  EquipmentSlots:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -1259,6 +1265,9 @@ MonoBehaviour:
   - {fileID: 0}
   attack: 20
   defense: 10
+  kill: 0
+  death: 0
+  assist: 0
   AnimationMethod: {fileID: 3252265101689514867}
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}

@@ -8,6 +8,7 @@ using HR.Global;
 using System.Collections;
 using UnityEngine.VFX;
 using static HR.UI.Skill_Icon;
+using Mirror;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
@@ -55,10 +56,14 @@ public class CharacterBase: Health
     float RecallTime = 8f;
     [SerializeField] protected VisualEffect RecallEffect;
     [SerializeField] protected bool isRecall = false;
-    public Equipment_ScriptableObject[] EquipmentSlot = new Equipment_ScriptableObject[6];
+    [SyncVar] public Equipment_ScriptableObject[] EquipmentSlots = new Equipment_ScriptableObject[6];
     [Header("Stats")]
     public int attack;
     public int defense;
+    [Header("KDA")]
+    public int kill = 0;
+    public int death = 0;
+    public int assist = 0;
     protected virtual void Awake()
     {
         // NavMeshAgent Check
@@ -238,9 +243,9 @@ public class CharacterBase: Health
             IsPressed_1 = false;
             isSkillCanceled = true;
             // Cancel Element 1
-            if (EquipmentSlot[0] is Item_ScriptableObject)
+            if (EquipmentSlots[0] is Item_ScriptableObject)
             {
-                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[0];
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlots[0];
                 tempItem.Destroy_prefab();
             }
         }
@@ -249,9 +254,9 @@ public class CharacterBase: Health
             IsPressed_2 = false;
             isSkillCanceled = true;
             // Cancel Element 2
-            if (EquipmentSlot[1] is Item_ScriptableObject)
+            if (EquipmentSlots[1] is Item_ScriptableObject)
             {
-                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[1];
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlots[1];
                 tempItem.Destroy_prefab();
             }
         }
@@ -260,9 +265,9 @@ public class CharacterBase: Health
             IsPressed_3 = false;
             isSkillCanceled = true;
             // Cancel Element 3
-            if (EquipmentSlot[2] is Item_ScriptableObject)
+            if (EquipmentSlots[2] is Item_ScriptableObject)
             {
-                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[2];
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlots[2];
                 tempItem.Destroy_prefab();
             }
         }
@@ -271,9 +276,9 @@ public class CharacterBase: Health
             IsPressed_4 = false;
             isSkillCanceled = true;
             // Cancel Element 4
-            if (EquipmentSlot[3] is Item_ScriptableObject)
+            if (EquipmentSlots[3] is Item_ScriptableObject)
             {
-                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[3];
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlots[3];
                 tempItem.Destroy_prefab();
             }
         }
@@ -282,9 +287,9 @@ public class CharacterBase: Health
             IsPressed_5 = false;
             isSkillCanceled = true;
             // Cancel Element 5
-            if (EquipmentSlot[4] is Item_ScriptableObject)
+            if (EquipmentSlots[4] is Item_ScriptableObject)
             {
-                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[4];
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlots[4];
                 tempItem.Destroy_prefab();
             }
         }
@@ -293,9 +298,9 @@ public class CharacterBase: Health
             IsPressed_6 = false;
             isSkillCanceled = true;
             // Cancel Element 6
-            if (EquipmentSlot[5] is Item_ScriptableObject)
+            if (EquipmentSlots[5] is Item_ScriptableObject)
             {
-                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlot[5];
+                Item_ScriptableObject tempItem = (Item_ScriptableObject)EquipmentSlots[5];
                 tempItem.Destroy_prefab();
             }
         }
@@ -800,31 +805,33 @@ public class CharacterBase: Health
     /// <summary> Buy or Add Equipment </summary>
     public void AddEquipItem(Equipment_ScriptableObject equipment, int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
+        if (slotIndex < 0 || slotIndex >= EquipmentSlots.Length) return;
 
         // Initial Equipment
-        EquipmentSlot[slotIndex] = equipment;
+        EquipmentSlots[slotIndex] = equipment;
         UpdateStats();
+        CharacterInfoPanel.Instance.UpdateUI();
     }
     /// <summary> Sell or Delete Equipment </summary>
     public void DeleteEquipItem(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
+        if (slotIndex < 0 || slotIndex >= EquipmentSlots.Length) return;
 
-        Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
+        Equipment_ScriptableObject equipment = EquipmentSlots[slotIndex];
         if (equipment != null)
         {
             // Delete Equipment
-            EquipmentSlot[slotIndex] = null;
+            EquipmentSlots[slotIndex] = null;
             UpdateStats();
         }
+        CharacterInfoPanel.Instance.UpdateUI();
     }
     /// <summary> Use Equipment </summary>
     public void UseEquipmentKeyDown(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
+        if (slotIndex < 0 || slotIndex >= EquipmentSlots.Length) return;
 
-        Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
+        Equipment_ScriptableObject equipment = EquipmentSlots[slotIndex];
         if (equipment != null)
         {
             switch (slotIndex)
@@ -861,8 +868,8 @@ public class CharacterBase: Health
     }
     public void UseEquipmentKeyUp(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= EquipmentSlot.Length) return;
-        Equipment_ScriptableObject equipment = EquipmentSlot[slotIndex];
+        if (slotIndex < 0 || slotIndex >= EquipmentSlots.Length) return;
+        Equipment_ScriptableObject equipment = EquipmentSlots[slotIndex];
         if (equipment != null)
         {
             switch (slotIndex)
@@ -901,7 +908,7 @@ public class CharacterBase: Health
     /// <summary> Update Stats when change Equipment </summary>
     public void UpdateStats()
     {
-        foreach (Equipment_ScriptableObject equipment in EquipmentSlot)
+        foreach (Equipment_ScriptableObject equipment in EquipmentSlots)
         {
             if (equipment != null)
             {

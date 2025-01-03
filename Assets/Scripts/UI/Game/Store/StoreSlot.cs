@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 namespace HR.UI{
-public class StoreSlot : MonoBehaviour
+public class StoreSlot : MonoBehaviour , IPointerClickHandler
 {
     public Equipment_ScriptableObject equipment;
     public Image EquipmentImage;
@@ -22,7 +23,20 @@ public class StoreSlot : MonoBehaviour
             GetComponent<Button>().interactable = false;
         }
     }
-    
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        // Left click
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            print("Show UI");
+        }
+        // Right click
+        else if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            ButtonClick();
+        }
+    }
 }
 
 }

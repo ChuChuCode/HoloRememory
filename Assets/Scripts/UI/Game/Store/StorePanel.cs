@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using HR.Object.Player;
-using UnityEngine.UI;
 using TMPro;
 
 namespace HR.UI{
@@ -37,6 +36,7 @@ public class StorePanel : MonoBehaviour
             tempEquipmentButton.UpdatePrefab(equipment);
             // Add Button to Parent
             tempEquipmentButton.transform.SetParent(Equipment_Content);
+            tempEquipmentButton.transform.localScale = Vector3.one;
             // Add gameobject to List
             ListButtons.Add(tempEquipmentButton);
         }
@@ -61,9 +61,9 @@ public class StorePanel : MonoBehaviour
         // Check if the player has enough money
         if (LocalPlayer.ownMoney < tempEquipment.costMoney) return false;
         // Check if the player has enough space
-        for (int i = 0; i < LocalPlayer.EquipmentSlot.Length; i++)
+        for (int i = 0; i < LocalPlayer.EquipmentSlots.Length; i++)
         {
-            if (LocalPlayer.EquipmentSlot[i] == null)
+            if (LocalPlayer.EquipmentSlots[i] == null)
             {
                 // Spend Money
                 LocalPlayer.SpendMoney(tempEquipment.costMoney);
@@ -79,7 +79,7 @@ public class StorePanel : MonoBehaviour
     public virtual void SellButtonClick(int slotIndex)
     {
         // Get costMoney
-        Equipment_ScriptableObject tempEquipment = LocalPlayer.EquipmentSlot[slotIndex];
+        Equipment_ScriptableObject tempEquipment = LocalPlayer.EquipmentSlots[slotIndex];
         // Refund 80% of the cost
         int refundAmount = Mathf.FloorToInt(tempEquipment.costMoney * 0.8f);
         LocalPlayer.AddMoney(refundAmount);

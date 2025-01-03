@@ -32,11 +32,11 @@ public class MainInfoUI : MonoBehaviour
     void Update()
     {
         if (LocalPlayer == null) return;
-        for (int i = 0 ; i < LocalPlayer.EquipmentSlot.Length ; i++)
+        for (int i = 0 ; i < LocalPlayer.EquipmentSlots.Length ; i++)
         {
-            if (LocalPlayer.EquipmentSlot[i] is Item_ScriptableObject)
+            if (LocalPlayer.EquipmentSlots[i] is Item_ScriptableObject)
             {
-                Item_ScriptableObject tempObject = LocalPlayer.EquipmentSlot[i] as Item_ScriptableObject;
+                Item_ScriptableObject tempObject = LocalPlayer.EquipmentSlots[i] as Item_ScriptableObject;
                 EquipmentImage[i].Set_CoolDown(tempObject.lastUseTime,tempObject.cooldownDuration);
             }
         }
@@ -64,9 +64,9 @@ public class MainInfoUI : MonoBehaviour
     }
     public void Update_Equipment()
     {
-        for (int i = 0 ; i < LocalPlayer.EquipmentSlot.Length ; i++)
+        for (int i = 0 ; i < LocalPlayer.EquipmentSlots.Length ; i++)
         {
-            EquipmentImage[i].UpdateImage(LocalPlayer.EquipmentSlot[i]?.EquipmentImage);
+            EquipmentImage[i].UpdateImage(LocalPlayer.EquipmentSlots[i]?.EquipmentImage);
         }
     }
 }

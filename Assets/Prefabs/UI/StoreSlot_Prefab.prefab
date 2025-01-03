@@ -274,8 +274,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 9078267626463176357}
-        m_TargetAssemblyTypeName: HR.UI.Equipment_Prefab, Assembly-CSharp
-        m_MethodName: ButtonClick
+        m_TargetAssemblyTypeName: HR.UI.StoreSlot, Assembly-CSharp
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -297,7 +297,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b39f99130831af4db8ea00a2704315d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EquipmentIndex: 0
+  equipment: {fileID: 0}
   EquipmentImage: {fileID: 8594928009462302878}
   CostMoney_Text: {fileID: 1382483760067205507}
 --- !u!1 &4528802760859120246

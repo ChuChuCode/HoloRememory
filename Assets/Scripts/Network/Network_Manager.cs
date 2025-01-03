@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine.SceneManagement;
@@ -81,7 +80,8 @@ public class Network_Manager : NetworkManager
                 // gameplayInsance.PlayerIdNumber = PlayersInfoList[i].PlayerIdNumber;
                 // gameplayInsance.PlayerSteamID = PlayersInfoList[i].PlayerSteamID;
                 // NetworkServer.Destroy(oldPlayer);
-                // Set UI
+
+                // Set Skill UI
                 if (player.netIdentity.isOwned)
                 {
                     MainInfoUI.instance.Character_Image.sprite = characterModelComponent.CharacterImage;
@@ -93,7 +93,9 @@ public class Network_Manager : NetworkManager
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance);
 
                 Player_List.Add(gameplayInsance);
+                CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance);
             }
+            
         }
         
     }
