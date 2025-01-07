@@ -141,9 +141,10 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  BallOwner: {fileID: 0}
   Target: {fileID: 0}
-  AttackDamage: 20
+  speed: 10
+  AttackDamage: 0
+  BallOwner: {fileID: 0}
 --- !u!54 &670802366465864448
 Rigidbody:
   m_ObjectHideFlags: 0

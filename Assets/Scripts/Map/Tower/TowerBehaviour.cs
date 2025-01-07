@@ -1,6 +1,6 @@
 using HR.UI;
 using UnityEngine;
-using UnityEngine.AI;
+using HR.Object.Skill;
 
 namespace HR.Object.Map{
 public class TowerBehaviour : Health
@@ -98,6 +98,7 @@ public class TowerBehaviour : Health
                 {
                     // Spawn attack ball and Set Target = enemy 
                     TowerBall ball = Instantiate(Attack_Ball,top.transform.position,Quaternion.identity);
+                    // **** Spawn on Server
                     ball.Target = enemy;
                     // Set new timer
                     Attack_CD_timer = Time.time;

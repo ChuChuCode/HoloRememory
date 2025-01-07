@@ -1,38 +1,30 @@
+using HR.Object.Player;
+using HR.UI;
+using Mirror;
 using UnityEngine;
-using UnityEngine.AI;
 
-namespace HR.Object.Map{
-public class TowerBall : MonoBehaviour
+namespace HR.Object.Skill{
+public class TowerBall : ProjectileBase
 {
-    public Transform Target;
-    float speed = 5f;
-    [SerializeField] int towerDamage = 20;
+    protected override void TriggerisPlayer(CharacterBase characterBase)
+    {
+        // Check is dead or not
+        bool isdead = characterBase.GetDamage(AttackDamage);
+        if (isdead)
+        {
+            // Update KDA
+            characterBase.death++;
+            if (characterBase.GetComponent<NetworkIdentity>().isLocalPlayer)
+            {
+                LocalPlayerInfo.Instance.Update_KDA(characterBase);
+            }
+        }
+    }
+    protected override void TriggerisnotPlayer(Health health)
+    {
+        // Just Dead
+    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
-        {
-            Destroy(gameObject);
-            return;
-        }
-        // Get Component center
-        Collider collider = Target.GetComponentInChildren<Collider>();
-        Vector3 Center = collider.bounds.center;
-        // Vector3 Center = Target.position + new Vector3(0, Target.GetComponent<NavMeshAgent>().height/2 - Target.GetComponent<NavMeshAgent>().baseOffset ,0);
-        Vector3 direction = Center - transform.position;
-        transform.position += direction.normalized * speed * Time.deltaTime;
-    }
-    void OnTriggerEnter(Collider other) 
-    {
-        // Trigger needd Collider and Rigid !!!!
-        if (other.transform.root == Target)
-        {
-            Health health = other.transform.root.GetComponent<Health>();
-            health.GetDamage(towerDamage);
-            Destroy(gameObject);
-        }
-    }
 }
 
 }

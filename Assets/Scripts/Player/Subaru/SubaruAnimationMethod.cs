@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using Mirror.BouncyCastle.Asn1.X509;
+using HR.Object.Skill;
 
 namespace HR.Object.Player{
 
