@@ -107,6 +107,7 @@ public class CharacterBase: Health
         ShowPath.Instance.LocalPlayer = this;
         StorePanel.Instance.LocalPlayer = this;
         MainInfoUI.instance.LocalPlayer = this;
+        LocalPlayerInfo.Instance.Update_KDA(this);
 
         // Health Initial
         InitialHealth();

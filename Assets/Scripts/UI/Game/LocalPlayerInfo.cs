@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
+using HR.Object.Player;
 
 namespace HR.UI{
-public class GameDuration : NetworkBehaviour
+public class LocalPlayerInfo : NetworkBehaviour
 {
-    public static GameDuration Instance;
+    public static LocalPlayerInfo Instance;
     [SerializeField] TMP_Text Time_Text;
+    [SerializeField] TMP_Text Kill_Text;
+    [SerializeField] TMP_Text Death_Text;
+    [SerializeField] TMP_Text Assist_Text;    
     float started_time = 0f;
     [SyncVar] public float timer;
     void Start()
@@ -31,6 +35,12 @@ public class GameDuration : NetworkBehaviour
         int min = (int) timer / 60;
         int sec = (int) timer % 60;
         return string.Format("{0:00}:{1:00}", min, sec);
+    }
+    public void Update_KDA(CharacterBase characterBase)
+    {
+        Kill_Text.text = characterBase.kill.ToString();
+        Death_Text.text = characterBase.death.ToString();
+        Assist_Text.text = characterBase.assist.ToString();
     }
 }
 

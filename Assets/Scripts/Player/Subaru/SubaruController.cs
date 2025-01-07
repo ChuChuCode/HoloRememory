@@ -188,6 +188,7 @@ public class SubaruController : CharacterBase
         // Dead now 
         if (currentHealth <= 0 && !isDead)
         {
+            // Screen to black/white
             DeadScreen.instance.isDead(true);
             agent.isStopped = true;
             animator.Play("Dead");
@@ -197,7 +198,7 @@ public class SubaruController : CharacterBase
                 duck.currentHealth = 0;
             }
             isDead = true;
-            // Unregister control
+            //****** Unregister control -> need to change to only skill
             InputComponent.instance.playerInput.Player.Disable();
 
             // UI Update -> Ally Icon

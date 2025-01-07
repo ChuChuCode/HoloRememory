@@ -1,7 +1,5 @@
 using UnityEngine;
 using HR.Network;
-using HR.Object.Player;
-using HR.Network.Select;
 using System.Collections.Generic;
 
 namespace HR.UI{
@@ -59,12 +57,12 @@ public class CharacterInfoPanel : MonoBehaviour
         playerInfo.Initial(sprite, character);
         PlayerInfo_Components.Add(playerInfo);
     }
-    // Need Rpc *****************************
+    // Rpc ? when buy Item -> Might add a new script on prefab to update UI itself.
     public void UpdateUI()
     {
-        foreach (PlayerInfo_Component playerInfo_Component in PlayerInfo_Components)
+        foreach (PlayerInfo_Component playerInfo_Components in PlayerInfo_Components)
         {
-            playerInfo_Component.UpdateInfo();
+            playerInfo_Components.UpdateInfo();
         }
     }
 }
