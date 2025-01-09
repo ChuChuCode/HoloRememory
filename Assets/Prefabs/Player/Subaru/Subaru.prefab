@@ -1263,11 +1263,20 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  attack: 20
-  defense: 10
+  attack: 0
+  defense: 0
+  attackSpeed: 0
+  moveSpeed: 0
+  DefaultAttack: 20
+  DefaultDefense: 10
+  DefaultAttackSpeed: 1
+  DefaultMoveSpeed: 1
+  AgentWalkSpeed: 3.5
   kill: 0
   death: 0
   assist: 0
+  minion: 0
+  tower: 0
   AnimationMethod: {fileID: 3252265101689514867}
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}

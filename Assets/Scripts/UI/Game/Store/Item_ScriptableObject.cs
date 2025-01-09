@@ -7,8 +7,11 @@ namespace HR.UI
     [CreateAssetMenu(fileName = "NewItem", menuName = "HoloRememory/Game/Item")]
     public class Item_ScriptableObject : Equipment_ScriptableObject
     {
+        [Header("Value Add")]
         public int attackValue;
         public int defenseValue;
+        public float moveSpeedValue;
+        public float attackSpeedValue;
         [Header("Skill")]
         public ItemUse_UI UI_Prefab;
         ItemUse_UI UI_Object;
@@ -49,6 +52,14 @@ namespace HR.UI
         {
             characterBase.attack += attackValue;
             characterBase.defense += defenseValue;
+            if (moveSpeedValue != 0)
+            {
+                characterBase.moveSpeed += moveSpeedValue;
+            }
+            if (attackSpeedValue != 0)
+            {
+                characterBase.attackSpeed += attackSpeedValue;
+            }
         }
     }
     

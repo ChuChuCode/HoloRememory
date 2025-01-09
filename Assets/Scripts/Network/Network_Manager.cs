@@ -90,7 +90,7 @@ public class Network_Manager : NetworkManager
                     MainInfoUI.instance.E.Set_Skill_Icon(characterModelComponent.E_skill_Image);
                     MainInfoUI.instance.R.Set_Skill_Icon(characterModelComponent.R_skill_Image);
                 }
-                NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance);
+                NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance,ReplacePlayerOptions.KeepAuthority);
 
                 Player_List.Add(gameplayInsance);
                 CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance);

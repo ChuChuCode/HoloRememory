@@ -7,7 +7,7 @@ namespace HR.UI{
 
 public class PlayerInfo_Component : MonoBehaviour
 {
-    [SerializeField] CharacterBase characterBase;
+    public CharacterBase characterBase;
     public Image CharacterImage;
     public TMP_Text Kill_Text;
     public TMP_Text Death_Text;

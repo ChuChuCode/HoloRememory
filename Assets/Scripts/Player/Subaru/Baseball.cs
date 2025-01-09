@@ -1,6 +1,8 @@
 using Mirror;
 using HR.UI;
 using HR.Object.Player;
+using HR.Object.Map;
+using HR.Object.Minion;
 
 namespace HR.Object.Skill{
 public class Baseball : ProjectileBase
@@ -31,7 +33,27 @@ public class Baseball : ProjectileBase
         {
             // Add Money
             BallOwner.AddMoney(health.coin);
-            // Minion or Tower *****
+            // Minion or Tower
+            if (health is Minions)
+            {
+                // Add Minion number
+                BallOwner.minion++;
+                if (BallOwner.GetComponent<NetworkIdentity>().isLocalPlayer)
+                {
+                    CharacterInfoPanel.Instance.UpdateUI();
+                    LocalPlayerInfo.Instance.Update_KDA(BallOwner);
+                }
+            }
+            else if (health is TowerBehaviour)
+            {
+                // Add Destory Tower number
+                BallOwner.tower++;
+                if (BallOwner.GetComponent<NetworkIdentity>().isLocalPlayer)
+                {
+                    CharacterInfoPanel.Instance.UpdateUI();
+                    LocalPlayerInfo.Instance.Update_KDA(BallOwner);
+                }
+            }
         }
     }
     // Since attack damage will change while game playing, so we need to set it when we create the ball.

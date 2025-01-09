@@ -60,10 +60,21 @@ public class CharacterBase: Health
     [Header("Stats")]
     public int attack;
     public int defense;
+    public float attackSpeed;
+    public float moveSpeed;
+    [SerializeField] int DefaultAttack;
+    [SerializeField] int DefaultDefense;
+    [SerializeField] float DefaultAttackSpeed;
+    [SerializeField] float DefaultMoveSpeed;
+    [SerializeField] float AgentWalkSpeed; // 3.5f
+    
     [Header("KDA")]
-    public int kill = 0;
-    public int death = 0;
-    public int assist = 0;
+    [SyncVar] public int kill = 0;
+    [SyncVar] public int death = 0;
+    [SyncVar] public int assist = 0;
+    [Header("Number of Minions and Towers Destroyed")]
+    [SyncVar] public int minion = 0;
+    [SyncVar] public int tower = 0;
     protected virtual void Awake()
     {
         // NavMeshAgent Check
@@ -111,6 +122,16 @@ public class CharacterBase: Health
 
         // Health Initial
         InitialHealth();
+
+        // Initial Info
+        attack = DefaultAttack;
+        defense = DefaultDefense;
+        attackSpeed = DefaultAttackSpeed;
+        moveSpeed = DefaultMoveSpeed;
+        // Set Animation Speed and Agent Walk Speed
+        agent.speed = AgentWalkSpeed * moveSpeed;
+        animator.SetFloat("AttackSpeed",attackSpeed);
+        animator.SetFloat("MoveSpeed",moveSpeed);
 
         Free_CameParent.SetActive(true);
         // Set Recall time and IEnumerator
@@ -909,6 +930,12 @@ public class CharacterBase: Health
     /// <summary> Update Stats when change Equipment </summary>
     public void UpdateStats()
     {
+        // Reset
+        attack = DefaultAttack;
+        defense = DefaultDefense;
+        attackSpeed = DefaultAttackSpeed;
+        moveSpeed = DefaultMoveSpeed;
+        // Update with equipment
         foreach (Equipment_ScriptableObject equipment in EquipmentSlots)
         {
             if (equipment != null)
@@ -917,6 +944,10 @@ public class CharacterBase: Health
                 equipment.CharacterInfoChange(this);
             }
         }
+        // Apply to Animation and Agent Move Speed
+        agent.speed = AgentWalkSpeed * moveSpeed;
+        animator.SetFloat("AttackSpeed",attackSpeed);
+        animator.SetFloat("MoveSpeed",moveSpeed);
     }
 }
 

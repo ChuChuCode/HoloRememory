@@ -14,8 +14,10 @@ public class TowerBall : ProjectileBase
         {
             // Update KDA
             characterBase.death++;
+            // If Plaer is Local Player(Owner)
             if (characterBase.GetComponent<NetworkIdentity>().isLocalPlayer)
             {
+                CharacterInfoPanel.Instance.UpdateUI();
                 LocalPlayerInfo.Instance.Update_KDA(characterBase);
             }
         }

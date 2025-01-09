@@ -4,7 +4,7 @@ using HR.UI;
 using HR.Object.Player;
 
 namespace HR.Object.Minion{
-public class Minion : MinionBase
+public class Minions : MinionBase
 {
     // Constant string
     const string WALK = "Walk";

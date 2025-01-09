@@ -6,7 +6,7 @@ using System.Collections;
 
 public class MinionSpawner : NetworkBehaviour
 {
-    [SerializeField] Minion Minion_Prefab;
+    [SerializeField] Minions Minion_Prefab;
     [SerializeField] string layerName;
     [SerializeField] Transform EnemyTarget;
     [SerializeField] int first_SpawnTime = 10;
@@ -32,7 +32,7 @@ public class MinionSpawner : NetworkBehaviour
         for (int i = 0 ; i < SpawnNumber ; i++)
         {
             // Spawn Minion
-            Minion temp_Minion = Instantiate(Minion_Prefab,transform.position,transform.rotation);
+            Minions temp_Minion = Instantiate(Minion_Prefab,transform.position,transform.rotation);
             // Set Target
             temp_Minion.MainDestination = EnemyTarget;
             // Set Layer for all child
