@@ -1,6 +1,7 @@
 using UnityEngine;
 
 using HR.Object.Player;
+using HR.Object;
 
 namespace HR.Network.Game{
 public class GameController : MonoBehaviour
@@ -30,6 +31,35 @@ public class GameController : MonoBehaviour
         {
             Instance = this;
         }
+    }
+    public void End_Game(int win_team)
+    {
+        if (win_team == 1)
+        {
+            if (LocalPlayer.gameObject.layer == LayerMask.NameToLayer("Team1"))
+            {
+                // Show Victory
+            }
+            else
+            {
+                // Show Defeat
+
+            }
+        }
+        else
+        {
+            if (LocalPlayer.gameObject.layer == LayerMask.NameToLayer("Team2"))
+            {
+                // Show Victory
+            }
+            else
+            {
+                // Show Defeat
+
+            }
+        }
+        // PlayerInput Disable
+        
     }
 }
 

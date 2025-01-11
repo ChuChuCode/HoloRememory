@@ -73,6 +73,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""D"",
+                    ""type"": ""Button"",
+                    ""id"": ""666057cd-5c48-4e82-87fd-b7ab488c3a3b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""F"",
+                    ""type"": ""Button"",
+                    ""id"": ""ea84cd5e-e921-4ec4-818c-6bb2bbaa60e0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Right_Mouse"",
                     ""type"": ""Button"",
                     ""id"": ""16b4b54b-ef35-4997-9e80-864564744578"",
@@ -284,7 +302,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""262e4b78-2046-414a-b73a-8e25a3ad0a8d"",
                     ""path"": ""<Keyboard>/r"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""R"",
@@ -352,7 +370,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/p"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""StoreKey"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -517,7 +535,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/1"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Equipment1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -528,7 +546,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/2"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Equipment2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -539,7 +557,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/3"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Equipment3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -550,7 +568,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/4"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Equipment4"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -561,7 +579,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/5"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Equipment5"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -572,8 +590,30 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/6"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Equipment6"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a6bca91e-bc4b-4fe8-aefd-feaefa14439c"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""D"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d6ac559-3a62-4657-9651-541e27416244"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""F"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -769,6 +809,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_W = m_Player.FindAction("W", throwIfNotFound: true);
         m_Player_E = m_Player.FindAction("E", throwIfNotFound: true);
         m_Player_R = m_Player.FindAction("R", throwIfNotFound: true);
+        m_Player_D = m_Player.FindAction("D", throwIfNotFound: true);
+        m_Player_F = m_Player.FindAction("F", throwIfNotFound: true);
         m_Player_Right_Mouse = m_Player.FindAction("Right_Mouse", throwIfNotFound: true);
         m_Player_Left_Mouse = m_Player.FindAction("Left_Mouse", throwIfNotFound: true);
         m_Player_Camera_Change = m_Player.FindAction("Camera_Change", throwIfNotFound: true);
@@ -866,6 +908,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_W;
     private readonly InputAction m_Player_E;
     private readonly InputAction m_Player_R;
+    private readonly InputAction m_Player_D;
+    private readonly InputAction m_Player_F;
     private readonly InputAction m_Player_Right_Mouse;
     private readonly InputAction m_Player_Left_Mouse;
     private readonly InputAction m_Player_Camera_Change;
@@ -893,6 +937,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @W => m_Wrapper.m_Player_W;
         public InputAction @E => m_Wrapper.m_Player_E;
         public InputAction @R => m_Wrapper.m_Player_R;
+        public InputAction @D => m_Wrapper.m_Player_D;
+        public InputAction @F => m_Wrapper.m_Player_F;
         public InputAction @Right_Mouse => m_Wrapper.m_Player_Right_Mouse;
         public InputAction @Left_Mouse => m_Wrapper.m_Player_Left_Mouse;
         public InputAction @Camera_Change => m_Wrapper.m_Player_Camera_Change;
@@ -935,6 +981,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @R.started += instance.OnR;
             @R.performed += instance.OnR;
             @R.canceled += instance.OnR;
+            @D.started += instance.OnD;
+            @D.performed += instance.OnD;
+            @D.canceled += instance.OnD;
+            @F.started += instance.OnF;
+            @F.performed += instance.OnF;
+            @F.canceled += instance.OnF;
             @Right_Mouse.started += instance.OnRight_Mouse;
             @Right_Mouse.performed += instance.OnRight_Mouse;
             @Right_Mouse.canceled += instance.OnRight_Mouse;
@@ -1008,6 +1060,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @R.started -= instance.OnR;
             @R.performed -= instance.OnR;
             @R.canceled -= instance.OnR;
+            @D.started -= instance.OnD;
+            @D.performed -= instance.OnD;
+            @D.canceled -= instance.OnD;
+            @F.started -= instance.OnF;
+            @F.performed -= instance.OnF;
+            @F.canceled -= instance.OnF;
             @Right_Mouse.started -= instance.OnRight_Mouse;
             @Right_Mouse.performed -= instance.OnRight_Mouse;
             @Right_Mouse.canceled -= instance.OnRight_Mouse;
@@ -1173,6 +1231,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnW(InputAction.CallbackContext context);
         void OnE(InputAction.CallbackContext context);
         void OnR(InputAction.CallbackContext context);
+        void OnD(InputAction.CallbackContext context);
+        void OnF(InputAction.CallbackContext context);
         void OnRight_Mouse(InputAction.CallbackContext context);
         void OnLeft_Mouse(InputAction.CallbackContext context);
         void OnCamera_Change(InputAction.CallbackContext context);
