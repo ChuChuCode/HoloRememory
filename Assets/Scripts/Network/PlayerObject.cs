@@ -19,6 +19,7 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public int TeamID = 0;
     [SyncVar(hook = nameof(CharacterSelect))] public int CharacterID = -1;
+    [SyncVar] public int[] Spell = new int[2];
 
     private Network_Manager manager;
 

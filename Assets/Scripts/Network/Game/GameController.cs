@@ -25,11 +25,22 @@ public class GameController : MonoBehaviour
         }
     }
     public CharacterBase LocalPlayer;
+    public PlayerObject LocalPlayerController;
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+        }
+    }
+    void Start()
+    {
+        foreach (PlayerObject player in  Manager.PlayersInfoList)
+        {
+            if (player.isOwned)
+            {
+                LocalPlayerController = player;
+            }
         }
     }
     public void End_Game(int win_team)

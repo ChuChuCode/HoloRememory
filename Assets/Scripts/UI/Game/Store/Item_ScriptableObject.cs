@@ -39,8 +39,8 @@ namespace HR.UI
             {
                 lastUseTime = Time.time; // Update the last use time
                 // Use the item logic here
-                Destroy_prefab();
                 UI_Object.Spawn_ItemUse();
+                Destroy_prefab();
             }
         }
         public void Destroy_prefab()

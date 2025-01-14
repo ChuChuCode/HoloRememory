@@ -17,6 +17,8 @@ public class MainInfoUI : MonoBehaviour
     public Skill_Icon W;
     public Skill_Icon E;
     public Skill_Icon R;
+    public Spell_Icon D;
+    public Spell_Icon F;
     [SerializeField] Bar HP;
     [SerializeField] Bar MP;
     [Header("Equipment and Money")]
@@ -32,6 +34,10 @@ public class MainInfoUI : MonoBehaviour
     void Update()
     {
         if (LocalPlayer == null) return;
+        // Spell UI Update
+        // D.Set_CoolDown(LocalPlayer.Spells[0].lastUseTime,LocalPlayer.Spells[0].cooldownDuration);
+        // F.Set_CoolDown(LocalPlayer.Spells[1].lastUseTime,LocalPlayer.Spells[1].cooldownDuration);
+        // Equipment UI Update
         for (int i = 0 ; i < LocalPlayer.EquipmentSlots.Length ; i++)
         {
             if (LocalPlayer.EquipmentSlots[i] is Item_ScriptableObject)

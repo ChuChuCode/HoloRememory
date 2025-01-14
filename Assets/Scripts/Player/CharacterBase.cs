@@ -9,6 +9,7 @@ using System.Collections;
 using UnityEngine.VFX;
 using static HR.UI.Skill_Icon;
 using Mirror;
+using HR.Object.Spell;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
@@ -56,6 +57,7 @@ public class CharacterBase: Health
     float RecallTime = 8f;
     [SerializeField] protected VisualEffect RecallEffect;
     [SerializeField] protected bool isRecall = false;
+    [SyncVar] public SpellBase[] Spells = new SpellBase[2];
     [SyncVar] public Equipment_ScriptableObject[] EquipmentSlots = new Equipment_ScriptableObject[6];
     [Header("Stats")]
     public int attack;
@@ -165,6 +167,11 @@ public class CharacterBase: Health
         // R skill
         InputComponent.instance.playerInput.Player.R.started += _ => RKeyDown();
         InputComponent.instance.playerInput.Player.R.canceled += _ => RKeyUp();
+
+        // D spell
+
+
+        // F spell
 
         // Equipment Key
         InputComponent.instance.playerInput.Player.Equipment1.started += _ => UseEquipmentKeyDown(0);

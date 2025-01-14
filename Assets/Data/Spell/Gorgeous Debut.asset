@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Gorgeous Debut
   m_EditorClassIdentifier: 
   SpellIndex: 0
+  UI_Prefab: {fileID: 7177916609554386311, guid: e015c9f395c43d14ca1766025eb9c5f0, type: 3}
   cooldownDuration: 120
   lastUseTime: 0

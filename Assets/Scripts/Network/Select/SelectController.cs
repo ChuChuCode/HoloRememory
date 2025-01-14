@@ -116,6 +116,7 @@ public class SelectController : MonoBehaviour
         // LobbyPlayerList.OnStartAuthority
         if(!PlayerItemCreated)
         {
+            print(1);
             // Host
             CreateHostPlayerItem();
         }
@@ -123,6 +124,7 @@ public class SelectController : MonoBehaviour
         // LobbyPlayerList.OnStartClient
         if (Team1_networkSelectPlayersList.Count + Team2_networkSelectPlayersList.Count < Manager.PlayersInfoList.Count)
         {
+            print(2);
             CreateClientPlayerItem();
         }
         // Check Anyone leave
