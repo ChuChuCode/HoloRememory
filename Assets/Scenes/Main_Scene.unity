@@ -2406,6 +2406,7 @@ MonoBehaviour:
   timeInterpolationGui: 0
   PlayerObject_Prefab: {fileID: 8301942137255686253, guid: 2d0034765e071ed45800b7947e13a88b, type: 3}
   PlayersInfoList: []
+  LocalPlayerObject: {fileID: 0}
   SelectPlayer: {fileID: 8168614158581726803, guid: 285a470ed9f65a9478060b5b57840ae9, type: 3}
   characterSelectComponentsList:
   - {fileID: 11400000, guid: bb1c05426955d614fabb80ce180ab2e2, type: 2}
@@ -9081,6 +9082,7 @@ MonoBehaviour:
   timeInterpolationGui: 0
   PlayerObject_Prefab: {fileID: 0}
   PlayersInfoList: []
+  LocalPlayerObject: {fileID: 0}
   SelectPlayer: {fileID: 0}
   characterSelectComponentsList: []
   Player_List: []

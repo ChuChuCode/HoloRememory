@@ -13,6 +13,7 @@ public class Network_Manager : NetworkManager
     [Header("Lobby")]
     [SerializeField] PlayerObject PlayerObject_Prefab;
     public List<PlayerObject> PlayersInfoList = new List<PlayerObject>();
+    public PlayerObject LocalPlayerObject;
     [Header("Select")]
     [SerializeField] Network_SelectPlayer SelectPlayer;
     [Header("Character Component")]
@@ -89,6 +90,11 @@ public class Network_Manager : NetworkManager
                     MainInfoUI.instance.W.Set_Skill_Icon(characterModelComponent.W_skill_Image);
                     MainInfoUI.instance.E.Set_Skill_Icon(characterModelComponent.E_skill_Image);
                     MainInfoUI.instance.R.Set_Skill_Icon(characterModelComponent.R_skill_Image);
+                }
+                // Ensure the client is ready before replacing the player
+                if (!NetworkClient.ready)
+                {
+                    NetworkClient.Ready();
                 }
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance,ReplacePlayerOptions.KeepAuthority);
 

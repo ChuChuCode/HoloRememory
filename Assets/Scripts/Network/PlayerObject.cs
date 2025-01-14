@@ -23,7 +23,7 @@ public class PlayerObject : NetworkBehaviour
 
     private Network_Manager manager;
 
-    private Network_Manager Manager
+    public Network_Manager Manager
     {
         get
         {
@@ -50,6 +50,8 @@ public class PlayerObject : NetworkBehaviour
         gameObject.name = "LocalGamePlayer";
         // Set LocalPlayer
         LobbyController.Instance.LocalPlayerController = this;
+        // Set Network_Manager
+        manager.LocalPlayerObject = this;
         // Set Start UI
         LobbyController.Instance.FindLocalPlayer();
         LobbyController.Instance.UpdateLobbyName();
@@ -174,6 +176,11 @@ public class PlayerObject : NetworkBehaviour
         {
             SelectController.Instance.UpdatePlayerUI();
         }
+    }
+    [Command]
+    public void CmdAddMessage(string userName, string message)
+    {
+        Chat_Controller.Instance.RpcAddMessage(userName, message);
     }
 }
 

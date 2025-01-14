@@ -48,7 +48,6 @@ public class CharacterBase: Health
     // prevent cancel and walk at the same time
     private bool isSkillCanceled = false;
     [SerializeField] protected LayerMask MouseTargetLayer;
-
     public Transform Target;
     protected Ray ray;
     [Header("Attack")]
