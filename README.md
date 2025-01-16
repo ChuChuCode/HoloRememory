@@ -1,6 +1,6 @@
 # Holo Rememory
- A Hololive MOBA game
- (still at the start of Core system.)
+ A Hololive MOBA game (still at the start of Core system.)
+ 
  [proposal](https://docs.google.com/document/d/1RLbDdndfFh__seADDjEF7X3_XJbSYoiCsNQYUIRbhbQ/edit?usp=sharing)
 
 ## Directory tree view
