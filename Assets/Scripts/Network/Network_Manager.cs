@@ -6,6 +6,7 @@ using Steamworks;
 using HR.UI;
 using HR.Network.Select;
 using HR.Network.Game;
+using System.Linq;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -19,6 +20,17 @@ public class Network_Manager : NetworkManager
     [Header("Character Component")]
     public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
     public List<GameObject> Player_List = new List<GameObject>();
+    public override void Start()
+    {
+        // Initial CharacterSelectComponent
+        var playerObjects = Resources.LoadAll("Data/Character");
+        foreach (var playerobject in playerObjects)
+        {
+            characterSelectComponentsList.Add(playerobject as CharacterSelectComponent);
+        }
+
+        base.Start();
+    }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
         if ( SceneManager.GetActiveScene().name == "Lobby_Scene") 

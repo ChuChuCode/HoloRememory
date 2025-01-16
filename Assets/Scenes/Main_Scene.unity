@@ -2408,9 +2408,7 @@ MonoBehaviour:
   PlayersInfoList: []
   LocalPlayerObject: {fileID: 0}
   SelectPlayer: {fileID: 8168614158581726803, guid: 285a470ed9f65a9478060b5b57840ae9, type: 3}
-  characterSelectComponentsList:
-  - {fileID: 11400000, guid: bb1c05426955d614fabb80ce180ab2e2, type: 2}
-  - {fileID: 11400000, guid: 849384408812bb54c9e21270381aa362, type: 2}
+  characterSelectComponentsList: []
   Player_List: []
 --- !u!1 &636497083
 GameObject:

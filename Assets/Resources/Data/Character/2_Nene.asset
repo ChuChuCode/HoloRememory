@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34bdc5d5675dbe542a994e3034947129, type: 3}
-  m_Name: Nene
+  m_Name: 2_Nene
   m_EditorClassIdentifier: 
   ID: 2
   CharacterName: "\u6843\u9234\u306D\u306D"

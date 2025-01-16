@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Steamworks;
 using System.Linq;
+using HR.UI;
 
 namespace HR.Network.Select{
 public class SelectController : MonoBehaviour
@@ -24,6 +25,11 @@ public class SelectController : MonoBehaviour
     [Header("UI")]
     public TMP_Text LobbyNameText;
     public Button ReadyButton;
+    [Header("Spell")]
+    [SerializeField] Transform Spell_1;
+    [SerializeField] Transform Spell_2;
+    [SerializeField] Skill_Button_Component Skill_Component_Prefab;
+    public List<Sprite> Spell_Sprites;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -50,6 +56,9 @@ public class SelectController : MonoBehaviour
     }
     void Start()
     {
+        // Update Lobby Name
+        CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
+        LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID),"name");
         ReadyButton.interactable = false;
         // Set Character Select
         foreach(CharacterSelectComponent characterSelectComponent in Manager.characterSelectComponentsList)
@@ -65,9 +74,18 @@ public class SelectController : MonoBehaviour
             temp_characterSelectComponent.transform.localScale = Vector3.one;
             SelectItemList.Add(temp_characterSelectComponent);
         }
-        // Update Lobby Name
-        CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
-        LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID),"name");
+        // Set Spell UI
+        foreach( Sprite spell_sprite in Spell_Sprites)
+        {
+            Skill_Button_Component temp_Spell = Instantiate(Skill_Component_Prefab);
+            temp_Spell.transform.SetParent(Spell_1);
+            temp_Spell.transform.localScale = Vector3.one;
+            temp_Spell.SetSprite(spell_sprite);
+            Skill_Button_Component temp_Spell1 = Instantiate(Skill_Component_Prefab);
+            temp_Spell1.transform.SetParent(Spell_2);
+            temp_Spell1.transform.localScale = Vector3.one;
+            temp_Spell1.SetSprite(spell_sprite);
+        }
         // Set UI
         foreach (PlayerObject player in  Manager.PlayersInfoList)
         {
@@ -116,7 +134,6 @@ public class SelectController : MonoBehaviour
         // LobbyPlayerList.OnStartAuthority
         if(!PlayerItemCreated)
         {
-            print(1);
             // Host
             CreateHostPlayerItem();
         }
@@ -124,7 +141,6 @@ public class SelectController : MonoBehaviour
         // LobbyPlayerList.OnStartClient
         if (Team1_networkSelectPlayersList.Count + Team2_networkSelectPlayersList.Count < Manager.PlayersInfoList.Count)
         {
-            print(2);
             CreateClientPlayerItem();
         }
         // Check Anyone leave

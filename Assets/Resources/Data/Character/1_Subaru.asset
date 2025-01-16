@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34bdc5d5675dbe542a994e3034947129, type: 3}
-  m_Name: Subaru
+  m_Name: 1_Subaru
   m_EditorClassIdentifier: 
   ID: 1
   CharacterName: "\u5927\u7A7A\u30B9\u30D0\u30EB"

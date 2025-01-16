@@ -29,14 +29,18 @@ public class StorePanel : MonoBehaviour
     void Start()
     {
         gameObject.SetActive(false);
-        /// Initialize equipment
-        foreach (Equipment_ScriptableObject equipment in ListEquipments)
+        // Set Equipment Buttons
+        var euqipmentObjects = Resources.LoadAll("Data/Equipment");
+        foreach (var equipmentObject in euqipmentObjects)
         {
+            Equipment_ScriptableObject equipment = equipmentObject as Equipment_ScriptableObject;
             StoreSlot tempEquipmentButton = Instantiate(EquipmentItemPrefab);
             tempEquipmentButton.UpdatePrefab(equipment);
             // Add Button to Parent
             tempEquipmentButton.transform.SetParent(Equipment_Content);
             tempEquipmentButton.transform.localScale = Vector3.one;
+            // Add equipment to List for Search() method
+            ListEquipments.Add(equipment);
             // Add gameobject to List
             ListButtons.Add(tempEquipmentButton);
         }
