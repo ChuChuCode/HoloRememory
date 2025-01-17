@@ -11,6 +11,8 @@ public class Network_SelectPlayer : MonoBehaviour
     public ulong PlayerSteamID;
     public TMP_Text PlayerNameText;
     public Image PlayerIcon;
+    public Image Spell_1;
+    public Image Spell_2;
     public int TeamID;
     public bool isSelecet;
     void Start()

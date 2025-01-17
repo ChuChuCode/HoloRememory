@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3772234529066612029}
   - component: {fileID: 7854907966235791211}
   m_Layer: 5
-  m_Name: Skill_Button_Component
+  m_Name: Spell_Button_Component
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,6 +116,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04d2ee2d031fd57469833c191613d9bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spell_Slot: 0
+  spell_Index: 0
   Spell_Image: {fileID: 5435009132681680066}
 --- !u!1 &7432343198951718534
 GameObject:
@@ -236,4 +238,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5435009132681680066}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7854907966235791211}
+        m_TargetAssemblyTypeName: HR.UI.Spell_Button_Component, Assembly-CSharp
+        m_MethodName: ButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

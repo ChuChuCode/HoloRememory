@@ -19,8 +19,8 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public int TeamID = 0;
     [SyncVar(hook = nameof(CharacterSelect))] public int CharacterID = -1;
-    [SyncVar] public int[] Spell = new int[2];
-
+    [SyncVar(hook = nameof(PlayerSpell1Update))] public int Spell_1 ;
+    [SyncVar(hook = nameof(PlayerSpell2Update))] public int Spell_2 ;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -181,6 +181,57 @@ public class PlayerObject : NetworkBehaviour
     public void CmdAddMessage(string userName, string message)
     {
         Chat_Controller.Instance.RpcAddMessage(userName, message);
+    }
+    /// Spell 1 change
+    public void CanSpell1Change(int SpellID)
+    {
+        if (isOwned)
+        {
+            CmdSetSpell1Change(SpellID);
+        }
+    }
+    [Command]
+    void CmdSetSpell1Change(int SpellID)
+    {
+        // Ask Everyone to update my value
+        this.PlayerSpell1Update(this.Spell_1, SpellID);
+    }
+    public void PlayerSpell1Update(int OldValue,int NewValue)
+    {
+        if (isServer)
+        {
+            this.Spell_1 = NewValue;
+        }
+        // Client
+        if (isClient)
+        {
+            SelectController.Instance.UpdatePlayerList();
+        }
+    }
+    /// Spell 2 change
+    public void CanSpell2Change(int SpellID)
+    {
+        if (isOwned)
+        {
+            CmdSetSpell2Change(SpellID);
+        }
+    }
+    void CmdSetSpell2Change(int SpellID)
+    {
+        // Ask Everyone to update my value
+        this.PlayerSpell2Update(this.Spell_2, SpellID);
+    }
+    public void PlayerSpell2Update(int OldValue,int NewValue)
+    {
+        if (isServer)
+        {
+            this.Spell_2 = NewValue;
+        }
+        // Client
+        if (isClient)
+        {
+            SelectController.Instance.UpdatePlayerList();
+        }
     }
 }
 

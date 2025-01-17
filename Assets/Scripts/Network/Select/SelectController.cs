@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Steamworks;
 using System.Linq;
 using HR.UI;
+using HR.Object.Spell;
 
 namespace HR.Network.Select{
 public class SelectController : MonoBehaviour
@@ -26,10 +27,12 @@ public class SelectController : MonoBehaviour
     public TMP_Text LobbyNameText;
     public Button ReadyButton;
     [Header("Spell")]
-    [SerializeField] Transform Spell_1;
-    [SerializeField] Transform Spell_2;
-    [SerializeField] Skill_Button_Component Skill_Component_Prefab;
-    public List<Sprite> Spell_Sprites;
+    [SerializeField] Transform Spell_1_Position;
+    [SerializeField] Transform Spell_2_Position;
+    [SerializeField] Spell_Button_Component Spell_Component_Prefab;
+    [SerializeField] List<SpellBase> Spell_Buttons = new List<SpellBase>();
+    [SerializeField] Spell_Select Spell_1;
+    [SerializeField] Spell_Select Spell_2;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -74,17 +77,32 @@ public class SelectController : MonoBehaviour
             temp_characterSelectComponent.transform.localScale = Vector3.one;
             SelectItemList.Add(temp_characterSelectComponent);
         }
-        // Set Spell UI
-        foreach( Sprite spell_sprite in Spell_Sprites)
+        // Initial Spell_Button_Component
+        var SpellObjects = Resources.LoadAll("Data/Spell");
+        foreach (var SpellObject in SpellObjects)
         {
-            Skill_Button_Component temp_Spell = Instantiate(Skill_Component_Prefab);
-            temp_Spell.transform.SetParent(Spell_1);
+            SpellBase spell_sprite = SpellObject as SpellBase;
+            // SpellBase add to List
+            Spell_Buttons.Add(spell_sprite);
+            /// Add to Spell 1
+            Spell_Button_Component temp_Spell = Instantiate(Spell_Component_Prefab);
+            // Set index
+            temp_Spell.SetIndex(1,spell_sprite.SpellIndex);
+            // Set Parent
+            temp_Spell.transform.SetParent(Spell_1_Position);
             temp_Spell.transform.localScale = Vector3.one;
-            temp_Spell.SetSprite(spell_sprite);
-            Skill_Button_Component temp_Spell1 = Instantiate(Skill_Component_Prefab);
-            temp_Spell1.transform.SetParent(Spell_2);
+            // Set Image
+            temp_Spell.SetSprite(spell_sprite.Spell_Sprite);
+
+            /// Add to Spell 2
+            Spell_Button_Component temp_Spell1 = Instantiate(Spell_Component_Prefab);
+            // Set index
+            temp_Spell1.SetIndex(2,spell_sprite.SpellIndex);
+            // Set Parent
+            temp_Spell1.transform.SetParent(Spell_2_Position);
             temp_Spell1.transform.localScale = Vector3.one;
-            temp_Spell1.SetSprite(spell_sprite);
+            // Set Image
+            temp_Spell1.SetSprite(spell_sprite.Spell_Sprite);
         }
         // Set UI
         foreach (PlayerObject player in  Manager.PlayersInfoList)
@@ -130,25 +148,25 @@ public class SelectController : MonoBehaviour
     }
     public void UpdatePlayerList()
     {
-        // Create Host Player(Already exit in room) 
-        // LobbyPlayerList.OnStartAuthority
-        if(!PlayerItemCreated)
-        {
-            // Host
-            CreateHostPlayerItem();
-        }
-        // Create Owner Player
-        // LobbyPlayerList.OnStartClient
-        if (Team1_networkSelectPlayersList.Count + Team2_networkSelectPlayersList.Count < Manager.PlayersInfoList.Count)
-        {
-            CreateClientPlayerItem();
-        }
-        // Check Anyone leave
-        // LobbyPlayerList.OnStopClient
-        if (Team1_networkSelectPlayersList.Count + Team2_networkSelectPlayersList.Count > Manager.PlayersInfoList.Count)
-        {
-            RemovePlayerItem();
-        }
+        // // Create Host Player(Already exit in room) 
+        // // LobbyPlayerList.OnStartAuthority
+        // if(!PlayerItemCreated)
+        // {
+        //     // Host
+        //     CreateHostPlayerItem();
+        // }
+        // // Create Owner Player
+        // // LobbyPlayerList.OnStartClient
+        // if (Team1_networkSelectPlayersList.Count + Team2_networkSelectPlayersList.Count < Manager.PlayersInfoList.Count)
+        // {
+        //     CreateClientPlayerItem();
+        // }
+        // // Check Anyone leave
+        // // LobbyPlayerList.OnStopClient
+        // if (Team1_networkSelectPlayersList.Count + Team2_networkSelectPlayersList.Count > Manager.PlayersInfoList.Count)
+        // {
+        //     RemovePlayerItem();
+        // }
         // Update things
         // LobbyPlayerList.PlayerNameUdate
         if (Team1_networkSelectPlayersList.Count + Team2_networkSelectPlayersList.Count == Manager.PlayersInfoList.Count)
@@ -188,6 +206,7 @@ public class SelectController : MonoBehaviour
                 SelectPlayer.transform.SetParent(Team2_transform);
             }
         }
+        PlayerItemCreated = true;
     }
     public void CreateClientPlayerItem()
     {
@@ -235,6 +254,9 @@ public class SelectController : MonoBehaviour
                 {
                     // Update Character Image
                     PlayerListItemScript.SetCharacterImage(Search_Character(player.CharacterID));
+                    // Update Spell Image
+                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1)?.Spell_Sprite;
+                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2)?.Spell_Sprite;
                     // if player is local player -> update Ready Button
                     if (player == LocalPlayerController)
                     {
@@ -248,6 +270,9 @@ public class SelectController : MonoBehaviour
                 {
                     // Update Character Image
                     PlayerListItemScript.SetCharacterImage(Search_Character(player.CharacterID));
+                    // Update Spell Image
+                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1)?.Spell_Sprite;
+                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2)?.Spell_Sprite;
                     // if player is local player -> update Ready Button
                     if (player == LocalPlayerController)
                     {
@@ -343,6 +368,23 @@ public class SelectController : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         CheckIfAllReady();
+    }
+    // Spell_Button_Component click method -> Call Spell_Select
+    public void SelectSpell(int spell_Slot,int spell_Index)
+    {
+        if (spell_Slot == 1 )
+        {
+            Spell_1.Spell_Button_Click(spell_Index);
+        }
+        else
+        {
+            Spell_2.Spell_Button_Click(spell_Index);
+        }
+    }
+    public SpellBase Search_Spell(int spell_Index)
+    {
+        SpellBase spell = Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
+        return Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
     }
 }
 

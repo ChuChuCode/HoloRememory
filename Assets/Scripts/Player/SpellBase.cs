@@ -4,6 +4,7 @@ using UnityEngine;
 namespace HR.Object.Spell{
 public class SpellBase : ScriptableObject
 {
+    public Sprite Spell_Sprite; 
     public int SpellIndex;
     [Header("Cooldown")]
     public float cooldownDuration ;

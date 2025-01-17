@@ -1159,8 +1159,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df8448be308b5a4685ed1dd05a6012f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Spell_Image: {fileID: 637245506}
+  Slot_Index: 1
+  spell_index: 0
   Spell_Slection: {fileID: 1134490193}
-  Another_Spell: {fileID: 1636372482}
+  Another_Spell: {fileID: 1462957517}
   Skill_Button: []
 --- !u!114 &637245505
 MonoBehaviour:
@@ -1857,10 +1860,12 @@ MonoBehaviour:
   PlayerItemCreated: 0
   LobbyNameText: {fileID: 1402931062}
   ReadyButton: {fileID: 1781744248}
-  Spell_1: {fileID: 1462957518}
-  Spell_2: {fileID: 0}
-  Skill_Component_Prefab: {fileID: 7854907966235791211, guid: a4baa71e05c09f349a433e1f4a80ed6d, type: 3}
-  Spell_Sprites: []
+  Spell_1_Position: {fileID: 1636372483}
+  Spell_2_Position: {fileID: 1134490194}
+  Spell_Component_Prefab: {fileID: 7854907966235791211, guid: a4baa71e05c09f349a433e1f4a80ed6d, type: 3}
+  Spell_Buttons: []
+  Spell_1: {fileID: 1462957522}
+  Spell_2: {fileID: 637245504}
   Team1_networkSelectPlayersList: []
   Team2_networkSelectPlayersList: []
   LocalPlayerController: {fileID: 0}
@@ -2461,8 +2466,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3df8448be308b5a4685ed1dd05a6012f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Spell_Image: {fileID: 1462957520}
+  Slot_Index: 0
+  spell_index: 0
   Spell_Slection: {fileID: 1636372482}
-  Another_Spell: {fileID: 1134490193}
+  Another_Spell: {fileID: 637245502}
   Skill_Button: []
 --- !u!1 &1484433488
 GameObject:

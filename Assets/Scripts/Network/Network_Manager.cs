@@ -7,6 +7,7 @@ using HR.UI;
 using HR.Network.Select;
 using HR.Network.Game;
 using System.Linq;
+using HR.Object.Player;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -28,7 +29,6 @@ public class Network_Manager : NetworkManager
         {
             characterSelectComponentsList.Add(playerobject as CharacterSelectComponent);
         }
-
         base.Start();
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -94,7 +94,10 @@ public class Network_Manager : NetworkManager
                 // gameplayInsance.PlayerSteamID = PlayersInfoList[i].PlayerSteamID;
                 // NetworkServer.Destroy(oldPlayer);
 
-                // Set Skill UI
+                // gameplayInsance.GetComponent<CharacterBase>().Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
+                // gameplayInsance.GetComponent<CharacterBase>().Spells[1] = SelectController.Instance.Search_Spell(player.Spell_2);
+                
+                // Set Skill UI and Spells
                 if (player.netIdentity.isOwned)
                 {
                     MainInfoUI.instance.Character_Image.sprite = characterModelComponent.CharacterImage;
@@ -102,7 +105,10 @@ public class Network_Manager : NetworkManager
                     MainInfoUI.instance.W.Set_Skill_Icon(characterModelComponent.W_skill_Image);
                     MainInfoUI.instance.E.Set_Skill_Icon(characterModelComponent.E_skill_Image);
                     MainInfoUI.instance.R.Set_Skill_Icon(characterModelComponent.R_skill_Image);
+                    MainInfoUI.instance.D.Set_Skill_Icon(gameplayInsance.GetComponent<CharacterBase>().Spells[0]?.Spell_Sprite);
+                    MainInfoUI.instance.F.Set_Skill_Icon(gameplayInsance.GetComponent<CharacterBase>().Spells[1]?.Spell_Sprite);
                 }
+                
                 // Ensure the client is ready before replacing the player
                 if (!NetworkClient.ready)
                 {
@@ -111,6 +117,7 @@ public class Network_Manager : NetworkManager
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance,ReplacePlayerOptions.KeepAuthority);
 
                 Player_List.Add(gameplayInsance);
+                // All Player Info
                 CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance);
             }
             

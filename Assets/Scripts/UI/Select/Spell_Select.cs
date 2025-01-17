@@ -7,12 +7,13 @@ namespace HR.UI{
     
 public class Spell_Select : MonoBehaviour
 {
-    Image Spell_Image;
-    int Slot_Index;
-    int spell_index;
-    [SerializeField] GameObject Spell_Slection;
+    public Image Spell_Image;
+    [SerializeField] int Slot_Index;
+    public int spell_index;
+    public GameObject Spell_Slection;
     [SerializeField] GameObject Another_Spell;
     [SerializeField] List<Button> Skill_Button;
+
     void Start()
     {
         Spell_Image = GetComponent<Image>();
@@ -21,19 +22,55 @@ public class Spell_Select : MonoBehaviour
     // Spell Button Click
     public void Select_Click()
     {
-        Another_Spell.SetActive(false);
+        // Close Another if Open
+        Another_Spell.GetComponent<Spell_Select>().Spell_Slection.SetActive(false);
+        // If open then close. If close then open
         Spell_Slection.SetActive(!Spell_Slection.activeSelf);
     }
-    public void SetImage(int index)
+    // Spell_Button_Component.ButtonClick -> SelectController.SelectSpell -> Spell_Select.Spell_Button_Click
+    public void Spell_Button_Click(int new_spell_Index)
     {
-        // Spell_Image.sprite = sprite;
-        spell_index = index;
-        Disable_Skill_Selection(index);
-        Set_character_info(index);
-    }
-    void Set_character_info(int index)
-    {
-        SelectController.Instance.LocalPlayerController.Spell[Slot_Index] = spell_index;
+        // Check if another spell is the same as select one -> Swap
+        if (Another_Spell.GetComponent<Spell_Select>().spell_index == new_spell_Index)
+        {
+            // PlayerObject.Spell Update
+            if (Slot_Index == 0)
+            {
+                int index = SelectController.Instance.LocalPlayerController.Spell_2;
+                SelectController.Instance.LocalPlayerController.Spell_2 = SelectController.Instance.LocalPlayerController.Spell_1;
+                SelectController.Instance.LocalPlayerController.Spell_1 = index;
+            }
+            else
+            {
+                int index = SelectController.Instance.LocalPlayerController.Spell_1;
+                SelectController.Instance.LocalPlayerController.Spell_1 = SelectController.Instance.LocalPlayerController.Spell_2;
+                SelectController.Instance.LocalPlayerController.Spell_2 = index;
+            }
+            // Spell Index Swap
+            Another_Spell.GetComponent<Spell_Select>().spell_index = spell_index;
+            // Sprite Swap
+            Sprite temp =  Another_Spell.GetComponent<Spell_Select>().Spell_Image.sprite;
+            Another_Spell.GetComponent<Spell_Select>().Spell_Image.sprite = Spell_Image.sprite;
+            Spell_Image.sprite = temp;
+        }
+        else
+        {
+            // CharacterBase.Spells Update
+            if (Slot_Index == 0)
+            {
+                SelectController.Instance.LocalPlayerController.Spell_1 = new_spell_Index;
+            }
+            else
+            {
+                SelectController.Instance.LocalPlayerController.Spell_2 = new_spell_Index;
+            }
+            // Sprite update
+            Spell_Image.sprite = SelectController.Instance.Search_Spell(new_spell_Index).Spell_Sprite;
+        }
+        // Set Spell Index 
+        spell_index = new_spell_Index;
+        // Close Panel
+        Spell_Slection.SetActive(false);
     }
     void Disable_Skill_Selection(int index)
     {

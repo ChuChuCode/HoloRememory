@@ -26,7 +26,6 @@ public class CharacterSelectItem : MonoBehaviour
         SelectController.Instance.Character_Interactable(SelectController.Instance.LocalPlayerController.CharacterID,true);
         // Local Player Select
         SelectController.Instance.LocalPlayerController.CanSetCharacter(CharacterID);
-
         // SelectController.Instance.UpdatePlayerUI();
 
         // Set New interactable false
