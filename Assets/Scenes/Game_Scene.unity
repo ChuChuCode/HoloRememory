@@ -2357,6 +2357,7 @@ MonoBehaviour:
   top: {fileID: 1577394861}
   Base: {fileID: 1577394858}
   Attack_Ball: {fileID: 1977883244337380264, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
+  Next_Tower_Collider: {fileID: 0}
 --- !u!64 &217478481
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -2374,7 +2375,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -2450,7 +2451,7 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.29
   m_Height: 1.32
@@ -6147,7 +6148,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -6169,7 +6170,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -7464,7 +7465,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -8700,6 +8701,7 @@ MonoBehaviour:
   top: {fileID: 590261914}
   Base: {fileID: 590261911}
   Attack_Ball: {fileID: 1977883244337380264, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
+  Next_Tower_Collider: {fileID: 217478481}
 --- !u!64 &901475043
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -8717,7 +8719,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -10398,7 +10400,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -11252,6 +11254,7 @@ MonoBehaviour:
   top: {fileID: 1140294776}
   Base: {fileID: 1163988860}
   Attack_Ball: {fileID: 1977883244337380264, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
+  Next_Tower_Collider: {fileID: 1298421404}
 --- !u!64 &1066513293
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -11269,7 +11272,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -12114,7 +12117,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -12576,7 +12579,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -14276,7 +14279,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -14311,6 +14314,7 @@ MonoBehaviour:
   top: {fileID: 738931217}
   Base: {fileID: 418967083}
   Attack_Ball: {fileID: 1977883244337380264, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
+  Next_Tower_Collider: {fileID: 0}
 --- !u!120 &1298421408
 LineRenderer:
   serializedVersion: 2
@@ -17362,7 +17366,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -17384,7 +17388,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
