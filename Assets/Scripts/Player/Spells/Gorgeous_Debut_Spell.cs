@@ -8,8 +8,8 @@ namespace HR.Object.Spell{
 public class Gorgeous_Debut_Spell : SpellBase
 {
     public ItemUse_UI UI_Prefab;
-    protected ItemUse_UI UI_Object;
-    public override void ItemKeyDown(CharacterBase characterBase)
+    protected ItemUse_UI UI_Object;    
+    public override void SpellKeyDown(CharacterBase characterBase)
     {
         // Check Cool Down
         if (Time.time - lastUseTime < cooldownDuration)
@@ -23,15 +23,19 @@ public class Gorgeous_Debut_Spell : SpellBase
             UI_Object.characterBase = characterBase;
         }
     }
-    public override void ItemKeyUp(CharacterBase characterBase)
+    public override void SpellKeyUp(CharacterBase characterBase)
     {
         // Delete prefab
         if (UI_Object != null)
         {
             lastUseTime = Time.time; // Update the last use time
             characterBase.agent.Warp(UI_Object.transform.position);
-            Destroy(UI_Object.gameObject);
+            Destroy_prefab();
         }
+    }
+    public override void Destroy_prefab()
+    {
+        Destroy(UI_Object.gameObject);
     }
     public override void CharacterInfoChange(CharacterBase characterBase)
     {

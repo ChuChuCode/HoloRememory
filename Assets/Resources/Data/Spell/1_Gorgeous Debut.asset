@@ -15,5 +15,5 @@ MonoBehaviour:
   Spell_Sprite: {fileID: 21300000, guid: 5b204de18c1cf48c3b5abb30297f6d58, type: 3}
   SpellIndex: 1
   cooldownDuration: 120
-  lastUseTime: 0
+  lastUseTime: -120
   UI_Prefab: {fileID: 7177916609554386311, guid: e015c9f395c43d14ca1766025eb9c5f0, type: 3}

@@ -206,7 +206,7 @@ public class SelectController : MonoBehaviour
                 SelectPlayer.transform.SetParent(Team2_transform);
             }
         }
-        PlayerItemCreated = true;
+        // PlayerItemCreated = true;
     }
     public void CreateClientPlayerItem()
     {
@@ -380,11 +380,27 @@ public class SelectController : MonoBehaviour
         {
             Spell_2.Spell_Button_Click(spell_Index);
         }
+        Check_ReadyButton();
     }
     public SpellBase Search_Spell(int spell_Index)
     {
         SpellBase spell = Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
         return Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
+    }
+    /// <summary>
+    /// ****** CharcaterID not sync
+    /// </summary>
+    public void Check_ReadyButton()
+    {
+        print("CharacterID" + LocalPlayerController.CharacterID);
+        print("Spell_1" + LocalPlayerController.Spell_1);
+        print("Spell_2" + LocalPlayerController.Spell_2);
+        if (LocalPlayerController.CharacterID == -1 || LocalPlayerController.Spell_1 == 0 || LocalPlayerController.Spell_2 == 0) 
+        {
+            ReadyButton.interactable = false;
+            return;
+        }
+        ReadyButton.interactable = true;
     }
 }
 

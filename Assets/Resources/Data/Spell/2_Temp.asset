@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Spell_Sprite: {fileID: 21300000, guid: 38efdb8e4e05e49d69e80bc6e575fdaa, type: 3}
   SpellIndex: 2
-  cooldownDuration: 0
-  lastUseTime: 0
+  cooldownDuration: 10
+  lastUseTime: -10
   UI_Prefab: {fileID: 0}

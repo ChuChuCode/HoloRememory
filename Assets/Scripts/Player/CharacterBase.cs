@@ -29,6 +29,9 @@ public class CharacterBase: Health
     [SerializeField] protected bool IsPressed_W = false;
     [SerializeField] protected bool IsPressed_E = false;
     [SerializeField] protected bool IsPressed_R = false;
+    [Header("Spell Pressed")]
+    [SerializeField] protected bool IsPressed_D = false;
+    [SerializeField] protected bool IsPressed_F = false;
     [Header("Item Pressed")]
     [SerializeField] protected bool IsPressed_1 = false;
     [SerializeField] protected bool IsPressed_2 = false;
@@ -168,9 +171,12 @@ public class CharacterBase: Health
         InputComponent.instance.playerInput.Player.R.canceled += _ => RKeyUp();
 
         // D spell
-
+        InputComponent.instance.playerInput.Player.D.started += _ => DKeyDown();
+        InputComponent.instance.playerInput.Player.D.canceled += _ => DKeyUp();
 
         // F spell
+        InputComponent.instance.playerInput.Player.F.started += _ => FKeyDown();
+        InputComponent.instance.playerInput.Player.F.canceled += _ => FKeyUp();
 
         // Equipment Key
         InputComponent.instance.playerInput.Player.Equipment1.started += _ => UseEquipmentKeyDown(0);
@@ -263,6 +269,31 @@ public class CharacterBase: Health
             IsPressed_R = false;
             // Hide R preview
             Hide_R_UI();
+            // Set flag to true to prevent walk
+            isSkillCanceled = true;
+        }
+        else if (IsPressed_R)
+        {
+            IsPressed_R = false;
+            // Hide R preview
+            Hide_R_UI();
+            // Set flag to true to prevent walk
+            isSkillCanceled = true;
+        }
+        else if (IsPressed_D)
+        {
+            IsPressed_D = false;
+            // Cancel Spells
+            Spells[0].Destroy_prefab();
+            // Set flag to true to prevent walk
+            isSkillCanceled = true;
+        }
+        else if (IsPressed_F)
+        {
+            IsPressed_F = false;
+            // Hide R preview
+            // Cancel Spells
+            Spells[1].Destroy_prefab();
             // Set flag to true to prevent walk
             isSkillCanceled = true;
         }
@@ -381,6 +412,16 @@ public class CharacterBase: Health
             // Use R Skill
             RKeyUp();
         }
+        else if (IsPressed_D)
+        {
+            // Use D Spell
+            DKeyUp();
+        }
+        else if (IsPressed_F)
+        {
+            // Use F Spell
+            FKeyUp();
+        }
         else if (IsPressed_1)
         {
             // Use Equipment 1
@@ -473,6 +514,39 @@ public class CharacterBase: Health
         Stop_Recall();
         IsPressed_R = false;
     }
+    // D Spell
+    public virtual void DKeyDown()
+    {
+        if (Spells[0] != null)
+        {
+            IsPressed_D = true;
+        }
+        Stop_Recall();
+        Spells[0].SpellKeyDown(this);
+    }
+    public virtual void DKeyUp()
+    {
+        if (!IsPressed_D) return;
+        IsPressed_D = false;
+        Spells[0].SpellKeyUp(this);
+    }
+    // F Spell
+    public virtual void FKeyDown()    
+    {
+        if (Spells[1] != null)
+        {
+            IsPressed_F = true;
+        }
+        Stop_Recall();
+        Spells[1].SpellKeyDown(this);
+    }
+    public virtual void FKeyUp()
+    {
+        if (!IsPressed_F) return;
+        IsPressed_F = false;
+        Spells[1].SpellKeyUp(this);
+    }
+
     /// <summary>Return false to avoid skill use.</summary>
     public virtual bool OnQKeyDown(){return true;}
     /// <summary>Return false to avoid skill use.</summary>

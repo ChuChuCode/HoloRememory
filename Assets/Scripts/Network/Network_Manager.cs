@@ -94,8 +94,8 @@ public class Network_Manager : NetworkManager
                 // gameplayInsance.PlayerSteamID = PlayersInfoList[i].PlayerSteamID;
                 // NetworkServer.Destroy(oldPlayer);
 
-                // gameplayInsance.GetComponent<CharacterBase>().Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
-                // gameplayInsance.GetComponent<CharacterBase>().Spells[1] = SelectController.Instance.Search_Spell(player.Spell_2);
+                gameplayInsance.GetComponent<CharacterBase>().Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
+                gameplayInsance.GetComponent<CharacterBase>().Spells[1] = SelectController.Instance.Search_Spell(player.Spell_2);
                 
                 // Set Skill UI and Spells
                 if (player.netIdentity.isOwned)

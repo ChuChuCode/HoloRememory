@@ -55,7 +55,7 @@ public class Spell_Select : MonoBehaviour
         }
         else
         {
-            // CharacterBase.Spells Update
+            // PlayerObject.Spell_1 Spell_2 Update
             if (Slot_Index == 0)
             {
                 SelectController.Instance.LocalPlayerController.Spell_1 = new_spell_Index;

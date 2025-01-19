@@ -35,8 +35,8 @@ public class MainInfoUI : MonoBehaviour
     {
         if (LocalPlayer == null) return;
         // Spell UI Update
-        // D.Set_CoolDown(LocalPlayer.Spells[0].lastUseTime,LocalPlayer.Spells[0].cooldownDuration);
-        // F.Set_CoolDown(LocalPlayer.Spells[1].lastUseTime,LocalPlayer.Spells[1].cooldownDuration);
+        D.Set_CoolDown(LocalPlayer.Spells[0].lastUseTime,LocalPlayer.Spells[0].cooldownDuration);
+        F.Set_CoolDown(LocalPlayer.Spells[1].lastUseTime,LocalPlayer.Spells[1].cooldownDuration);
         // Equipment UI Update
         for (int i = 0 ; i < LocalPlayer.EquipmentSlots.Length ; i++)
         {

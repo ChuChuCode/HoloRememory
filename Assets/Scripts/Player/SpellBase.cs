@@ -1,3 +1,4 @@
+using HR.Object.Equipment;
 using HR.Object.Player;
 using UnityEngine;
 
@@ -9,15 +10,20 @@ public class SpellBase : ScriptableObject
     [Header("Cooldown")]
     public float cooldownDuration ;
     public float lastUseTime;
-    public virtual void ItemKeyDown(CharacterBase characterBase)
+
+    public virtual void SpellKeyDown(CharacterBase characterBase)
     {
         
     }
-    public virtual void ItemKeyUp(CharacterBase characterBase)
+    public virtual void SpellKeyUp(CharacterBase characterBase)
     {
         
     }
     public virtual void CharacterInfoChange(CharacterBase characterBase)
+    {
+        
+    }
+    public virtual void Destroy_prefab()
     {
         
     }
