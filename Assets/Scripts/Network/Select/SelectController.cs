@@ -392,9 +392,6 @@ public class SelectController : MonoBehaviour
     /// </summary>
     public void Check_ReadyButton()
     {
-        print("CharacterID" + LocalPlayerController.CharacterID);
-        print("Spell_1" + LocalPlayerController.Spell_1);
-        print("Spell_2" + LocalPlayerController.Spell_2);
         if (LocalPlayerController.CharacterID == -1 || LocalPlayerController.Spell_1 == 0 || LocalPlayerController.Spell_2 == 0) 
         {
             ReadyButton.interactable = false;
