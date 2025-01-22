@@ -259,9 +259,9 @@ public class Duck_AI : MinionBase
             current_State = IDLE;
         }
     }
-    GameObject Search_Nearest(Collider[] hitColliders)
+    Transform Search_Nearest(Collider[] hitColliders)
     {
-        GameObject target = hitColliders[0].transform.root.gameObject;
+        Transform target = hitColliders[0].transform.root;
         float distance = Vector3.Distance(transform.position, hitColliders[0].transform.position);
 
         for (int i = 1; i < hitColliders.Length; i++)
@@ -269,7 +269,7 @@ public class Duck_AI : MinionBase
             float temp_distance = Vector3.Distance(transform.position, hitColliders[i].transform.position);
             if ( temp_distance < distance)
             {
-                target = hitColliders[i].transform.root.gameObject;
+                target = hitColliders[i].transform.root;
                 distance = temp_distance;
             }
         }

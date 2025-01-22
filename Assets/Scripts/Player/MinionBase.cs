@@ -20,7 +20,7 @@ public class MinionBase : Health
     [SerializeField] protected Animator animator;
     [Tooltip("Follow Player or go to a fixed destination")]
     public Transform MainDestination;
-    [SerializeField] protected GameObject Target;
+    [SerializeField] protected Transform Target;
     [SerializeField] protected LayerMask Layer_Enemy;
     [Header("Attack")]
     [SerializeField] protected float Search_radius = 8f;

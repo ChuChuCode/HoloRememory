@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HR.Global;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -101,7 +102,7 @@ public class Outline : MonoBehaviour {
 
   void OnEnable() {
     foreach (var renderer in renderers) {
-
+      if (!TryGetComponent<Fog_Mask>(out _)) continue;
       // Append outline shaders
       var materials = renderer.sharedMaterials.ToList();
 

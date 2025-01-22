@@ -4647,7 +4647,7 @@ MonoBehaviour:
   Minion_Prefab: {fileID: 2317495716579923971, guid: eb5de1259e7a09a4e8348a4773790463, type: 3}
   layerName: Team1
   EnemyTarget: {fileID: 218656936}
-  first_SpawnTime: 10
+  first_SpawnTime: 30
   spawntime_interval: 30
   SpawnNumber: 6
 --- !u!1001 &513122967
@@ -15494,7 +15494,7 @@ MonoBehaviour:
   Minion_Prefab: {fileID: 2317495716579923971, guid: eb5de1259e7a09a4e8348a4773790463, type: 3}
   layerName: Team2
   EnemyTarget: {fileID: 717695456}
-  first_SpawnTime: 10
+  first_SpawnTime: 30
   spawntime_interval: 30
   SpawnNumber: 6
 --- !u!1 &1602165437

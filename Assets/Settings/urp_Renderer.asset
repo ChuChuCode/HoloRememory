@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: Player
+  m_Name: PlayerOpaque
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    passTag: Player
+    passTag: PlayerOpaque
     Event: 500
     filterSettings:
       RenderQueueType: 0
@@ -60,8 +60,9 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: 9098259386575295463}
   - {fileID: -4908391780065385306}
+  - {fileID: 1683903501985923600}
   - {fileID: 5372551931863251799}
-  m_RendererFeatureMap: e7132f1bb582437ea664c18aaee3e1bb573b0c5c84238f4a
+  m_RendererFeatureMap: e7132f1bb582437ea664c18aaee3e1bb1042e837506d5e17573b0c5c84238f4a
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -100,6 +101,48 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &1683903501985923600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
+  m_Name: PlayerTransparent
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    passTag: PlayerTransparent
+    Event: 500
+    filterSettings:
+      RenderQueueType: 1
+      LayerMask:
+        serializedVersion: 2
+        m_Bits: 192
+      PassNames: []
+    overrideMaterial: {fileID: 0}
+    overrideMaterialPassIndex: 0
+    overrideShader: {fileID: 0}
+    overrideShaderPassIndex: 0
+    overrideMode: 1
+    overrideDepthState: 0
+    depthCompareFunction: 4
+    enableWrite: 1
+    stencilSettings:
+      overrideStencilState: 1
+      stencilReference: 1
+      stencilCompareFunction: 3
+      passOperation: 0
+      failOperation: 0
+      zFailOperation: 0
+    cameraSettings:
+      overrideCamera: 0
+      restoreCamera: 1
+      offset: {x: 0, y: 0, z: 0, w: 0}
+      cameraFieldOfView: 60
 --- !u!114 &5372551931863251799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,11 +195,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
-  m_Name: Mask
+  m_Name: MaskTransparent
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    passTag: Mask
+    passTag: MaskTransparent
     Event: 500
     filterSettings:
       RenderQueueType: 1

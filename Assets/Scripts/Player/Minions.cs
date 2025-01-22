@@ -11,6 +11,7 @@ public class Minions : MinionBase
     const string CHASE = "Chase";
     const string ATTACK = "Attack";
     const string DEAD = "Dead";
+    [SerializeField] MinionAnimationMethod minionAnimationMethod;
     protected override void Start()
     {
         current_State = WALK;
@@ -43,10 +44,11 @@ public class Minions : MinionBase
         if(hitColliders.Length > 0)
         {
             // Collider might be in child gameobject
-            Target = hitColliders[0].transform.root.gameObject;
+            Target = hitColliders[0].transform.root;
             current_State = CHASE;
             return;
         }
+        animator.SetBool("isAttack",false);
         // Set to Final Destination
         agent.SetDestination(MainDestination.position);
     }
@@ -60,7 +62,7 @@ public class Minions : MinionBase
             return;
         }
         // Check Distance
-        float distance = Vector3.Distance(transform.position, Target.transform.position);
+        float distance = Vector3.Distance(transform.position, Target.position);
         if (distance > Search_radius)
         {
             Target = null;
@@ -72,7 +74,8 @@ public class Minions : MinionBase
             current_State = ATTACK;
             return;
         }
-        agent.SetDestination(Target.transform.position);
+        animator.SetBool("isAttack",false);
+        agent.SetDestination(Target.position);
     }
     void State_Attack()
     {
@@ -84,7 +87,7 @@ public class Minions : MinionBase
             return;
         }
         // Check Distance
-        float distance = Vector3.Distance(transform.position, Target.transform.position);
+        float distance = Vector3.Distance(transform.position, Target.position);
         if (distance > Search_radius)
         {
             Target = null;
@@ -98,15 +101,16 @@ public class Minions : MinionBase
         }
         agent.isStopped = true;
         // Face to Target
-        Vector3 FaceVector = Target.transform.position - transform.position;
+        Vector3 FaceVector = Target.position - transform.position;
         FaceVector.y = 0;
         transform.LookAt(transform.position + FaceVector );
         // Attack
-        // print("attack");
+        minionAnimationMethod.Target = Target;
+        animator.SetBool("isAttack",true);
     }
     void State_Dead()
     {
-        // if (timer == deadTime) animator.Play("Dead");
+        if (timer == deadTime) animator.Play("Dead");
         if (timer == deadTime) 
         {
             Detect_Surround();

@@ -22,10 +22,10 @@ public class TowerBall : ProjectileBase
             }
         }
     }
-    protected override void TriggerisnotPlayer(Health health)
-    {
-        // Just Dead
-    }
+    // protected override void TriggerisnotPlayer(Health health)
+    // {
+    //     // Just Dead
+    // }
 
 }
 

@@ -26,6 +26,8 @@ public class Setting_Component : MonoBehaviour
     const string MIXER_VOICE = "Voice";
     void Start()
     {
+        // layer &= ~(1 << gameObject.layer);
+        // layer |= 1 << LayerMask.NameToLayer("Team1");
         if (Instance is null) Instance = this;
         GetDataFromPlayerPrefs();
         // Set Mixer

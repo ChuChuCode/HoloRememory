@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using HR.Network.Game;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
+namespace HR.Global{
 public class Fog_Mask : MonoBehaviour
 {
     [SerializeField] Material material;
@@ -11,9 +13,9 @@ public class Fog_Mask : MonoBehaviour
     [SerializeField] LayerMask LandMask;
     enum Mask_Type
     {
-        Character = 7,
-        Minion = 5,
-        Tower = 10
+        Character = 5,
+        Minion = 3,
+        Tower = 7
     }
     Transform Origin;
     Mesh mesh;
@@ -25,9 +27,15 @@ public class Fog_Mask : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Mask");
         Origin = transform.parent;
         // gameObject.transform.SetParent(null);
+        // If not same team -> Disable
+        if (transform.root.gameObject.layer != GameController.Instance.LocalPlayer.gameObject.layer)
+        {
+            gameObject.SetActive(false);
+        }
     }
     void LateUpdate()
     {
+        transform.rotation = Quaternion.identity;
         Vector3[] vertices = new Vector3[Split_Num+1];
         Vector2[] uv = new Vector2[vertices.Length];
         int[] triangles = new int[Split_Num*3];
@@ -68,6 +76,10 @@ public class Fog_Mask : MonoBehaviour
         mesh.vertices = vertices;
         mesh.uv = uv;
         mesh.triangles = triangles;
-        mesh.bounds = new Bounds(transform.position, Vector3.one * (int)Mask_Radius);
+        // Need to recalculate bounds
+        mesh.RecalculateBounds();
+        // mesh.bounds = new Bounds(transform.position, Vector3.one * (int)Mask_Radius);
     }
+}
+
 }

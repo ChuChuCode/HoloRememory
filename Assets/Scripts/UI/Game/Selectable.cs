@@ -110,8 +110,10 @@ public class Selectable : MonoBehaviour
     }
     void Check_Outline_Color(Transform ob)
     {
-        // Same Team
-        if (ob.gameObject.layer.Equals(playerLayerID))
+        string check_item_LayerName = LayerMask.LayerToName(ob.gameObject.layer);
+        string gameObject_LayerName = LayerMask.LayerToName(playerLayerID);
+        // Same Team (Team1 or Team1Building)
+        if (check_item_LayerName.IndexOf(gameObject_LayerName) > -1)
         {
             ob.gameObject.GetComponent<Outline>().OutlineColor = Color.green;
         }

@@ -9,7 +9,7 @@ public class MinionSpawner : NetworkBehaviour
     [SerializeField] Minions Minion_Prefab;
     [SerializeField] string layerName;
     [SerializeField] Transform EnemyTarget;
-    [SerializeField] int first_SpawnTime = 10;
+    int first_SpawnTime = 10;
     [SerializeField] int spawntime_interval = 30;
     [SerializeField] int SpawnNumber = 6;
     int next_SpawnTime;

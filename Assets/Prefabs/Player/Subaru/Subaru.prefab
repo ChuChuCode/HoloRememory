@@ -1254,7 +1254,7 @@ MonoBehaviour:
   mouseProject: {x: 0, y: 0, z: 0}
   MouseTargetLayer:
     serializedVersion: 2
-    m_Bits: 448
+    m_Bits: 3008
   Target: {fileID: 0}
   Attack_Range: 5
   RecallEffect: {fileID: 3242365975000804592}
