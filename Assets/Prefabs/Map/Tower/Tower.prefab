@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2970150423346105179}
   - component: {fileID: 4653798294655094990}
+  - component: {fileID: 944163267793606924}
   m_Layer: 10
   m_Name: MiniMap
   m_TagString: Untagged
@@ -84,6 +85,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &944163267793606924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3397918450317786340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e5609391d3723542bd2d7d122740f74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4550715753755520199
 GameObject:
   m_ObjectHideFlags: 0

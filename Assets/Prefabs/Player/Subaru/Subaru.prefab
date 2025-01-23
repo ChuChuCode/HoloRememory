@@ -6956,6 +6956,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4015481502940484996}
     m_Modifications:
+    - target: {fileID: 1193460364012659850, guid: e07cf410c50978b44afdc54d72832ffa, type: 3}
+      propertyPath: Mask_Radius
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 7459317776223033204, guid: e07cf410c50978b44afdc54d72832ffa, type: 3}
       propertyPath: m_Name
       value: Fog Mask

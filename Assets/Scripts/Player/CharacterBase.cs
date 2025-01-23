@@ -113,6 +113,15 @@ public class CharacterBase: Health
         Selectable.instance.playerLayerID = gameObject.layer;
         // Remove layer to mouse raycast only Enemy and Land
         MouseTargetLayer &= ~(1 <<gameObject.layer);
+        if (LayerMask.LayerToName(gameObject.layer) == "Team1")
+        {
+            MouseTargetLayer &= ~(1 << LayerMask.NameToLayer("Team1Building"));
+        }
+        else
+        {
+            MouseTargetLayer &= ~(1 << LayerMask.NameToLayer("Team2Building"));
+        }    
+
         if (!isLocalPlayer) return;
         // Set Level
         skillComponent.AddExp(0);

@@ -102,7 +102,7 @@ public class Outline : MonoBehaviour {
 
   void OnEnable() {
     foreach (var renderer in renderers) {
-      if (!TryGetComponent<Fog_Mask>(out _)) continue;
+      if (renderer.TryGetComponent<Fog_Mask>(out _)) continue;
       // Append outline shaders
       var materials = renderer.sharedMaterials.ToList();
 
@@ -164,7 +164,7 @@ public class Outline : MonoBehaviour {
     var bakedMeshes = new HashSet<Mesh>();
 
     foreach (var meshFilter in GetComponentsInChildren<MeshFilter>()) {
-
+      if (meshFilter.name == "Fog Mask") continue;
       // Skip duplicates
       if (!bakedMeshes.Add(meshFilter.sharedMesh)) {
         continue;

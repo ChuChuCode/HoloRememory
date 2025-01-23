@@ -232,7 +232,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1193460364012659850, guid: e07cf410c50978b44afdc54d72832ffa, type: 3}
       propertyPath: Mask_Radius
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7459317776223033204, guid: e07cf410c50978b44afdc54d72832ffa, type: 3}
       propertyPath: m_Name

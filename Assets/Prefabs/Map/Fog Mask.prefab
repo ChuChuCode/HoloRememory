@@ -101,4 +101,4 @@ MonoBehaviour:
   Mask_Radius: 7
   LandMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 2048

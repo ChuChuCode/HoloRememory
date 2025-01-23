@@ -86,6 +86,14 @@ public class MinionBase : Health
     public void Update_Enemy_Layer(int layer)
     {
         Layer_Enemy &= ~(1 << layer);
+        if (LayerMask.LayerToName(layer) == "Team1")
+        {
+            Layer_Enemy &= ~(1 << LayerMask.NameToLayer("Team1Building"));
+        }
+        else
+        {
+            Layer_Enemy &= ~(1 << LayerMask.NameToLayer("Team2Building"));
+        }    
     }
     protected void Detect_Surround()
     {

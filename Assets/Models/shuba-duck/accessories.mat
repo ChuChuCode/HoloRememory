@@ -31,7 +31,6 @@ Material:
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
-  - N_F_TRANS_ON
   - N_F_USETLB_ON
   m_InvalidKeywords:
   - _CUSTOMLIGHTDIRECTIONFOLLOWOBJECTROTATION_OFF
@@ -59,9 +58,9 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap:
-    RenderType: Transparent
+    RenderType: Opaque
   disabledShaderPasses:
   - SRPDEFAULTUNLIT
   m_LockedProperties: 
@@ -185,8 +184,8 @@ Material:
     - _AlphaBaseCutout: 1
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _BleModDest: 10
-    - _BleModSour: 5
+    - _BleModDest: 0
+    - _BleModSour: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
@@ -342,7 +341,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TEXMCOLINT: 1
-    - _TRANSMODE: 1
+    - _TRANSMODE: 0
     - _TexturePatternStyle: 0
     - _TrailSize: 1.5
     - _TransAffSha: 1
