@@ -124,6 +124,7 @@ public class TowerBehaviour : Health
             case State.Break:
                 if (!isDead)
                 {
+                    lineRenderer.positionCount = 1;
                     isDead = true;
                     Death();
                 }
