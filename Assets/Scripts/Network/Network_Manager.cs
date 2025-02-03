@@ -36,7 +36,7 @@ public class Network_Manager : NetworkManager
         if ( SceneManager.GetActiveScene().name == "Lobby_Scene") 
         {
             PlayerObject player = Instantiate(PlayerObject_Prefab);
-             // Set connectID, PlayerID, SteamID
+            // Set connectID, PlayerID, SteamID
             // Start from 0
             player.ConnectionID = conn.connectionId;
             // Start frome 1
@@ -54,6 +54,15 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerSceneChanged(string newSceneName)
     {
+        if (newSceneName.StartsWith("Lobby_Scene"))
+        {
+            // Delete all PlayerObject
+            foreach(GameObject playerobject in Player_List)
+            {
+                NetworkServer.Destroy(playerobject.GetComponent<CharacterBase>().Free_CameParent);
+                NetworkServer.Destroy(playerobject);
+            }
+        }
         // base.ServerChangeScene(newSceneName);
         if (newSceneName.StartsWith("Select_Scene"))
         {
@@ -122,12 +131,21 @@ public class Network_Manager : NetworkManager
             }
             
         }
+        if (newSceneName.StartsWith("Result_Scene"))
+        {
+            // Delete all PlayerObject
+            foreach(GameObject playerobject in Player_List)
+            {
+                NetworkServer.Destroy(playerobject.GetComponent<CharacterBase>().Free_CameParent);
+                NetworkServer.Destroy(playerobject);
+            }
+        }
         
     }
     // Server Change Scene
-    public void StartGame(string SceneName)
+    public void ChnageScene(string SceneName)
     {
-        print("Change Scene");
+        print($"Change Scene to : {SceneName}");
         ServerChangeScene(SceneName);
     }
 }

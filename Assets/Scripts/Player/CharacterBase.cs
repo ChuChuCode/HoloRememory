@@ -43,7 +43,7 @@ public class CharacterBase: Health
     [Tooltip("Fix Camera on Character")]
     [SerializeField] protected GameObject Fixed_Cam;
     [Tooltip("Free Camera on Character")]
-    [SerializeField] protected GameObject Free_CameParent;
+    public GameObject Free_CameParent;
     [Header("Move Target")]
     [Tooltip("Particle that show move target")]
     [SerializeField] protected ParticleSystem Target_Particle;
@@ -132,6 +132,7 @@ public class CharacterBase: Health
         StorePanel.Instance.LocalPlayer = this;
         MainInfoUI.instance.LocalPlayer = this;
         LocalPlayerInfo.Instance.Update_KDA(this);
+        OptionPanel.Instance.LocalPlayer = this;
 
         // Health Initial
         InitialHealth();

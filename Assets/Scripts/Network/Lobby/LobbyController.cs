@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using Steamworks;
 using UnityEngine.UI;
+using UnityEngine.SocialPlatforms;
 
 namespace HR.Network.Lobby{
 public class LobbyController : MonoBehaviour
@@ -299,6 +300,11 @@ public class LobbyController : MonoBehaviour
     public void TeamChange(int TeamID)
     {
         LocalPlayerController.CanTeamJoin(TeamID);
+    }
+    // Leave Button
+    public void LeaveGame()
+    {
+        LocalPlayerController.LeaveGame();
     }
 }
 

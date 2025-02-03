@@ -360,6 +360,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Minion Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: 4140491806662333407, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4140491806662333407, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 106f3ff43a17d4967a2b64c7a92e49ec, type: 2}
+    - target: {fileID: 4140491806662333407, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: 106f3ff43a17d4967a2b64c7a92e49ec, type: 2}
     - target: {fileID: 8417361359673230750, guid: db744dc8b5e5f6341a2cd2bdc82c7ba3, type: 3}
       propertyPath: m_UpdateWhenOffscreen
       value: 1

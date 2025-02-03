@@ -123,7 +123,7 @@ public class PlayerObject : NetworkBehaviour
     [Command]
     public void CmdCanStartGame(string SceneName)
     {
-        manager.StartGame(SceneName);
+        manager.ChnageScene(SceneName);
     }
     /// TeamID change
     public void CanTeamJoin(int TeamID)
@@ -232,6 +232,20 @@ public class PlayerObject : NetworkBehaviour
         {
             SelectController.Instance.UpdatePlayerList();
         }
+    }
+    public void LeaveGame()
+    {
+        // isServer
+        if (NetworkServer.active)
+        {
+            Manager.StopHost();
+        }
+        // Client
+        if (NetworkClient.active)
+        {
+            Manager.StopClient();
+        }
+        Destroy(Manager.gameObject);
     }
 }
 
