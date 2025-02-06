@@ -8,6 +8,7 @@ using HR.Network.Select;
 using HR.Network.Game;
 using HR.Object.Player;
 using HR.Network.Lobby;
+using HR.Network.Result;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -33,6 +34,7 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
+        print(1);
         if ( SceneManager.GetActiveScene().name == "Lobby_Scene") 
         {
             PlayerObject player = Instantiate(PlayerObject_Prefab);
@@ -63,6 +65,7 @@ public class Network_Manager : NetworkManager
             {
                 NetworkServer.Destroy(playerobject.gameObject);
             }
+            Player_List.Clear();
             foreach (PlayerObject player in PlayersInfoList)
             {
                 player.Ready = false;
@@ -110,6 +113,8 @@ public class Network_Manager : NetworkManager
                 gameplayInsance.ConnectionID = player.ConnectionID;
                 gameplayInsance.PlayerIdNumber = player.PlayerIdNumber;
                 gameplayInsance.PlayerSteamID = player.PlayerSteamID;
+                gameplayInsance.TeamID = player.TeamID;
+                gameplayInsance.CharacterID = player.CharacterID;
                 // NetworkServer.Destroy(oldPlayer);
 
                 gameplayInsance.Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
@@ -138,17 +143,18 @@ public class Network_Manager : NetworkManager
                 // All Player Info
                 CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
-            
         }
         if (newSceneName.StartsWith("Result_Scene"))
         {
             // Delete all PlayerObject
             foreach(CharacterBase playerobject in Player_List)
             {
+                CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == playerobject.CharacterID);;
+                ResultController.Instance.Spawn_Result_Prefab(characterModelComponent.CharacterImage,playerobject);
                 // Local Object(No Network Identity)
-                Destroy(playerobject.Free_CameParent);
                 NetworkServer.Destroy(playerobject.gameObject);
             }
+            Player_List.Clear();
         }
         
     }

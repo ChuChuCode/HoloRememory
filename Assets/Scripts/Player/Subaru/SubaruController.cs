@@ -174,11 +174,14 @@ public class SubaruController : CharacterBase
     {
         if (!isLocalPlayer) return;
 
-        // Update Cool Down
-        MainInfoUI.instance.Q.Set_CoolDown(duck_rush_timer,duck_rush_cd);
-        // MainInfoUI.instance.W.Set_CoolDown(duck_ult_timer,duck_ult_cd);
-        // MainInfoUI.instance.E.Set_CoolDown(duck_ult_timer,duck_ult_cd);
-        MainInfoUI.instance.R.Set_CoolDown(duck_ult_timer,duck_ult_cd);
+        if (MainInfoUI.instance != null)
+        {
+            // Update Cool Down
+            MainInfoUI.instance.Q.Set_CoolDown(duck_rush_timer,duck_rush_cd);
+            // MainInfoUI.instance.W.Set_CoolDown(duck_ult_timer,duck_ult_cd);
+            // MainInfoUI.instance.E.Set_CoolDown(duck_ult_timer,duck_ult_cd);
+            MainInfoUI.instance.R.Set_CoolDown(duck_ult_timer,duck_ult_cd);
+        }
 
         // Dead already and wait to respawn
         if (isDead) 

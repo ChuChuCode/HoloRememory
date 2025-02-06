@@ -27,6 +27,8 @@ public class CharacterBase: Health
     [SyncVar] public int ConnectionID;
     [SyncVar] public int PlayerIdNumber;
     [SyncVar] public ulong PlayerSteamID;
+    [SyncVar] public int TeamID;
+    [SyncVar] public int CharacterID;
 
     [Header("Skill Pressed")]
     [SerializeField] protected bool IsPressed_Q = false;
