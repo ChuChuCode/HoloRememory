@@ -14,6 +14,10 @@ public class TransitionScene : MonoBehaviour
         {
             Instance = this;
         }
+        if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
     public void Transition(float time)
     {

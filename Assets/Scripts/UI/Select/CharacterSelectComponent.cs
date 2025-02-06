@@ -1,3 +1,4 @@
+using HR.Object.Player;
 using UnityEngine;
 
 namespace HR.Network.Select{
@@ -13,7 +14,7 @@ public class CharacterSelectComponent : ScriptableObject
     public Sprite E_skill_Image;
     public Sprite R_skill_Image;
     public AudioClip SelectAudio;
-    public GameObject CharacterModel;
+    public CharacterBase CharacterModel;
 }
 
 }

@@ -23,6 +23,10 @@ public class CharacterBase: Health
     [Header("Agent")]
     public NavMeshAgent agent;
     protected CharacterSkillBase skillComponent;
+    [Header("Network Parameter")]
+    [SyncVar] public int ConnectionID;
+    [SyncVar] public int PlayerIdNumber;
+    [SyncVar] public ulong PlayerSteamID;
 
     [Header("Skill Pressed")]
     [SerializeField] protected bool IsPressed_Q = false;
@@ -239,6 +243,12 @@ public class CharacterBase: Health
         CharacterMove();
         // Normal Attack
         Attack();
+    }
+    void OnDestroy() 
+    {
+        // Reset all bindings
+        InputComponent.instance.Reset();
+        Destroy(Free_CameParent);    
     }
     public override void InitialHealth()
     {

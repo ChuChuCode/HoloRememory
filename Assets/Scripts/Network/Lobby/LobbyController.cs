@@ -41,7 +41,7 @@ public class LobbyController : MonoBehaviour
             return manager = Network_Manager.singleton as Network_Manager;
         }
     }
-    List<Network_LobbyPlayer> LobbyPlayerList = new List<Network_LobbyPlayer>();
+    [SerializeField] List<Network_LobbyPlayer> LobbyPlayerList = new List<Network_LobbyPlayer>();
     public PlayerObject LocalPlayerController;
     void Awake()
     {

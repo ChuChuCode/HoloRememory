@@ -22,6 +22,7 @@ public class Heal_Spell : SpellBase
             return;
         }
         lastUseTime = Time.time; // Update the last use time
+        CharacterInfoChange(characterBase);
     }
     public override void CharacterInfoChange(CharacterBase characterBase)
     {

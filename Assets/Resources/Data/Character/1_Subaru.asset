@@ -20,4 +20,4 @@ MonoBehaviour:
   E_skill_Image: {fileID: 21300000, guid: b7012da4ebf9008458abc3ef9a741f3c, type: 3}
   R_skill_Image: {fileID: 21300000, guid: 69c30291565a1407abc7ca25da395ea9, type: 3}
   SelectAudio: {fileID: 8300000, guid: 62ee23b3e3ce2034883a7ee236aec5d1, type: 3}
-  CharacterModel: {fileID: 8311601850566683335, guid: deded17e70c474193b2d338eb6a219c1, type: 3}
+  CharacterModel: {fileID: 4687151441908504746, guid: deded17e70c474193b2d338eb6a219c1, type: 3}

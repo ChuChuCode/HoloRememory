@@ -55,8 +55,9 @@ public class PlayerObject : NetworkBehaviour
         // Set Start UI
         LobbyController.Instance.FindLocalPlayer();
         LobbyController.Instance.UpdateLobbyName();
+        // Spell_1 = PlayerPrefs.GetInt("Spell_1", 1);
+        // Spell_2 = PlayerPrefs.GetInt("Spell_2", 2);
     }
-
     public override void OnStopClient()
     {
         Manager.PlayersInfoList.Remove(this);

@@ -6,8 +6,8 @@ using Steamworks;
 using HR.UI;
 using HR.Network.Select;
 using HR.Network.Game;
-using System.Linq;
 using HR.Object.Player;
+using HR.Network.Lobby;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -20,7 +20,7 @@ public class Network_Manager : NetworkManager
     [SerializeField] Network_SelectPlayer SelectPlayer;
     [Header("Character Component")]
     public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
-    public List<GameObject> Player_List = new List<GameObject>();
+    public List<CharacterBase> Player_List = new List<CharacterBase>();
     public override void Start()
     {
         // Initial CharacterSelectComponent
@@ -54,16 +54,24 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerSceneChanged(string newSceneName)
     {
+        // base.ServerChangeScene(newSceneName);
+        /// Lobby Scene
         if (newSceneName.StartsWith("Lobby_Scene"))
         {
             // Delete all PlayerObject
-            foreach(GameObject playerobject in Player_List)
+            foreach(CharacterBase playerobject in Player_List)
             {
-                NetworkServer.Destroy(playerobject.GetComponent<CharacterBase>().Free_CameParent);
-                NetworkServer.Destroy(playerobject);
+                NetworkServer.Destroy(playerobject.gameObject);
             }
+            foreach (PlayerObject player in PlayersInfoList)
+            {
+                player.Ready = false;
+            }
+            // Set LocalPlayer
+            LobbyController.Instance.LocalPlayerController = LocalPlayerObject;
+            // Update UI
+            LobbyController.Instance.UpdatePlayerList();
         }
-        // base.ServerChangeScene(newSceneName);
         if (newSceneName.StartsWith("Select_Scene"))
         {
             foreach (PlayerObject player in PlayersInfoList)
@@ -71,6 +79,7 @@ public class Network_Manager : NetworkManager
                 player.Ready = false;
             }
         }
+        /// Game Scene
         if (newSceneName.StartsWith("Game_Scene"))
         {
             foreach (PlayerObject player in PlayersInfoList)
@@ -79,8 +88,8 @@ public class Network_Manager : NetworkManager
                 GameObject oldPlayer = conn.identity.gameObject;
                 // Spawn Prefab
                 CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == player.CharacterID);
-                GameObject characterModel = characterModelComponent.CharacterModel;
-                GameObject gameplayInsance;
+                CharacterBase characterModel = characterModelComponent.CharacterModel;
+                CharacterBase gameplayInsance;
                 // Set Layer
                 int LayerIgnoreRaycast = LayerMask.NameToLayer("Team" + player.TeamID);
                 if (player.TeamID == 1)
@@ -98,13 +107,13 @@ public class Network_Manager : NetworkManager
                     child.gameObject.layer = LayerIgnoreRaycast;
                 }
                 
-                // gameplayInsance.ConnectionID = PlayersInfoList[i].ConnectionID;
-                // gameplayInsance.PlayerIdNumber = PlayersInfoList[i].PlayerIdNumber;
-                // gameplayInsance.PlayerSteamID = PlayersInfoList[i].PlayerSteamID;
+                gameplayInsance.ConnectionID = player.ConnectionID;
+                gameplayInsance.PlayerIdNumber = player.PlayerIdNumber;
+                gameplayInsance.PlayerSteamID = player.PlayerSteamID;
                 // NetworkServer.Destroy(oldPlayer);
 
-                gameplayInsance.GetComponent<CharacterBase>().Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
-                gameplayInsance.GetComponent<CharacterBase>().Spells[1] = SelectController.Instance.Search_Spell(player.Spell_2);
+                gameplayInsance.Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
+                gameplayInsance.Spells[1] = SelectController.Instance.Search_Spell(player.Spell_2);
                 
                 // Set Skill UI and Spells
                 if (player.netIdentity.isOwned)
@@ -114,8 +123,8 @@ public class Network_Manager : NetworkManager
                     MainInfoUI.instance.W.Set_Skill_Icon(characterModelComponent.W_skill_Image);
                     MainInfoUI.instance.E.Set_Skill_Icon(characterModelComponent.E_skill_Image);
                     MainInfoUI.instance.R.Set_Skill_Icon(characterModelComponent.R_skill_Image);
-                    MainInfoUI.instance.D.Set_Skill_Icon(gameplayInsance.GetComponent<CharacterBase>().Spells[0]?.Spell_Sprite);
-                    MainInfoUI.instance.F.Set_Skill_Icon(gameplayInsance.GetComponent<CharacterBase>().Spells[1]?.Spell_Sprite);
+                    MainInfoUI.instance.D.Set_Skill_Icon(gameplayInsance.Spells[0]?.Spell_Sprite);
+                    MainInfoUI.instance.F.Set_Skill_Icon(gameplayInsance.Spells[1]?.Spell_Sprite);
                 }
                 
                 // Ensure the client is ready before replacing the player
@@ -123,21 +132,22 @@ public class Network_Manager : NetworkManager
                 {
                     NetworkClient.Ready();
                 }
-                NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance,ReplacePlayerOptions.KeepAuthority);
+                NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
 
                 Player_List.Add(gameplayInsance);
                 // All Player Info
-                CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance);
+                CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
             
         }
         if (newSceneName.StartsWith("Result_Scene"))
         {
             // Delete all PlayerObject
-            foreach(GameObject playerobject in Player_List)
+            foreach(CharacterBase playerobject in Player_List)
             {
-                NetworkServer.Destroy(playerobject.GetComponent<CharacterBase>().Free_CameParent);
-                NetworkServer.Destroy(playerobject);
+                // Local Object(No Network Identity)
+                Destroy(playerobject.Free_CameParent);
+                NetworkServer.Destroy(playerobject.gameObject);
             }
         }
         

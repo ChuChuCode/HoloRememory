@@ -14,12 +14,19 @@ public class InputComponent : MonoBehaviour
         DontDestroyOnLoad(this);
         playerInput = new PlayerInputActions();
         if (instance == null) instance = this;
+        if (instance != this) Destroy(gameObject);
     }
     void Start()
     {
         #if UNITY_EDITOR
             Cursor.SetCursor(PlayerSettings.defaultCursor, Vector2.zero, CursorMode.ForceSoftware);
         #endif
+    }
+    public void Reset()
+    {
+        playerInput.Disable();
+        playerInput = new PlayerInputActions();
+        playerInput.Enable();
     }
 }
 
