@@ -22,7 +22,7 @@ public class TowerBehaviour : Health
     float Attack_CD_timer = -2f;
     float Attack_CD = 2f;
     [SerializeField] TowerBall Attack_Ball;
-    [SerializeField] Collider Next_Tower_Collider;
+    [SerializeField] CapsuleCollider Next_Tower_Collider;
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();

@@ -58,6 +58,13 @@ public class PlayerObject : NetworkBehaviour
         // Spell_1 = PlayerPrefs.GetInt("Spell_1", 1);
         // Spell_2 = PlayerPrefs.GetInt("Spell_2", 2);
     }
+    public void Reset_All()
+    {
+        Ready = false;
+        CharacterID = -1;
+        Spell_1 = 0;
+        Spell_2 = 0;
+    }
     public override void OnStopClient()
     {
         Manager.PlayersInfoList.Remove(this);

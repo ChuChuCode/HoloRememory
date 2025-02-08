@@ -34,8 +34,8 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        print(1);
-        if ( SceneManager.GetActiveScene().name == "Lobby_Scene") 
+
+        if ( SceneManager.GetActiveScene().name == "Lobby_Scene" && PlayersInfoList.Count == 0) 
         {
             PlayerObject player = Instantiate(PlayerObject_Prefab);
             // Set connectID, PlayerID, SteamID
@@ -75,11 +75,14 @@ public class Network_Manager : NetworkManager
             // Update UI
             LobbyController.Instance.UpdatePlayerList();
         }
+        // Lobby to Select 
         if (newSceneName.StartsWith("Select_Scene"))
         {
             foreach (PlayerObject player in PlayersInfoList)
             {
-                player.Ready = false;
+                // Reset all parameter
+                player.Reset_All();
+                // player.Ready = false;
             }
         }
         /// Game Scene
@@ -88,7 +91,7 @@ public class Network_Manager : NetworkManager
             foreach (PlayerObject player in PlayersInfoList)
             {
                 NetworkConnectionToClient conn = player.connectionToClient;
-                GameObject oldPlayer = conn.identity.gameObject;
+                // GameObject oldPlayer = conn.identity.gameObject;
                 // Spawn Prefab
                 CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == player.CharacterID);
                 CharacterBase characterModel = characterModelComponent.CharacterModel;
