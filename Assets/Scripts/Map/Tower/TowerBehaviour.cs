@@ -17,6 +17,7 @@ public class TowerBehaviour : Health
     [SerializeField] LayerMask enemy_layer;
     [SerializeField] Transform enemy;
     [SerializeField] Transform top;
+    [SerializeField] Transform middle;
     [SerializeField] Transform Base;
     LineRenderer lineRenderer;
     float Attack_CD_timer = -2f;
@@ -35,6 +36,7 @@ public class TowerBehaviour : Health
     public override void Death()
     {
         top.gameObject.SetActive(false);
+        middle.gameObject.SetActive(false);
         GetComponent<Collider>().enabled = false;
         if (Next_Tower_Collider != null)
         {
@@ -48,11 +50,6 @@ public class TowerBehaviour : Health
         // Update UI
         Selectable.instance.updateInfo(this);
         return isdead;
-    }
-
-    public override void InitialHealth()
-    {
-        currentHealth = maxHealth;
     }
     void Update()
     {

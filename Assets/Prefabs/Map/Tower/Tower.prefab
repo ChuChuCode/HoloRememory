@@ -328,6 +328,7 @@ MonoBehaviour:
     m_Bits: 64
   enemy: {fileID: 0}
   top: {fileID: 426715744526136612}
+  middle: {fileID: 1737695573631553376}
   Base: {fileID: 1737695573631553376}
   Attack_Ball: {fileID: 1977883244337380264, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
   Next_Tower_Collider: {fileID: 0}
