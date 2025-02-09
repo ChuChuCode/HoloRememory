@@ -60,7 +60,7 @@ public class ResultController : MonoBehaviour
     }
     public void Rematch(string RoomName)
     {
-        Manager.ChnageScene(RoomName);
+        Manager.ChangeScene(RoomName);
     }
     public void Leave_Game()
     {

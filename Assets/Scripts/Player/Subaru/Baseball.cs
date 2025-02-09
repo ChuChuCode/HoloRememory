@@ -3,11 +3,13 @@ using HR.UI;
 using HR.Object.Player;
 using HR.Object.Map;
 using HR.Object.Minion;
+using UnityEngine;
 
 namespace HR.Object.Skill{
 public class Baseball : ProjectileBase
 {
     public CharacterBase BallOwner;
+    protected int attack_radius;
     protected override void TriggerisPlayer(CharacterBase characterBase)
     {
         // Check is dead or not
@@ -44,7 +46,7 @@ public class Baseball : ProjectileBase
                     LocalPlayerInfo.Instance.Update_KDA(BallOwner);
                 }
             }
-            else if (health is TowerBehaviour)
+            else if (health is TowerBase)
             {
                 // Add Destory Tower number
                 BallOwner.tower++;

@@ -131,7 +131,7 @@ public class PlayerObject : NetworkBehaviour
     [Command]
     public void CmdCanStartGame(string SceneName)
     {
-        manager.ChnageScene(SceneName);
+        manager.ChangeScene(SceneName);
     }
     /// TeamID change
     public void CanTeamJoin(int TeamID)

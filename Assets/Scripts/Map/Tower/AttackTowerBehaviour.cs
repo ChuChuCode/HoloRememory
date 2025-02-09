@@ -3,17 +3,14 @@ using UnityEngine;
 using HR.Object.Skill;
 
 namespace HR.Object.Map{
-public class TowerBehaviour : Health
+public class AttackTowerBehaviour : TowerBase
 {
-    [Header("Gizmos")]
-    [HideInInspector]public bool ShowGizmos;
     enum State {
         Idle,
         Attack,
         Break
     }
     [SerializeField] State current_State;
-    [SerializeField] [Range(0.0f, 10.0f)]float attack_radius = 5f;
     [SerializeField] LayerMask enemy_layer;
     [SerializeField] Transform enemy;
     [SerializeField] Transform top;
@@ -23,33 +20,20 @@ public class TowerBehaviour : Health
     float Attack_CD_timer = -2f;
     float Attack_CD = 2f;
     [SerializeField] TowerBall Attack_Ball;
-    [SerializeField] CapsuleCollider Next_Tower_Collider;
-    void Start()
+    protected override void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 1;
         lineRenderer.SetPosition(0, top.position);
         current_State = State.Idle;
-        InitialHealth();
+        base.Start();
     }
 
     public override void Death()
     {
         top.gameObject.SetActive(false);
         middle.gameObject.SetActive(false);
-        GetComponent<Collider>().enabled = false;
-        if (Next_Tower_Collider != null)
-        {
-            Next_Tower_Collider.enabled = true;
-        }
-    }
-
-    public override bool GetDamage(int damage)
-    {
-        bool isdead = base.GetDamage(damage);
-        // Update UI
-        Selectable.instance.updateInfo(this);
-        return isdead;
+        base.Death();
     }
     void Update()
     {
@@ -127,13 +111,6 @@ public class TowerBehaviour : Health
                 }
                 return;
         }
-    }
-    void OnDrawGizmosSelected()
-    {
-        if (!ShowGizmos) return;
-        // Draw a yellow sphere at the transform's position
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawSphere(transform.position, attack_radius);
     }
 }
 

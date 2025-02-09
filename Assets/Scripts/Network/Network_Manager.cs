@@ -162,7 +162,7 @@ public class Network_Manager : NetworkManager
         
     }
     // Server Change Scene
-    public void ChnageScene(string SceneName)
+    public void ChangeScene(string SceneName)
     {
         print($"Change Scene to : {SceneName}");
         ServerChangeScene(SceneName);

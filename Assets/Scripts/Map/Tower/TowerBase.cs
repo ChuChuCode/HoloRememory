@@ -1,12 +1,14 @@
 using UnityEngine;
-using HR.Object.Skill;
 using HR.UI;
 
 namespace HR.Object.Map{
 public class TowerBase : Health
 {
-    [SerializeField] CapsuleCollider Next_Tower_Collider;
-    void Start()
+    [Header("Gizmos")]
+    [HideInInspector]public bool ShowGizmos;
+    [SerializeField] protected CapsuleCollider Next_Tower_Collider;
+    [SerializeField] [Range(0.0f, 10.0f)] protected float attack_radius = 5f;
+    protected virtual void Start()
     {
         InitialHealth();
     }
@@ -25,6 +27,13 @@ public class TowerBase : Health
         {
             Next_Tower_Collider.enabled = true;
         }
+    }
+    void OnDrawGizmosSelected()
+    {
+        if (!ShowGizmos) return;
+        // Draw a yellow sphere at the transform's position
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, attack_radius);
     }
 }
 

@@ -3,12 +3,12 @@ using UnityEngine;
 using HR.Object.Map;
 
 namespace HR.GUI{
-[CustomEditor(typeof(TowerBehaviour))]
+[CustomEditor(typeof(TowerBase),true)]
 public class TowerOnInspector : Editor
 {
     public override void OnInspectorGUI()
     {
-        TowerBehaviour towerBehaviour = (TowerBehaviour) target;
+        TowerBase towerBehaviour = (TowerBase) target;
         GUILayout.Label ("Show/Hide Gizmos", EditorStyles.boldLabel,GUILayout.Height(30));
         if (GUILayout.Button("Show/Hide Gizmos"))
         {

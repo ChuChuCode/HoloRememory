@@ -107,6 +107,7 @@ public class Selectable : MonoBehaviour
         if ( health != select.GetComponent<Health>() ) return;
         if ( health.currentHealth <= 0 ) 
         {
+            select.gameObject.GetComponent<Outline>().enabled = false;
             SelectInfo.SetActive(false);
             return;
         }

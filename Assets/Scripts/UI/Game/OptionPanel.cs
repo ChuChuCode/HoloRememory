@@ -45,11 +45,11 @@ public class OptionPanel : MonoBehaviour
     }
     public void Back_To_Room(string RoomName)
     {
-        Manager.ChnageScene(RoomName);
+        Manager.ChangeScene(RoomName);
     }
     public void End_Game(string ResultScene_Name)
     {
-        Manager.ChnageScene(ResultScene_Name);
+        Manager.ChangeScene(ResultScene_Name);
     }
     public void Leave_Game()
     {
