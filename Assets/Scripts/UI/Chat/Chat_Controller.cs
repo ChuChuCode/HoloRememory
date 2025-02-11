@@ -88,14 +88,25 @@ public class Chat_Controller : NetworkBehaviour
             {
                 if (player.TeamID == localPlayerTeamID)
                 {
-                    // Client-side logic to add the message for team members
-                    MessageComponent newMessage = Instantiate(Message_Prefab);
-                    newMessage.SetString(userName, message);
-                    // Set Parent
-                    newMessage.transform.SetParent(messageContent);
-                    newMessage.transform.localScale = Vector3.one;
+                    // // Client-side logic to add the message for team members
+                    // MessageComponent newMessage = Instantiate(Message_Prefab);
+                    // newMessage.SetString(userName, message);
+                    // // Set Parent
+                    // newMessage.transform.SetParent(messageContent);
+                    // newMessage.transform.localScale = Vector3.one;
+                    TargetRpcAddMessage(player.connectionToClient, userName, message);
                 }
             }
         }
+    }
+    [TargetRpc]
+    public void TargetRpcAddMessage(NetworkConnection conn, string userName, string message)
+    {
+        // Client-side logic to add the message for team members
+        MessageComponent newMessage = Instantiate(Message_Prefab);
+        newMessage.SetString(userName, message);
+        // Set Parent
+        newMessage.transform.SetParent(messageContent);
+        newMessage.transform.localScale = Vector3.one;
     }
 }

@@ -36,15 +36,14 @@ public class Spell_Select : MonoBehaviour
             // PlayerObject.Spell Update
             if (Slot_Index == 0)
             {
-                int index = SelectController.Instance.LocalPlayerController.Spell_2;
+                // int index = SelectController.Instance.LocalPlayerController.Spell_2;
                 SelectController.Instance.LocalPlayerController.CanSpell2Change(SelectController.Instance.LocalPlayerController.Spell_1);
-                SelectController.Instance.LocalPlayerController.CanSpell1Change(index);
+                SelectController.Instance.LocalPlayerController.CanSpell1Change(new_spell_Index);
             }
             else
             {
-                int index = SelectController.Instance.LocalPlayerController.Spell_1;
                 SelectController.Instance.LocalPlayerController.CanSpell1Change(SelectController.Instance.LocalPlayerController.Spell_2);
-                SelectController.Instance.LocalPlayerController.CanSpell2Change(index);
+                SelectController.Instance.LocalPlayerController.CanSpell2Change(new_spell_Index);
             }
             // Spell Index Swap
             Another_Spell.GetComponent<Spell_Select>().spell_index = spell_index;

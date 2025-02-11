@@ -224,6 +224,7 @@ public class PlayerObject : NetworkBehaviour
             CmdSetSpell2Change(SpellID);
         }
     }
+    [Command]
     void CmdSetSpell2Change(int SpellID)
     {
         // Ask Everyone to update my value
