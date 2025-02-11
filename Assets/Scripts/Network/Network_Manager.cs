@@ -9,6 +9,7 @@ using HR.Network.Game;
 using HR.Object.Player;
 using HR.Network.Lobby;
 using HR.Network.Result;
+using UnityEngine.SocialPlatforms;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -22,6 +23,7 @@ public class Network_Manager : NetworkManager
     [Header("Character Component")]
     public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
     public List<CharacterBase> Player_List = new List<CharacterBase>();
+    public int LoseTeam = 0;
     public override void Start()
     {
         // Initial CharacterSelectComponent
@@ -34,8 +36,7 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-
-        if ( SceneManager.GetActiveScene().name == "Lobby_Scene" && PlayersInfoList.Count == 0) 
+        if ( SceneManager.GetActiveScene().name == "Lobby_Scene" ) // && PlayersInfoList.Count == 0) 
         {
             PlayerObject player = Instantiate(PlayerObject_Prefab);
             // Set connectID, PlayerID, SteamID
@@ -74,6 +75,7 @@ public class Network_Manager : NetworkManager
             LobbyController.Instance.LocalPlayerController = LocalPlayerObject;
             // Update UI
             LobbyController.Instance.UpdatePlayerList();
+            LoseTeam = 0 ;
         }
         // Lobby to Select 
         if (newSceneName.StartsWith("Select_Scene"))
@@ -149,15 +151,22 @@ public class Network_Manager : NetworkManager
         }
         if (newSceneName.StartsWith("Result_Scene"))
         {
+            int LocalPlayerTeamID = 0;
             // Delete all PlayerObject
             foreach(CharacterBase playerobject in Player_List)
             {
                 CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == playerobject.CharacterID);;
                 ResultController.Instance.Spawn_Result_Prefab(characterModelComponent.CharacterImage,playerobject);
-                // Local Object(No Network Identity)
+                // Check Team1 or Team2
+                if (playerobject.GetComponent<NetworkIdentity>().isLocalPlayer)
+                {
+                    LocalPlayerTeamID = playerobject.TeamID;
+                }
+                // Destroy CharacterBase
                 NetworkServer.Destroy(playerobject.gameObject);
             }
             Player_List.Clear();
+            ResultController.Instance.Show_Result(LoseTeam,LocalPlayerTeamID);
         }
         
     }

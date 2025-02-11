@@ -22,6 +22,8 @@ public class ResultController : MonoBehaviour
     [Header("Kill Number")]
     [SerializeField] TMP_Text Team1_Kill_Text;
     [SerializeField] TMP_Text Team2_Kill_Text;
+    [SerializeField] GameObject Win_Text;
+    [SerializeField] GameObject Lose_Text;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -57,6 +59,18 @@ public class ResultController : MonoBehaviour
         result_Component_Temp.transform.localScale = Vector3.one;
         result_Component_Temp.characterBase = characterBase;
         result_Component_Temp.Initial(sprite);
+    }
+    public void Show_Result(int LoseTeam, int OwnTeam)
+    {
+        string LoseTeamString = LayerMask.LayerToName(LoseTeam).Split("Building")[0];
+        if (LoseTeamString[4] == OwnTeam.ToString()[0])
+        {
+            Lose_Text.SetActive(true);
+        }
+        else
+        {
+            Win_Text.SetActive(true);
+        }
     }
     public void Rematch(string RoomName)
     {

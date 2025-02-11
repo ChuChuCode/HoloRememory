@@ -2397,6 +2397,7 @@ MonoBehaviour:
   SelectPlayer: {fileID: 8168614158581726803, guid: 285a470ed9f65a9478060b5b57840ae9, type: 3}
   characterSelectComponentsList: []
   Player_List: []
+  LoseTeam: 0
 --- !u!1 &636497083
 GameObject:
   m_ObjectHideFlags: 0
@@ -9009,6 +9010,7 @@ MonoBehaviour:
   SelectPlayer: {fileID: 0}
   characterSelectComponentsList: []
   Player_List: []
+  LoseTeam: 0
 --- !u!1 &2104917657
 GameObject:
   m_ObjectHideFlags: 0

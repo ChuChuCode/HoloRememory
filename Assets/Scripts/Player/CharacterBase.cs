@@ -789,10 +789,10 @@ public class CharacterBase: Health
             Stop_Recall();
         }
         // If has target -> Update Target Position
-        if (Target != null)
-        {
-            agent.destination = Target.position;
-        }
+        // if (Target != null)
+        // {
+        //     agent.destination = Target.position;
+        // }
     }
     protected void Attack()
     {

@@ -37,9 +37,14 @@ public class MainTowerBehaviour : TowerBase
     }
     IEnumerator EndGame()
     {
+        // Input Reset
         InputComponent.instance.Reset();
+        // Show Result UI
         StatusController.Instance.gameObject.SetActive(true);
+        // Show Win/Lose
         StatusController.Instance.Show_Result( LayerMask.LayerToName(gameObject.layer) );
+        // Set Lose Team to Network_Manager
+        Manager.LoseTeam = gameObject.layer;
         yield return new WaitForSeconds(5f);
         Manager.ChangeScene("Result_Scene");
     }

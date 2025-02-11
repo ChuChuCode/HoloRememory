@@ -37,14 +37,14 @@ public class Spell_Select : MonoBehaviour
             if (Slot_Index == 0)
             {
                 int index = SelectController.Instance.LocalPlayerController.Spell_2;
-                SelectController.Instance.LocalPlayerController.Spell_2 = SelectController.Instance.LocalPlayerController.Spell_1;
-                SelectController.Instance.LocalPlayerController.Spell_1 = index;
+                SelectController.Instance.LocalPlayerController.CanSpell2Change(SelectController.Instance.LocalPlayerController.Spell_1);
+                SelectController.Instance.LocalPlayerController.CanSpell1Change(index);
             }
             else
             {
                 int index = SelectController.Instance.LocalPlayerController.Spell_1;
-                SelectController.Instance.LocalPlayerController.Spell_1 = SelectController.Instance.LocalPlayerController.Spell_2;
-                SelectController.Instance.LocalPlayerController.Spell_2 = index;
+                SelectController.Instance.LocalPlayerController.CanSpell1Change(SelectController.Instance.LocalPlayerController.Spell_2);
+                SelectController.Instance.LocalPlayerController.CanSpell2Change(index);
             }
             // Spell Index Swap
             Another_Spell.GetComponent<Spell_Select>().spell_index = spell_index;
@@ -58,11 +58,11 @@ public class Spell_Select : MonoBehaviour
             // PlayerObject.Spell_1 Spell_2 Update
             if (Slot_Index == 0)
             {
-                SelectController.Instance.LocalPlayerController.Spell_1 = new_spell_Index;
+                SelectController.Instance.LocalPlayerController.CanSpell1Change(new_spell_Index);
             }
             else
             {
-                SelectController.Instance.LocalPlayerController.Spell_2 = new_spell_Index;
+                SelectController.Instance.LocalPlayerController.CanSpell2Change(new_spell_Index);
             }
             // Sprite update
             Spell_Image.sprite = SelectController.Instance.Search_Spell(new_spell_Index).Spell_Sprite;

@@ -147,7 +147,7 @@ public class PlayerObject : NetworkBehaviour
         // Ask Everyone to update my value
         this.PlayerTeamUpdate(this.TeamID, TeamID);
     }
-    public void PlayerTeamUpdate(int OldValue,int NewValue)
+    void PlayerTeamUpdate(int OldValue,int NewValue)
     {
         if (isServer)
         {
@@ -173,7 +173,7 @@ public class PlayerObject : NetworkBehaviour
         // Ask Everyone to update my value
         this.CharacterSelect(this.CharacterID, CharacterID);
     }
-    public void CharacterSelect(int OldValue,int NewValue)
+    void CharacterSelect(int OldValue,int NewValue)
     {
         if (isServer)
         {
@@ -204,7 +204,7 @@ public class PlayerObject : NetworkBehaviour
         // Ask Everyone to update my value
         this.PlayerSpell1Update(this.Spell_1, SpellID);
     }
-    public void PlayerSpell1Update(int OldValue,int NewValue)
+    void PlayerSpell1Update(int OldValue,int NewValue)
     {
         if (isServer)
         {
@@ -229,7 +229,7 @@ public class PlayerObject : NetworkBehaviour
         // Ask Everyone to update my value
         this.PlayerSpell2Update(this.Spell_2, SpellID);
     }
-    public void PlayerSpell2Update(int OldValue,int NewValue)
+    void PlayerSpell2Update(int OldValue,int NewValue)
     {
         if (isServer)
         {
