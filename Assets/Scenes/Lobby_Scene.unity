@@ -3073,6 +3073,7 @@ MonoBehaviour:
   Team1_Join: {fileID: 1481423906}
   Team2_Join: {fileID: 712994738}
   Viewer_Join: {fileID: 905506564}
+  LobbyPlayerList: []
   LocalPlayerController: {fileID: 0}
 --- !u!4 &1499210200
 Transform:

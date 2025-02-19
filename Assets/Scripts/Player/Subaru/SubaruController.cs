@@ -60,24 +60,8 @@ public class SubaruController : CharacterBase
             }
             while (!NavMesh.SamplePosition(pos,out hit, 1.0f, NavMesh.AllAreas));
             pos = hit.position;
-            Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
-
-            // Set Layer to all
-            Transform[] children = duck.GetComponentsInChildren<Transform>(includeInactive: true);
-            foreach(Transform child in children)
-            {
-                child.gameObject.layer = gameObject.layer;
-            }
-            // Set Enemy Layer
-            duck.Update_Enemy_Layer(gameObject.layer);
-            // Set Q UI
-            if (IsPressed_Q) duck.Q_UI_Set(true);
-
-            NetworkServer.Spawn(duck.gameObject);
-            // Set Info
-            duck.MainDestination = transform;
-            // Add to list
-            duck_array.Add(duck);
+            
+            CmdSpawnDuck(pos);
         }
     }
     protected override void Hide_Q_UI()
@@ -290,6 +274,28 @@ public class SubaruController : CharacterBase
             pos = hit.position;
             duck.agent.Warp(pos);
         }
+    }
+    [Command]
+    void CmdSpawnDuck(Vector3 pos)
+    {
+        Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
+
+        // Set Layer to all
+        Transform[] children = duck.GetComponentsInChildren<Transform>(includeInactive: true);
+        foreach(Transform child in children)
+        {
+            child.gameObject.layer = gameObject.layer;
+        }
+        // Set Enemy Layer
+        duck.Update_Enemy_Layer(gameObject.layer);
+        // Set Q UI
+        if (IsPressed_Q) duck.Q_UI_Set(true);
+        // Set Info
+        duck.MainDestination = transform;
+
+        NetworkServer.Spawn(duck.gameObject);
+        // Add to list
+        duck_array.Add(duck);
     }
 }
 

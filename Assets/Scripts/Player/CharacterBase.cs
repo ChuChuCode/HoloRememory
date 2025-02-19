@@ -18,6 +18,12 @@ public class CharacterBase: Health
 {
     [Header("Animator")]
     [SerializeField] protected Animator animator;
+    [Header("Image Sprite")]
+    [SerializeField] Sprite CharacterImage;
+    [SerializeField] Sprite Q_skill_Image;
+    [SerializeField] Sprite W_skill_Image;
+    [SerializeField] Sprite E_skill_Image;
+    [SerializeField] Sprite R_skill_Image;
     [Header("Economy")]
     public int ownMoney = 0;
     [Header("Agent")]
@@ -72,11 +78,11 @@ public class CharacterBase: Health
     public int defense;
     public float attackSpeed;
     public float moveSpeed;
-    [SerializeField] int DefaultAttack;
-    [SerializeField] int DefaultDefense;
-    [SerializeField] float DefaultAttackSpeed;
-    [SerializeField] float DefaultMoveSpeed;
-    [SerializeField] float AgentWalkSpeed; // 3.5f
+    [SerializeField] protected int DefaultAttack;
+    [SerializeField] protected int DefaultDefense;
+    [SerializeField] protected float DefaultAttackSpeed;
+    [SerializeField] protected float DefaultMoveSpeed;
+    [SerializeField] protected float AgentWalkSpeed; // 3.5f
     
     [Header("KDA")]
     [SyncVar] public int kill = 0;
@@ -127,8 +133,17 @@ public class CharacterBase: Health
         {
             MouseTargetLayer &= ~(1 << LayerMask.NameToLayer("Team2Building"));
         }    
-
         if (!isLocalPlayer) return;
+
+        // Set Skill UI and Spells
+        MainInfoUI.instance.Character_Image.sprite = CharacterImage;
+        MainInfoUI.instance.Q.Set_Skill_Icon(Q_skill_Image);
+        MainInfoUI.instance.W.Set_Skill_Icon(W_skill_Image);
+        MainInfoUI.instance.E.Set_Skill_Icon(E_skill_Image);
+        MainInfoUI.instance.R.Set_Skill_Icon(R_skill_Image);
+        MainInfoUI.instance.D.Set_Skill_Icon(Spells[0]?.Spell_Sprite);
+        MainInfoUI.instance.F.Set_Skill_Icon(Spells[1]?.Spell_Sprite);
+
         // Set Level
         skillComponent.AddExp(0);
 
@@ -140,6 +155,7 @@ public class CharacterBase: Health
         LocalPlayerInfo.Instance.Update_KDA(this);
         OptionPanel.Instance.LocalPlayer = this;
         StatusController.Instance.characterBase = this;
+        print("2" + PlayerIdNumber);
 
         // Health Initial
         InitialHealth();
@@ -149,12 +165,13 @@ public class CharacterBase: Health
         defense = DefaultDefense;
         attackSpeed = DefaultAttackSpeed;
         moveSpeed = DefaultMoveSpeed;
+
         // Set Animation Speed and Agent Walk Speed
         agent.speed = AgentWalkSpeed * moveSpeed;
         animator.SetFloat("AttackSpeed",attackSpeed);
         animator.SetFloat("MoveSpeed",moveSpeed);
 
-        Free_CameParent.SetActive(true);
+        Fixed_Cam.SetActive(true);
         // Set Recall time and IEnumerator
         RecallEffect.SetFloat("Duration",RecallTime);
 
@@ -398,6 +415,7 @@ public class CharacterBase: Health
                 // If Layer is Land -> Spawn Particle
                 if (hit.transform.root.gameObject.layer == LayerMask.NameToLayer("Land"))
                 {
+                    // Local Spawn for LocalPlaer to See Walk Target
                     Instantiate(Target_Particle,mouseProject + new Vector3(0,0.01f,0), Quaternion.identity);
                 }
             }

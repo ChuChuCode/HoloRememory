@@ -9,7 +9,6 @@ using HR.Network.Game;
 using HR.Object.Player;
 using HR.Network.Lobby;
 using HR.Network.Result;
-using UnityEngine.SocialPlatforms;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -24,6 +23,7 @@ public class Network_Manager : NetworkManager
     public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
     public List<CharacterBase> Player_List = new List<CharacterBase>();
     public int LoseTeam = 0;
+    int Player_num = 0;
     public override void Start()
     {
         // Initial CharacterSelectComponent
@@ -36,7 +36,10 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
-        if ( SceneManager.GetActiveScene().name == "Lobby_Scene" ) // && PlayersInfoList.Count == 0) 
+        // print(PlayersInfoList.Count);
+        // print(Player_num);
+        // ******Spawn Twice when Rematch
+        if ( SceneManager.GetActiveScene().name == "Lobby_Scene" && PlayersInfoList.Count != Player_num) 
         {
             PlayerObject player = Instantiate(PlayerObject_Prefab);
             // Set connectID, PlayerID, SteamID
@@ -54,6 +57,19 @@ public class Network_Manager : NetworkManager
             // Add when PlayerObject in OnStartClient
             // PlayersInfoList.Add(player);
         }
+    }
+    public override void OnServerConnect(NetworkConnectionToClient conn)
+    {
+        Player_num++;
+    }
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+        base.OnServerDisconnect(conn);
+        Player_num--;
+    }
+    public override void OnStopServer()
+    {
+        Player_num = 0;
     }
     public override void OnServerSceneChanged(string newSceneName)
     {
@@ -99,7 +115,7 @@ public class Network_Manager : NetworkManager
                 CharacterBase characterModel = characterModelComponent.CharacterModel;
                 CharacterBase gameplayInsance;
                 // Set Layer
-                int LayerIgnoreRaycast = LayerMask.NameToLayer("Team" + player.TeamID);
+                int LayerIgnoreRaycast = LayerMask.NameToLayer("Team" + player.TeamID.ToString());
                 if (player.TeamID == 1)
                 {
                     gameplayInsance = Instantiate(characterModel,GameController.Instance.Team1_transform.position,Quaternion.identity);
@@ -124,18 +140,6 @@ public class Network_Manager : NetworkManager
 
                 gameplayInsance.Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
                 gameplayInsance.Spells[1] = SelectController.Instance.Search_Spell(player.Spell_2);
-                
-                // Set Skill UI and Spells
-                if (player.netIdentity.isOwned)
-                {
-                    MainInfoUI.instance.Character_Image.sprite = characterModelComponent.CharacterImage;
-                    MainInfoUI.instance.Q.Set_Skill_Icon(characterModelComponent.Q_skill_Image);
-                    MainInfoUI.instance.W.Set_Skill_Icon(characterModelComponent.W_skill_Image);
-                    MainInfoUI.instance.E.Set_Skill_Icon(characterModelComponent.E_skill_Image);
-                    MainInfoUI.instance.R.Set_Skill_Icon(characterModelComponent.R_skill_Image);
-                    MainInfoUI.instance.D.Set_Skill_Icon(gameplayInsance.Spells[0]?.Spell_Sprite);
-                    MainInfoUI.instance.F.Set_Skill_Icon(gameplayInsance.Spells[1]?.Spell_Sprite);
-                }
                 
                 // Ensure the client is ready before replacing the player
                 if (!NetworkClient.ready)

@@ -6,6 +6,7 @@ using TMPro;
 using Steamworks;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms;
+using Mirror;
 
 namespace HR.Network.Lobby{
 public class LobbyController : MonoBehaviour
@@ -142,12 +143,12 @@ public class LobbyController : MonoBehaviour
                 if (team1_count < 5)
                 {
                     LobbyPlayer.transform.SetParent(Team1_transform);
-                    // player.CanTeamJoin(1);
+                    player.CanTeamJoin(1);
                 }
                 else
                 {
                     LobbyPlayer.transform.SetParent(Team2_transform);
-                    // player.CanTeamJoin(2);
+                    player.CanTeamJoin(2);
                 }
                 LobbyPlayer.transform.localScale = Vector3.one;
 
@@ -239,7 +240,7 @@ public class LobbyController : MonoBehaviour
         if (AllReady)
         {
             // Is Host
-            if (LocalPlayerController.PlayerIdNumber == 1)
+            if (NetworkServer.active)
             {
                 StartButton.interactable = true;
             }

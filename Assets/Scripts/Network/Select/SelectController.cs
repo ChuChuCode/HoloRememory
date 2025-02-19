@@ -281,6 +281,7 @@ public class SelectController : MonoBehaviour
                 }
             }
         }
+        Check_ReadyButton();
     }
     public void RemovePlayerItem()
     {
@@ -380,7 +381,6 @@ public class SelectController : MonoBehaviour
         {
             Spell_2.Spell_Button_Click(spell_Index);
         }
-        Check_ReadyButton();
     }
     public SpellBase Search_Spell(int spell_Index)
     {
@@ -395,9 +395,11 @@ public class SelectController : MonoBehaviour
         if (LocalPlayerController.CharacterID == -1 || LocalPlayerController.Spell_1 == 0 || LocalPlayerController.Spell_2 == 0) 
         {
             ReadyButton.interactable = false;
-            return;
         }
-        ReadyButton.interactable = true;
+        else
+        {
+            ReadyButton.interactable = true;
+        }
     }
 }
 
