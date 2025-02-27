@@ -20,10 +20,16 @@ public class SubaruAnimationMethod : NetworkBehaviour
     }
     public void Spawn_Ball()
     {
+        CmdSpawn_Ball();
+    }
+    [Command]
+    void CmdSpawn_Ball()
+    {
         Baseball ball = Instantiate(Ball_Prefab,Ball_In_GameObject.transform.position,Quaternion.identity);
         ball.Target = Target;
         ball.BallOwner = transform.root.GetComponent<CharacterBase>();
         ball.Set_AttackDamage();
+        NetworkServer.Spawn(ball.gameObject);
     }
 }
 

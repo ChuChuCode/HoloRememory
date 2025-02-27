@@ -155,7 +155,6 @@ public class CharacterBase: Health
         LocalPlayerInfo.Instance.Update_KDA(this);
         OptionPanel.Instance.LocalPlayer = this;
         StatusController.Instance.characterBase = this;
-        print("2" + PlayerIdNumber);
 
         // Health Initial
         InitialHealth();

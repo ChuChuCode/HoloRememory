@@ -21,7 +21,7 @@ public class SubaruController : CharacterBase
     int isRunHash;
     [Header("Skill Timer")]
     float duck_spawn_cd = 10f;
-    float duck_spawn_timer = 0f;
+    float duck_spawn_timer = 5f;
     float duck_rush_cd = 10f;
     float duck_rush_timer = -10f;
     float duck_ult_cd = 20f;
@@ -41,6 +41,9 @@ public class SubaruController : CharacterBase
     protected override void Start()
     {
         base.Start();
+        duck_spawn_timer = Time.time ;
+        duck_rush_timer = Time.time ;
+        duck_ult_timer = Time.time ;
     }
     public override void Passive()
     {
@@ -297,6 +300,7 @@ public class SubaruController : CharacterBase
         // Add to list
         duck_array.Add(duck);
     }
+
 }
 
 }

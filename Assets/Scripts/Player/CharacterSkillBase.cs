@@ -8,7 +8,7 @@ public class CharacterSkillBase : NetworkBehaviour
 {
     [Header("Character Level")]
     [SerializeField] protected int Character_Level = 0;
-    protected int Character_exp = 0;
+    [SyncVar] protected int Character_exp = 0;
     [Header("Level Experience")]
     [SerializeField] protected List<int> Experience_List ;
     [Header("Skill Level")]

@@ -20,6 +20,7 @@ public class MinionSpawner : NetworkBehaviour
     }
     void Update()
     {
+        if (!NetworkServer.active) return;
         if (LocalPlayerInfo.Instance.timer > next_SpawnTime)
         {
             next_SpawnTime += spawntime_interval;

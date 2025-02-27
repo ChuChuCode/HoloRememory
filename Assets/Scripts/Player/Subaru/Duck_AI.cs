@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using HR.UI;
 using HR.Object.Player;
+using Mirror;
 
 namespace HR.Object.Minion{
 public class Duck_AI : MinionBase
@@ -50,6 +51,7 @@ public class Duck_AI : MinionBase
     }
     protected override void Update()
     {
+        if (!isLocalPlayer) return;
         isMove = animator.GetBool("isMove");
         isAttack = animator.GetBool("isAttack");
         // Search Enemy use sphere
