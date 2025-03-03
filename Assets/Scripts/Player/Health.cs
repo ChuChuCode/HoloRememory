@@ -35,7 +35,18 @@ public class Health : NetworkBehaviour
     }
     /// <summary>Do things when Dead.</summary>
     public virtual void Death(){}
-    
+    [Command]
+    void CmdInitialHealth()
+    {
+        Set_Health(currentHealth,maxHealth);
+    }
+    public void Set_Health(int OldValue,int NewValue)
+    {
+        if (isServer)
+        {
+            this.currentHealth = NewValue;
+        }
+    }
 }
 
 }

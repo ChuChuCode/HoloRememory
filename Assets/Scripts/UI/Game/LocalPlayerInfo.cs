@@ -16,7 +16,7 @@ public class LocalPlayerInfo : NetworkBehaviour
     [SerializeField] TMP_Text Time_Text;
     float started_time = 0f;
     [SyncVar] public float timer;
-    void Start()
+    void Awake()
     {
         if (Instance == null) Instance = this;
         started_time = Time.time;

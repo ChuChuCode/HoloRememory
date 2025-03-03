@@ -8,7 +8,7 @@ public class CharacterSkillBase : NetworkBehaviour
 {
     [Header("Character Level")]
     [SerializeField] protected int Character_Level = 0;
-    [SyncVar] protected int Character_exp = 0;
+    [SerializeField] [SyncVar(hook = nameof(Set_Exp))] protected int Character_exp = 0;
     [Header("Level Experience")]
     [SerializeField] protected List<int> Experience_List ;
     [Header("Skill Level")]
@@ -68,20 +68,23 @@ public class CharacterSkillBase : NetworkBehaviour
     }
     public void AddExp(int exp)
     {
-        Character_exp += exp;
-        int new_Level = Detect_Level();
+        CmdAddExp(exp);
+        // int new_Level = Detect_Level();
+        // print("Character_Level : " + Character_Level );
+        // print("Character_exp : " + Character_exp );
+        // print("new_Level : " + new_Level );
         // Level Up Detect Up
-        if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
-        {
-            Character_Level = new_Level;
-            // Show Level Up button
-            MainInfoUI.instance.Show_LevelUp(this);
-            // Set Level UI
-            MainInfoUI.instance.Set_Level(Character_Level);
-        }
-        float ratio = Exp_Ratio(Character_Level);
-        // Set EXP RATIO UI
-        MainInfoUI.instance.Set_Level_Raito(ratio);
+        // if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
+        // {
+        //     Character_Level = new_Level;
+        //     // Show Level Up button
+        //     MainInfoUI.instance.Show_LevelUp(this);
+        //     // Set Level UI
+        //     MainInfoUI.instance.Set_Level(Character_Level);
+        // }
+        // float ratio = Exp_Ratio(Character_Level);
+        // // Set EXP RATIO UI
+        // MainInfoUI.instance.Set_Level_Raito(ratio);
     }
     /// Let Character override show Q LevelUp or not
     public virtual bool Q_Show_LevelUp()
@@ -109,6 +112,39 @@ public class CharacterSkillBase : NetworkBehaviour
         if (R_Level == 1 && Character_Level == 11) return true;
         else return false;
     }
-}
+    [Command]
+    void CmdAddExp(int exp)
+    {
+        Set_Exp(Character_exp,Character_exp + exp );
+    }
+    public void Set_Exp(int OldValue,int NewValue)
+    {
+        if (isServer)
+        {
+            this.Character_exp = NewValue;
+        }
+        if (isClient)
+        {
+            int new_Level = Detect_Level();
+            print("Character_Level : " + Character_Level );
+            print("Character_exp : " + Character_exp );
+            print("new_Level : " + new_Level );
+            if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
+            {
+                Character_Level = new_Level;
+                if (!isLocalPlayer) return;
+                // Show Level Up button
+                MainInfoUI.instance.Show_LevelUp(this);
+                // Set Level UI
+                MainInfoUI.instance.Set_Level(Character_Level);
+            }
+            float ratio = Exp_Ratio(Character_Level);
+            // Set EXP RATIO UI
+            MainInfoUI.instance.Set_Level_Raito(ratio);
+        }
+        
+    }
+
+    }
 
 }

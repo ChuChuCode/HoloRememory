@@ -145,7 +145,7 @@ public class CharacterBase: Health
         MainInfoUI.instance.F.Set_Skill_Icon(Spells[1]?.Spell_Sprite);
 
         // Set Level
-        skillComponent.AddExp(0);
+        skillComponent.AddExp(10);
 
         // Set LocalPlayer for MiniMap, ShowPath, StorePanel
         GameController.Instance.LocalPlayer = this;

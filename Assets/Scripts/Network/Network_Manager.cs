@@ -146,6 +146,7 @@ public class Network_Manager : NetworkManager
                 {
                     NetworkClient.Ready();
                 }
+                // NetworkServer.Spawn(gameplayInsance.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
 
                 Player_List.Add(gameplayInsance);

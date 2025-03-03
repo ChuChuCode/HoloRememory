@@ -51,7 +51,7 @@ public class Duck_AI : MinionBase
     }
     protected override void Update()
     {
-        if (!isLocalPlayer) return;
+        if (!MainDestination.GetComponent<NetworkIdentity>().isLocalPlayer) return;
         isMove = animator.GetBool("isMove");
         isAttack = animator.GetBool("isAttack");
         // Search Enemy use sphere

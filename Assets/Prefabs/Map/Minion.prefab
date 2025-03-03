@@ -470,6 +470,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c06d845ce54f8d4ebef9cbdaf777e60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   Target: {fileID: 0}
   Ball_In_GameObject: {fileID: 4282890602514326992}
   Attack_Ball: {fileID: 1977883244337380264, guid: be76682800c7b5647b32cd8e926c96bd, type: 3}
