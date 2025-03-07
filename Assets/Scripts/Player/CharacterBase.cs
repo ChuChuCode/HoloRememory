@@ -270,10 +270,14 @@ public class CharacterBase: Health
         InputComponent.instance.Reset();
         Destroy(Free_CameParent);    
     }
+    public override void InitialHealth()
+    {
+        if (!isLocalPlayer) return;
+        CmdSetlHealth(maxHealth);
+    }
     [Command]
     public override void CmdSetlHealth(int NewHealth)
     {
-        if (!isOwned) return;
         currentHealth = NewHealth;
     }
     public override void Set_Health(int OldValue, int NewValue)

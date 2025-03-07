@@ -1666,13 +1666,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe2f2ffdf8c64711b96d25c8ad5a975, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 1
+  syncDirection: 0
+  syncMode: 0
   syncInterval: 0
   exp: 0
   coin: 0
   maxHealth: 300
-  currentHealth: 0
+  currentHealth: 1
   isDead: 0
   current_State: 
   agent: {fileID: 0}

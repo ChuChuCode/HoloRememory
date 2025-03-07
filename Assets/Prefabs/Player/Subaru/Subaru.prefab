@@ -1231,7 +1231,7 @@ MonoBehaviour:
   exp: 50
   coin: 40
   maxHealth: 500
-  currentHealth: 0
+  currentHealth: 1
   isDead: 0
   animator: {fileID: 1946654108785073176}
   CharacterImage: {fileID: 779515102, guid: 0e13a16646996274f8cb62c39da618c5, type: 3}
@@ -1246,6 +1246,7 @@ MonoBehaviour:
   PlayerSteamID: 0
   TeamID: 0
   CharacterID: 0
+  PlayerName: 
   IsPressed_Q: 0
   IsPressed_W: 0
   IsPressed_E: 0
@@ -1310,10 +1311,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1eab2972a076db428d19f55f0f4a6d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   Character_Level: 0
+  Character_exp: 0
   Experience_List: 
   Q_Level: 0
   W_Level: 0

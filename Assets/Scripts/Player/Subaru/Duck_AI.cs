@@ -287,10 +287,10 @@ public class Duck_AI : MinionBase
     {
         Q_UI.SetActive(isShow);
     }
-    [Server]
-    public override void CmdSetlHealth(int NewHealth)
+    public override void InitialHealth()
     {
-        currentHealth = NewHealth;
+        if (!isOwned) return;
+        CmdSetlHealth(maxHealth);
     }
 }
 

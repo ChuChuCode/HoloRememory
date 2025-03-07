@@ -124,36 +124,15 @@ public class CharacterSkillBase : NetworkBehaviour
         if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
         {
             Character_Level = new_Level;
-            print(Character_Level);
-            print(GetComponent<CharacterBase>().CharacterID);
-            print(GetComponent<CharacterBase>().isLocalPlayer);
-            print(isOwned);
-            if (!GetComponent<CharacterBase>().isOwned) return;
+            if (!isOwned) return;
             // Show Level Up button
             MainInfoUI.instance.Show_LevelUp(this);
             // Set Level UI
             MainInfoUI.instance.Set_Level(Character_Level);
         }
         // print("Set_Exp::Character_Level : " + Character_Level);
-        // float ratio = Exp_Ratio(Character_Level);
-        // print("Set_Exp::ratio : " + ratio);
-        // // Set EXP RATIO UI
-        // MainInfoUI.instance.Set_Level_Raito(ratio);
-    }
-    [ClientRpc]
-    void RpcSetUI(int new_Level)
-    {
-        if (!isOwned) return;
-        if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
-            {
-            // Show Level Up button
-            MainInfoUI.instance.Show_LevelUp(this);
-            // Set Level UI
-            MainInfoUI.instance.Set_Level(Character_Level);
-        }
-        print("Set_Exp::Character_Level : " + Character_Level);
         float ratio = Exp_Ratio(Character_Level);
-        print("Set_Exp::ratio : " + ratio);
+        // print("Set_Exp::ratio : " + ratio);
         // Set EXP RATIO UI
         MainInfoUI.instance.Set_Level_Raito(ratio);
     }

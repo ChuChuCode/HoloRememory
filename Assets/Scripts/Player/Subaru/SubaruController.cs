@@ -15,7 +15,7 @@ public class SubaruController : CharacterBase
     [Header("Passive")]
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     [SerializeField] Duck_AI Duck_prefab;
-    int max_duck_num = 6;
+    int max_duck_num = 3;
     [Header("Duck Skills")]
     [SerializeField] Duck_Ult Duck_Ult;
     int isRunHash;
@@ -215,7 +215,7 @@ public class SubaruController : CharacterBase
         
         base.Update();
     }
-    protected override void OnDestroy() 
+    protected override void OnDestroy()
     {
         foreach (var duck in duck_array)
         {
@@ -290,7 +290,14 @@ public class SubaruController : CharacterBase
     void CmdSpawnDuck(Vector3 pos)
     {
         Duck_AI duck = Instantiate(Duck_prefab,pos,transform.rotation);
-
+        // Set Info
+        NetworkServer.Spawn(duck.gameObject,this.gameObject);
+        // Set All Client
+        Client_Add_Duck(duck);
+    }
+    [ClientRpc]
+    void Client_Add_Duck(Duck_AI duck)
+    {
         // Set Layer to all
         Transform[] children = duck.GetComponentsInChildren<Transform>(includeInactive: true);
         foreach(Transform child in children)
@@ -299,16 +306,12 @@ public class SubaruController : CharacterBase
         }
         // Set Enemy Layer
         duck.Update_Enemy_Layer(gameObject.layer);
+        if (!isLocalPlayer) return;
         // Set Q UI
         if (IsPressed_Q) duck.Q_UI_Set(true);
-        // Set Info
         duck.MainDestination = transform;
-
-        NetworkServer.Spawn(duck.gameObject,this.gameObject);
-        // Add to list *** Need to Check onserver or client
         duck_array.Add(duck);
     }
-
 }
 
 }

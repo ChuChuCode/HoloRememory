@@ -128,6 +128,11 @@ public class Minions : MinionBase
     {
         currentHealth = NewHealth;
     }
+    public override void InitialHealth()
+    {
+        if (!isServer) return;
+        CmdSetlHealth(maxHealth);
+    }
 }
     
 }

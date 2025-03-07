@@ -292,8 +292,8 @@ MonoBehaviour:
   syncInterval: 0
   exp: 0
   coin: 0
-  maxHealth: 10
-  currentHealth: 0
+  maxHealth: 1000
+  currentHealth: 1
   isDead: 0
   ShowGizmos: 0
   Next_Tower_Collider: {fileID: 0}

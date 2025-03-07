@@ -22,15 +22,11 @@ public class Health : NetworkBehaviour
     public virtual bool GetDamage(int damage)
     {
         int beforeHealth = currentHealth;
-        // for local
-        currentHealth -= damage;
         CmdSetlHealth(currentHealth - damage);
         return beforeHealth > 0 && currentHealth <= 0 ;
     }
     public virtual void Heal(int health)
     {
-        // for local
-        currentHealth += health;
         CmdSetlHealth(currentHealth + health);
         if (currentHealth > maxHealth)
         {

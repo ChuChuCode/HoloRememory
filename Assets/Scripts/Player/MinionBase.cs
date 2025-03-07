@@ -67,7 +67,8 @@ public class MinionBase : Health
     {
         base.Set_Health(OldValue, NewValue);
         // UI Update
-        healthBar.SetMaxValue(NewValue);
+        healthBar.SetMaxValue(maxHealth);
+        healthBar.SetValue(NewValue);
     }
     public override bool GetDamage(int damage)
     {
