@@ -19423,7 +19423,7 @@ MonoBehaviour:
   layer:
     serializedVersion: 2
     m_Bits: 960
-  playerLayerID: 0
+  LocalPlayer: {fileID: 0}
 --- !u!4 &1773412308
 Transform:
   m_ObjectHideFlags: 0

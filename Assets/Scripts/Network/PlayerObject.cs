@@ -70,26 +70,6 @@ public class PlayerObject : NetworkBehaviour
         Manager.PlayersInfoList.Remove(this);
         if (SceneManager.GetActiveScene().name == "Lobby_Scene")  LobbyController.Instance.UpdatePlayerList();
     }
-    /// Ready Change
-    void PlayerReadyUpdate(bool OldValue,bool NewValue)
-    {
-        if (isServer)
-        {
-            this.Ready = NewValue;
-        }
-        // Client
-        if (isClient)
-        {
-            if (SceneManager.GetActiveScene().name == "Lobby_Scene") LobbyController.Instance.UpdatePlayerList();
-        }
-    }
-    // client -> server(only on server)
-    [Command]
-    void CmdSetPlayerReady()
-    {
-        // Ask Everyone to update my value
-        this.PlayerReadyUpdate(this.Ready, !this.Ready);
-    }
     // if is owned -> call Cmd
     public void ChangeReady()
     {
@@ -99,24 +79,26 @@ public class PlayerObject : NetworkBehaviour
             CmdSetPlayerReady();
         }
     }
+    // client -> server(only on server)
+    [Command]
+    void CmdSetPlayerReady()
+    {
+        this.Ready = !this.Ready;
+    }
+    /// Ready Change
+    void PlayerReadyUpdate(bool OldValue,bool NewValue)
+    {
+        if (SceneManager.GetActiveScene().name == "Lobby_Scene") LobbyController.Instance.UpdatePlayerList();
+    }
     /// Name Change
     [Command]
     void CmdSetPlayerName(string PlayerName)
     {
-        this.PlayerNameUdate(this.PlayerName,PlayerName);
+        this.PlayerName = PlayerName;
     }
     public void PlayerNameUdate(string OldValue,string NewValue)
     {
-        // Host
-        if (isServer)
-        {
-            this.PlayerName = NewValue;
-        }
-        // Client
-        if (isClient)
-        {
-            LobbyController.Instance.UpdatePlayerList();
-        }
+        LobbyController.Instance.UpdatePlayerList();
     }
     /// Start Button
     public void CanStartGame(string SceneName)
@@ -144,20 +126,11 @@ public class PlayerObject : NetworkBehaviour
     [Command]
     void CmdSetPlayerTeam(int TeamID)
     {
-        // Ask Everyone to update my value
-        this.PlayerTeamUpdate(this.TeamID, TeamID);
+        this.TeamID = TeamID;
     }
     void PlayerTeamUpdate(int OldValue,int NewValue)
     {
-        if (isServer)
-        {
-            this.TeamID = NewValue;
-        }
-        // Client
-        if (isClient)
-        {
-            LobbyController.Instance.UpdatePlayerList();
-        }
+        LobbyController.Instance.UpdatePlayerList();
     }
     /// Set Character ID
     public void CanSetCharacter(int CharacterID)
@@ -170,20 +143,12 @@ public class PlayerObject : NetworkBehaviour
     [Command]
     void CmdSeCharacterID(int CharacterID)
     {
-        // Ask Everyone to update my value
-        this.CharacterSelect(this.CharacterID, CharacterID);
+        this.CharacterID = CharacterID;
+
     }
     void CharacterSelect(int OldValue,int NewValue)
     {
-        if (isServer)
-        {
-            this.CharacterID = NewValue;
-        }
-        // Client
-        if (isClient)
-        {
-            SelectController.Instance.UpdatePlayerUI();
-        }
+        SelectController.Instance.UpdatePlayerUI();
     }
     [Command]
     public void CmdAddMessage(string userName, string message)
@@ -198,23 +163,21 @@ public class PlayerObject : NetworkBehaviour
             CmdSetSpell1Change(SpellID);
         }
     }
+    /// <summary>
+    /// Spell 1 to Selected Spell ID (on Server)
+    /// </summary>
+    /// <param name="SpellID">Selected Spell ID</param>
     [Command]
     void CmdSetSpell1Change(int SpellID)
     {
-        // Ask Everyone to update my value
-        this.PlayerSpell1Update(this.Spell_1, SpellID);
+        Spell_1 = SpellID;
     }
+    /// <summary>
+    /// When Server Changed Spell 1 will call this method on client
+    /// </summary>
     void PlayerSpell1Update(int OldValue,int NewValue)
     {
-        if (isServer)
-        {
-            this.Spell_1 = NewValue;
-        }
-        // Client
-        if (isClient)
-        {
-            SelectController.Instance.UpdatePlayerList();
-        }
+        SelectController.Instance.UpdatePlayerList();
     }
     /// Spell 2 change
     public void CanSpell2Change(int SpellID)
@@ -227,20 +190,11 @@ public class PlayerObject : NetworkBehaviour
     [Command]
     void CmdSetSpell2Change(int SpellID)
     {
-        // Ask Everyone to update my value
-        this.PlayerSpell2Update(this.Spell_2, SpellID);
+        Spell_2 = SpellID;
     }
     void PlayerSpell2Update(int OldValue,int NewValue)
     {
-        if (isServer)
-        {
-            this.Spell_2 = NewValue;
-        }
-        // Client
-        if (isClient)
-        {
-            SelectController.Instance.UpdatePlayerList();
-        }
+        SelectController.Instance.UpdatePlayerList();
     }
     public void LeaveGame()
     {

@@ -21,7 +21,7 @@ public class CharacterSkillBase : NetworkBehaviour
     [SerializeField] protected int W_MaxLevel ;
     [SerializeField] protected int E_MaxLevel ;
     [SerializeField] protected int R_MaxLevel ;
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         // Set Level exp
         Experience_List = new List<int>
@@ -68,6 +68,7 @@ public class CharacterSkillBase : NetworkBehaviour
     }
     public void AddExp(int exp)
     {
+        if (!isOwned) return;
         CmdAddExp(exp);
         // int new_Level = Detect_Level();
         // print("Character_Level : " + Character_Level );
@@ -115,36 +116,47 @@ public class CharacterSkillBase : NetworkBehaviour
     [Command]
     void CmdAddExp(int exp)
     {
-        Set_Exp(Character_exp,Character_exp + exp );
+        this.Character_exp += exp;
     }
     public void Set_Exp(int OldValue,int NewValue)
     {
-        if (isServer)
+        int new_Level = Detect_Level();
+        if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
         {
-            this.Character_exp = NewValue;
+            Character_Level = new_Level;
+            print(Character_Level);
+            print(GetComponent<CharacterBase>().CharacterID);
+            print(GetComponent<CharacterBase>().isLocalPlayer);
+            print(isOwned);
+            if (!GetComponent<CharacterBase>().isOwned) return;
+            // Show Level Up button
+            MainInfoUI.instance.Show_LevelUp(this);
+            // Set Level UI
+            MainInfoUI.instance.Set_Level(Character_Level);
         }
-        if (isClient)
-        {
-            int new_Level = Detect_Level();
-            print("Character_Level : " + Character_Level );
-            print("Character_exp : " + Character_exp );
-            print("new_Level : " + new_Level );
-            if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
-            {
-                Character_Level = new_Level;
-                if (!isLocalPlayer) return;
-                // Show Level Up button
-                MainInfoUI.instance.Show_LevelUp(this);
-                // Set Level UI
-                MainInfoUI.instance.Set_Level(Character_Level);
-            }
-            float ratio = Exp_Ratio(Character_Level);
-            // Set EXP RATIO UI
-            MainInfoUI.instance.Set_Level_Raito(ratio);
-        }
-        
+        // print("Set_Exp::Character_Level : " + Character_Level);
+        // float ratio = Exp_Ratio(Character_Level);
+        // print("Set_Exp::ratio : " + ratio);
+        // // Set EXP RATIO UI
+        // MainInfoUI.instance.Set_Level_Raito(ratio);
     }
-
+    [ClientRpc]
+    void RpcSetUI(int new_Level)
+    {
+        if (!isOwned) return;
+        if (Character_Level != new_Level || Q_Level + W_Level + E_Level + R_Level != Character_Level)
+            {
+            // Show Level Up button
+            MainInfoUI.instance.Show_LevelUp(this);
+            // Set Level UI
+            MainInfoUI.instance.Set_Level(Character_Level);
+        }
+        print("Set_Exp::Character_Level : " + Character_Level);
+        float ratio = Exp_Ratio(Character_Level);
+        print("Set_Exp::ratio : " + ratio);
+        // Set EXP RATIO UI
+        MainInfoUI.instance.Set_Level_Raito(ratio);
+    }
     }
 
 }

@@ -136,6 +136,7 @@ public class Network_Manager : NetworkManager
                 gameplayInsance.PlayerSteamID = player.PlayerSteamID;
                 gameplayInsance.TeamID = player.TeamID;
                 gameplayInsance.CharacterID = player.CharacterID;
+                gameplayInsance.PlayerName = player.PlayerName;
                 // NetworkServer.Destroy(oldPlayer);
 
                 gameplayInsance.Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using HR.Object;
 using HR.Global;
+using HR.Object.Player;
 
 namespace HR.UI{
 public class Selectable : MonoBehaviour
@@ -14,7 +15,7 @@ public class Selectable : MonoBehaviour
     [SerializeField] Bar HP;
     [SerializeField] Bar MP;
     [SerializeField] LayerMask layer;
-    public int playerLayerID;
+    public CharacterBase LocalPlayer;
 
     void Awake()
     {
@@ -117,7 +118,7 @@ public class Selectable : MonoBehaviour
     void Check_Outline_Color(Transform ob)
     {
         string check_item_LayerName = LayerMask.LayerToName(ob.gameObject.layer);
-        string gameObject_LayerName = LayerMask.LayerToName(playerLayerID);
+        string gameObject_LayerName = LayerMask.LayerToName(LocalPlayer.gameObject.layer);
         // Same Team (Team1 or Team1Building)
         if (check_item_LayerName.IndexOf(gameObject_LayerName) > -1)
         {

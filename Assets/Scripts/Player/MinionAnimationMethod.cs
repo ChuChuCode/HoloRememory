@@ -13,7 +13,7 @@ public class MinionAnimationMethod : NetworkBehaviour
         if (!NetworkServer.active) return;
         CmdSpawn_Ball();
     }
-    [Command]
+    [Server]
     void CmdSpawn_Ball()
     {
         TowerBall ball = Instantiate(Attack_Ball,Ball_In_GameObject.transform.position,Quaternion.identity);

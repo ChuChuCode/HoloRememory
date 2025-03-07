@@ -35,6 +35,7 @@ public class CharacterBase: Health
     [SyncVar] public ulong PlayerSteamID;
     [SyncVar] public int TeamID;
     [SyncVar] public int CharacterID;
+    [SyncVar] public string PlayerName;
 
     [Header("Skill Pressed")]
     [SerializeField] protected bool IsPressed_Q = false;
@@ -121,8 +122,6 @@ public class CharacterBase: Health
     protected virtual void Start()
     {
         DontDestroyOnLoad(gameObject);
-        // Set layer
-        Selectable.instance.playerLayerID = gameObject.layer;
         // Remove layer to mouse raycast only Enemy and Land
         MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (LayerMask.LayerToName(gameObject.layer) == "Team1")
@@ -155,6 +154,7 @@ public class CharacterBase: Health
         LocalPlayerInfo.Instance.Update_KDA(this);
         OptionPanel.Instance.LocalPlayer = this;
         StatusController.Instance.characterBase = this;
+        Selectable.instance.LocalPlayer = this;
 
         // Health Initial
         InitialHealth();
@@ -254,6 +254,7 @@ public class CharacterBase: Health
     }
     protected virtual void Update()
     {
+        if (!isLocalPlayer) return;
         // Passive skill
         Passive();
         // RayCast Mouse
@@ -263,20 +264,27 @@ public class CharacterBase: Health
         // Normal Attack
         Attack();
     }
-    void OnDestroy() 
+    protected virtual void OnDestroy() 
     {
         // Reset all bindings
         InputComponent.instance.Reset();
         Destroy(Free_CameParent);    
     }
-    public override void InitialHealth()
+    [Command]
+    public override void CmdSetlHealth(int NewHealth)
     {
-        base.InitialHealth();
+        if (!isOwned) return;
+        currentHealth = NewHealth;
+    }
+    public override void Set_Health(int OldValue, int NewValue)
+    {
+        base.Set_Health(OldValue, NewValue);
+        if (!isLocalPlayer) return;
         MainInfoUI.instance.updateInfo();
         Selectable.instance.updateInfo(this);
     }
-    /// <summary>This is invoked when Mouse Right Click Down.</summary>
-    public virtual void OnRightMouseClick()
+        /// <summary>This is invoked when Mouse Right Click Down.</summary>
+        public virtual void OnRightMouseClick()
     {
         // Check skill is Hovering
         if (IsPressed_Q)

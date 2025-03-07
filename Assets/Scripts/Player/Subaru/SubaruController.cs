@@ -215,6 +215,14 @@ public class SubaruController : CharacterBase
         
         base.Update();
     }
+    protected override void OnDestroy() 
+    {
+        foreach (var duck in duck_array)
+        {
+            NetworkServer.Destroy(duck.gameObject);
+        }
+        base.OnDestroy();
+    }
     protected override void NormalAttack()
     {
         AnimationMethod.Target = Target;
@@ -296,8 +304,8 @@ public class SubaruController : CharacterBase
         // Set Info
         duck.MainDestination = transform;
 
-        NetworkServer.Spawn(duck.gameObject);
-        // Add to list
+        NetworkServer.Spawn(duck.gameObject,this.gameObject);
+        // Add to list *** Need to Check onserver or client
         duck_array.Add(duck);
     }
 

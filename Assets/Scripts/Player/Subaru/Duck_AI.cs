@@ -35,6 +35,7 @@ public class Duck_AI : MinionBase
     bool isAttack;
     protected override void Start()
     {
+        if (!isOwned) return;
         current_State = IDLE;
         rush_trigger = false;
         base.Start();
@@ -51,7 +52,8 @@ public class Duck_AI : MinionBase
     }
     protected override void Update()
     {
-        if (!MainDestination.GetComponent<NetworkIdentity>().isLocalPlayer) return;
+        if (!isOwned) return;
+        // if (MainDestination == null ) return;
         isMove = animator.GetBool("isMove");
         isAttack = animator.GetBool("isAttack");
         // Search Enemy use sphere
@@ -284,6 +286,11 @@ public class Duck_AI : MinionBase
     public void Q_UI_Set(bool isShow)
     {
         Q_UI.SetActive(isShow);
+    }
+    [Server]
+    public override void CmdSetlHealth(int NewHealth)
+    {
+        currentHealth = NewHealth;
     }
 }
 

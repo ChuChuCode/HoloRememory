@@ -9,12 +9,12 @@ public class Health : NetworkBehaviour
     public int exp;
     public int coin;
     [SyncVar] public int maxHealth ;
-    [SyncVar] public int currentHealth;
+    [SyncVar(hook = nameof(Set_Health))] public int currentHealth;
     [SyncVar] public bool isDead = false;
     /// <summary>Set Health to maxHealth.</summary>
     public virtual void InitialHealth()
     {
-        currentHealth = maxHealth;
+        CmdSetlHealth(maxHealth);
     }
     /// <summary>
     /// Let gameobject get damage. Return is dead or not.
@@ -22,12 +22,16 @@ public class Health : NetworkBehaviour
     public virtual bool GetDamage(int damage)
     {
         int beforeHealth = currentHealth;
+        // for local
         currentHealth -= damage;
+        CmdSetlHealth(currentHealth - damage);
         return beforeHealth > 0 && currentHealth <= 0 ;
     }
     public virtual void Heal(int health)
     {
+        // for local
         currentHealth += health;
+        CmdSetlHealth(currentHealth + health);
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
@@ -36,16 +40,13 @@ public class Health : NetworkBehaviour
     /// <summary>Do things when Dead.</summary>
     public virtual void Death(){}
     [Command]
-    void CmdInitialHealth()
+    public virtual void CmdSetlHealth(int NewHealth)
     {
-        Set_Health(currentHealth,maxHealth);
+        currentHealth = NewHealth;
     }
-    public void Set_Health(int OldValue,int NewValue)
+    public virtual void Set_Health(int OldValue,int NewValue)
     {
-        if (isServer)
-        {
-            this.currentHealth = NewValue;
-        }
+        print(gameObject.name + " : " + OldValue + " -> " + NewValue);
     }
 }
 

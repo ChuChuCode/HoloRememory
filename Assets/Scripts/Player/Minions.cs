@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
-using HR.UI;
-using HR.Object.Player;
+using Mirror;
 
 namespace HR.Object.Minion{
 public class Minions : MinionBase
@@ -14,10 +12,11 @@ public class Minions : MinionBase
     [SerializeField] MinionAnimationMethod minionAnimationMethod;
     protected override void Start()
     {
+        if (!isServer) return;
         current_State = WALK;
         base.Start();
     }
-        protected override void Add_State()
+    protected override void Add_State()
     {
         CharacterState.Add(WALK,() => State_Walk());
         CharacterState.Add(CHASE,() => State_Chase());
@@ -26,6 +25,7 @@ public class Minions : MinionBase
     }
     protected override void Update()
     {
+        if (!isServer) return;
         if (currentHealth <= 0) 
         {
             // if (!isDead) timer = deadTime;
@@ -122,6 +122,11 @@ public class Minions : MinionBase
             Death();
         }
         return;
+    }
+    [Server]
+    public override void CmdSetlHealth(int NewHealth)
+    {
+        currentHealth = NewHealth;
     }
 }
     

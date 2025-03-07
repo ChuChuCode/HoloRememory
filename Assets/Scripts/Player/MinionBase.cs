@@ -4,6 +4,7 @@ using UnityEngine.AI;
 using HR.UI;
 using HR.Object.Player;
 using System;
+using Mirror;
 
 namespace HR.Object{
 public class MinionBase : Health
@@ -62,10 +63,11 @@ public class MinionBase : Health
             CharacterState[current_State]?.Invoke(); 
         }
     }
-    public override void InitialHealth()
+    public override void Set_Health(int OldValue, int NewValue)
     {
-        base.InitialHealth();
-        healthBar.SetMaxValue(maxHealth);
+        base.Set_Health(OldValue, NewValue);
+        // UI Update
+        healthBar.SetMaxValue(NewValue);
     }
     public override bool GetDamage(int damage)
     {
