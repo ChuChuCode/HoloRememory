@@ -219,6 +219,7 @@ public class SubaruController : CharacterBase
     {
         foreach (var duck in duck_array)
         {
+            if (duck == null) continue;
             NetworkServer.Destroy(duck.gameObject);
         }
         base.OnDestroy();

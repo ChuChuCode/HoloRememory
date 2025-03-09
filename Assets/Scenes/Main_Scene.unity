@@ -2378,6 +2378,7 @@ MonoBehaviour:
   - {fileID: 3261997175043891804, guid: 93a4640fe1ff5764db4677f954300fc7, type: 3}
   - {fileID: 949071490613845438, guid: eb5de1259e7a09a4e8348a4773790463, type: 3}
   - {fileID: 8979824219940018655, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
+  - {fileID: 8979824219940018655, guid: be76682800c7b5647b32cd8e926c96bd, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -4928,7 +4929,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1319148177}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e17db16a90b2564f82a96b42013211a, type: 3}
   m_Name: 
