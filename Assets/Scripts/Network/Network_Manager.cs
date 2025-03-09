@@ -77,17 +77,27 @@ public class Network_Manager : NetworkManager
         /// Lobby Scene
         if (newSceneName.StartsWith("Lobby_Scene"))
         {
-            // Delete all PlayerObject
-            foreach(CharacterBase playerobject in Player_List)
+            if (!NetworkClient.ready)
             {
-                NetworkServer.Destroy(playerobject.gameObject);
+                NetworkClient.Ready();
             }
-            Player_List.Clear();
+            // Delete all PlayerObject
+            if (SceneManager.GetActiveScene().name == "Game_Scene")
+            {
+                foreach(CharacterBase playerobject in Player_List)
+                {
+                    PlayerObject gameplayInsance = PlayersInfoList.Find(player => player.ConnectionID == playerobject.ConnectionID);
+                    NetworkServer.ReplacePlayerForConnection(playerobject.connectionToClient,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
+                    // Delete CharacterBase
+                    NetworkServer.Destroy(playerobject.gameObject);
+                }
+                Player_List.Clear();
+            }
             foreach (PlayerObject player in PlayersInfoList)
             {
                 player.Ready = false;
             }
-            // Set LocalPlayer
+            // Set LocalPlayer ** need to change to client
             LobbyController.Instance.LocalPlayerController = LocalPlayerObject;
             // Update UI
             LobbyController.Instance.UpdatePlayerList();
@@ -151,28 +161,40 @@ public class Network_Manager : NetworkManager
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
 
                 Player_List.Add(gameplayInsance);
-                // All Player Info
+                // All Player Info *** need to change to client
                 CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
         }
         if (newSceneName.StartsWith("Result_Scene"))
         {
-            int LocalPlayerTeamID = 0;
+            // int LocalPlayerTeamID = 0;
             // Delete all PlayerObject
             foreach(CharacterBase playerobject in Player_List)
             {
-                CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == playerobject.CharacterID);;
-                ResultController.Instance.Spawn_Result_Prefab(characterModelComponent.CharacterImage,playerobject);
+                PlayerObject player = PlayersInfoList.Find(player => player.ConnectionID == playerobject.ConnectionID);
+                // ResultController.Instance.Spawn_Result_Prefab(characterModelComponent.CharacterImage,playerobject);
+
                 // Check Team1 or Team2
-                if (playerobject.GetComponent<NetworkIdentity>().isLocalPlayer)
+                // if (playerobject.GetComponent<NetworkIdentity>().isLocalPlayer)
+                // {
+                //     LocalPlayerTeamID = playerobject.TeamID;
+                // }
+                // Change back to PlayerObject
+                // Ensure the client is ready before replacing the player
+                if (!NetworkClient.ready)
                 {
-                    LocalPlayerTeamID = playerobject.TeamID;
+                    NetworkClient.Ready();
                 }
+                NetworkServer.ReplacePlayerForConnection(playerobject.connectionToClient,player.gameObject,ReplacePlayerOptions.KeepAuthority);
+
+                // Set CharacterBase Info to Result_Player
+                player.CanKDAChange(playerobject.kill, playerobject.death,playerobject.assist);
                 // Destroy CharacterBase
                 NetworkServer.Destroy(playerobject.gameObject);
             }
             Player_List.Clear();
-            ResultController.Instance.Show_Result(LoseTeam,LocalPlayerTeamID);
+            // *** need to change to client
+            // ResultController.Instance.Show_Result(LoseTeam,LocalPlayerTeamID);
         }
         
     }

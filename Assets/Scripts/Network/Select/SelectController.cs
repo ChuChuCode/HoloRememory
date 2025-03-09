@@ -105,7 +105,7 @@ public class SelectController : MonoBehaviour
             temp_Spell1.SetSprite(spell_sprite.Spell_Sprite);
         }
         // Set UI
-        foreach (PlayerObject player in  Manager.PlayersInfoList)
+        foreach (PlayerObject player in Manager.PlayersInfoList)
         {
             Network_SelectPlayer network_SelectPlayer = Instantiate(SelectPlayerPrefab);
             GameObject SelectPlayer = network_SelectPlayer.gameObject;

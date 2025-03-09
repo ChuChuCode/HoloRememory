@@ -1,12 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Mirror;
 using Steamworks;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using HR.Network.Lobby;
 using HR.Network.Select;
+using HR.Network.Result;
 
 namespace HR.Network{
 public class PlayerObject : NetworkBehaviour
@@ -19,8 +16,11 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public int TeamID = 0;
     [SyncVar(hook = nameof(CharacterSelect))] public int CharacterID = -1;
-    [SyncVar(hook = nameof(PlayerSpell1Update))] public int Spell_1 ;
-    [SyncVar(hook = nameof(PlayerSpell2Update))] public int Spell_2 ;
+    [SyncVar(hook = nameof(PlayerSpell1Update))] public int Spell_1 = -1;
+    [SyncVar(hook = nameof(PlayerSpell2Update))] public int Spell_2 = -1;
+    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int kill = -1;
+    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int death = -1;
+    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int assist = -1;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -209,6 +209,31 @@ public class PlayerObject : NetworkBehaviour
             Manager.StopClient();
         }
         Destroy(Manager.gameObject);
+    }
+    public void CanKDAChange(int kill,int death,int assist)
+    {
+        CmdSetKDA(kill,death,assist);
+        SetLocalPlayer();
+    }
+    [Server]
+    void CmdSetKDA(int kill,int death,int assist)
+    {
+        this.kill = kill;
+        this.death = death;
+        this.assist = assist;
+    }
+    void PlayerKDAUpdate(int OldValue,int NewValue)
+    {
+        ResultController.Instance.UpdateUI();
+    }
+    [ClientRpc]
+    void SetLocalPlayer()
+    {
+        if (isLocalPlayer)
+        {
+            print(1);
+            LobbyController.Instance.LocalPlayerController = this;
+        }
     }
 }
 

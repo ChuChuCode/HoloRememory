@@ -53,6 +53,13 @@ MonoBehaviour:
   PlayerSteamID: 0
   PlayerName: 
   Ready: 0
+  TeamID: 0
+  CharacterID: -1
+  Spell_1: 0
+  Spell_2: 0
+  kill: -1
+  death: -1
+  assist: -1
 --- !u!114 &3780134413417542972
 MonoBehaviour:
   m_ObjectHideFlags: 0

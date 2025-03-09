@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using HR.Object.Player;
 using TMPro;
+using HR.Network;
 
 namespace HR.UI{
 
 public class Result_Component : MonoBehaviour
 {
-    public CharacterBase characterBase;
+    public PlayerObject playerObject;
     public Image CharacterImage;
     public TMP_Text Kill_Text;
     public TMP_Text Death_Text;
@@ -19,13 +20,13 @@ public class Result_Component : MonoBehaviour
         // Set Character Image
         CharacterImage.sprite = sprite;
         // KDA
-        Kill_Text.text = characterBase.kill.ToString();
-        Death_Text.text = characterBase.death.ToString();
-        Assist_Text.text = characterBase.assist.ToString();
-        for (int i = 0 ; i < Equipment_Images.Length ; i++)
-        {
-            Equipment_Images[i].sprite = characterBase.EquipmentSlots[i]?.EquipmentImage;
-        }
+        Kill_Text.text = playerObject.kill.ToString();
+        Death_Text.text = playerObject.death.ToString();
+        Assist_Text.text = playerObject.assist.ToString();
+        // for (int i = 0 ; i < Equipment_Images.Length ; i++)
+        // {
+        //     Equipment_Images[i].sprite = characterBase.EquipmentSlots[i]?.EquipmentImage;
+        // }
     }
 }
 

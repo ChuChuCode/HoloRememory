@@ -34,9 +34,13 @@ public class Network_Test : MonoBehaviour
 
         GUILayout.Space(20);
 
-        foreach (var player in NetworkServer.connections)
+        if (NetworkServer.active && NetworkServer.connections.Count > 0)
         {
-            GUILayout.Label($"Player {player.Value.connectionId} - {player.Value.identity.gameObject.name}",style);
+            foreach (var player in NetworkServer.connections)
+            {
+                if (player.Value != null)
+                    GUILayout.Label($"Player {player.Value.connectionId} - {player.Value.identity.gameObject.name}",style);
+            }
         }
 
         GUILayout.EndArea();

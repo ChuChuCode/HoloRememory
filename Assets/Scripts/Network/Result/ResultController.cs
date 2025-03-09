@@ -4,6 +4,7 @@ using HR.UI;
 using TMPro;
 using UnityEngine;
 using Mirror;
+using HR.Network.Select;
 
 namespace HR.Network.Result{
 public class ResultController : MonoBehaviour
@@ -24,6 +25,7 @@ public class ResultController : MonoBehaviour
     [SerializeField] TMP_Text Team2_Kill_Text;
     [SerializeField] GameObject Win_Text;
     [SerializeField] GameObject Lose_Text;
+    [SerializeField] GameObject Rematch_Button;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -45,20 +47,42 @@ public class ResultController : MonoBehaviour
             Instance = this;
         }
     }
-    public void Spawn_Result_Prefab(Sprite sprite,CharacterBase characterBase)
+    public void Start()
     {
-        Result_Component result_Component_Temp = Instantiate(Result_Prefab,Team1_Parent.position,Quaternion.identity);
-        if (characterBase.TeamID == 1)
+        foreach(PlayerObject player in Manager.PlayersInfoList)
         {
-            result_Component_Temp.transform.SetParent(Team1_Parent);
+            Result_Component result_Component_Temp = Instantiate(Result_Prefab,Team1_Parent.position,Quaternion.identity);
+            result_Component_Temp.playerObject = player;
+            if (player.TeamID == 1)
+            {
+                result_Component_Temp.transform.SetParent(Team1_Parent);
+                Team1_Result_Components.Add(result_Component_Temp);
+            }
+            else
+            {
+                result_Component_Temp.transform.SetParent(Team2_Parent);
+                Team2_Result_Components.Add(result_Component_Temp);
+            }
+            result_Component_Temp.transform.localScale = Vector3.one;
         }
-        else
+        print(Team1_Result_Components.Count);
+        print(Team2_Result_Components.Count);
+    }
+    public void UpdateUI()
+    {
+        print(1);
+        foreach(Result_Component result_Component in Team1_Result_Components)
         {
-            result_Component_Temp.transform.SetParent(Team2_Parent);
+            print(2);
+            CharacterSelectComponent characterModelComponent = Manager.characterSelectComponentsList.Find(component => component.ID == result_Component.playerObject.CharacterID);
+            print(3);
+            result_Component.Initial(characterModelComponent.CharacterImage);
         }
-        result_Component_Temp.transform.localScale = Vector3.one;
-        result_Component_Temp.characterBase = characterBase;
-        result_Component_Temp.Initial(sprite);
+        foreach(Result_Component result_Component in Team2_Result_Components)
+        {
+            CharacterSelectComponent characterModelComponent = Manager.characterSelectComponentsList.Find(component => component.ID == result_Component.playerObject.CharacterID);
+            result_Component.Initial(characterModelComponent.CharacterImage);
+        }
     }
     public void Show_Result(int LoseTeam, int OwnTeam)
     {
@@ -71,9 +95,15 @@ public class ResultController : MonoBehaviour
         {
             Win_Text.SetActive(true);
         }
+        // Button Hide
+        if (!NetworkServer.active)
+        {
+            Rematch_Button.SetActive(false);
+        }
     }
     public void Rematch(string RoomName)
     {
+        if (!NetworkServer.active) return;
         Manager.ChangeScene(RoomName);
     }
     public void Leave_Game()
