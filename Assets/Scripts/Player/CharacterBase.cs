@@ -19,7 +19,7 @@ public class CharacterBase: Health
     [Header("Animator")]
     [SerializeField] protected Animator animator;
     [Header("Image Sprite")]
-    [SerializeField] Sprite CharacterImage;
+    public Sprite CharacterImage;
     [SerializeField] Sprite Q_skill_Image;
     [SerializeField] Sprite W_skill_Image;
     [SerializeField] Sprite E_skill_Image;
@@ -86,12 +86,12 @@ public class CharacterBase: Health
     [SerializeField] protected float AgentWalkSpeed; // 3.5f
     
     [Header("KDA")]
-    [SyncVar] public int kill = 0;
-    [SyncVar] public int death = 0;
-    [SyncVar] public int assist = 0;
+    [SyncVar(hook = nameof(KDAChange))] public int kill = -1;
+    [SyncVar(hook = nameof(KDAChange))] public int death = -1;
+    [SyncVar(hook = nameof(KDAChange))] public int assist = -1;
     [Header("Number of Minions and Towers Destroyed")]
-    [SyncVar] public int minion = 0;
-    [SyncVar] public int tower = 0;
+    [SyncVar(hook = nameof(KDAChange))] public int minion = -1;
+    [SyncVar(hook = nameof(KDAChange))] public int tower = -1;
     protected virtual void Awake()
     {
         // NavMeshAgent Check
@@ -1080,6 +1080,21 @@ public class CharacterBase: Health
         agent.speed = AgentWalkSpeed * moveSpeed;
         animator.SetFloat("AttackSpeed",attackSpeed);
         animator.SetFloat("MoveSpeed",moveSpeed);
+    }
+    void KDAChange(int oldValue, int newValue)
+    {
+        CharacterInfoPanel.Instance.UpdateUI();
+        if (!isOwned) return;
+        LocalPlayerInfo.Instance.Update_KDA(this);
+    }
+    [Server]
+    public void CmdSetKDA(int kill, int death, int assist, int minion, int tower)
+    {
+        this.kill = kill;
+        this.death = death;
+        this.assist = assist;
+        this.minion = minion;
+        this.tower = tower;
     }
 }
 

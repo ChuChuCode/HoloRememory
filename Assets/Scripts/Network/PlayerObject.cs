@@ -12,7 +12,7 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar] public int ConnectionID;
     [SyncVar] public int PlayerIdNumber;
     [SyncVar] public ulong PlayerSteamID;
-    [SyncVar(hook = nameof(PlayerNameUdate))] public string PlayerName;
+    [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public int TeamID = 0;
     [SyncVar(hook = nameof(CharacterSelect))] public int CharacterID = -1;
@@ -96,7 +96,7 @@ public class PlayerObject : NetworkBehaviour
     {
         this.PlayerName = PlayerName;
     }
-    public void PlayerNameUdate(string OldValue,string NewValue)
+    public void PlayerNameUpdate(string OldValue,string NewValue)
     {
         LobbyController.Instance.UpdatePlayerList();
     }
@@ -213,7 +213,6 @@ public class PlayerObject : NetworkBehaviour
     public void CanKDAChange(int kill,int death,int assist)
     {
         CmdSetKDA(kill,death,assist);
-        SetLocalPlayer();
     }
     [Server]
     void CmdSetKDA(int kill,int death,int assist)
@@ -224,16 +223,10 @@ public class PlayerObject : NetworkBehaviour
     }
     void PlayerKDAUpdate(int OldValue,int NewValue)
     {
+        print("isOwned : " + isOwned);
+        if (!isOwned) return;
         ResultController.Instance.UpdateUI();
-    }
-    [ClientRpc]
-    void SetLocalPlayer()
-    {
-        if (isLocalPlayer)
-        {
-            print(1);
-            LobbyController.Instance.LocalPlayerController = this;
-        }
+        ResultController.Instance.Show_Result(manager.LoseTeam, TeamID);
     }
 }
 

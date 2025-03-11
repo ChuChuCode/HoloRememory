@@ -1289,11 +1289,11 @@ MonoBehaviour:
   DefaultAttackSpeed: 1
   DefaultMoveSpeed: 1
   AgentWalkSpeed: 3.5
-  kill: 0
-  death: 0
-  assist: 0
-  minion: 0
-  tower: 0
+  kill: -1
+  death: -1
+  assist: -1
+  minion: -1
+  tower: -1
   AnimationMethod: {fileID: 3252265101689514867}
   duck_array: []
   Duck_prefab: {fileID: 1823244807025109081, guid: b53e27021d1a64aabbdc402f3c603b82, type: 3}

@@ -65,17 +65,12 @@ public class ResultController : MonoBehaviour
             }
             result_Component_Temp.transform.localScale = Vector3.one;
         }
-        print(Team1_Result_Components.Count);
-        print(Team2_Result_Components.Count);
     }
     public void UpdateUI()
     {
-        print(1);
         foreach(Result_Component result_Component in Team1_Result_Components)
         {
-            print(2);
             CharacterSelectComponent characterModelComponent = Manager.characterSelectComponentsList.Find(component => component.ID == result_Component.playerObject.CharacterID);
-            print(3);
             result_Component.Initial(characterModelComponent.CharacterImage);
         }
         foreach(Result_Component result_Component in Team2_Result_Components)
@@ -87,6 +82,7 @@ public class ResultController : MonoBehaviour
     public void Show_Result(int LoseTeam, int OwnTeam)
     {
         string LoseTeamString = LayerMask.LayerToName(LoseTeam).Split("Building")[0];
+        // 1 or 2
         if (LoseTeamString[4] == OwnTeam.ToString()[0])
         {
             Lose_Text.SetActive(true);

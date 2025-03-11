@@ -26,6 +26,7 @@ public class SelectController : MonoBehaviour
     [Header("UI")]
     public TMP_Text LobbyNameText;
     public Button ReadyButton;
+    public bool isSelected = false;
     [Header("Spell")]
     [SerializeField] Transform Spell_1_Position;
     [SerializeField] Transform Spell_2_Position;
@@ -138,6 +139,7 @@ public class SelectController : MonoBehaviour
             }
             SelectPlayer.transform.localScale = Vector3.one;
         }
+        isSelected = false;
     }
     // Search Character with Character ID
     Sprite Search_Character(int CharacterID)
@@ -339,19 +341,22 @@ public class SelectController : MonoBehaviour
                 break;
             }
         }
-        // Start Button Clickable
+        // If all Ready -> Start Game
         if (AllReady)
         {
             // Start Game
             LocalPlayerController.CanStartGame("Game_Scene");
         }
     }
-    // Select Button
+    // Ready Button
     public void SelectPlayer()
     {
+        // Change Ready Button
         ReadyButton.interactable = false;
+        isSelected = true;
+        // Set LocalPlayer Ready = true
         LocalPlayerController.ChangeReady();
-        // UI Disable
+        // Set UI Disable
         foreach (CharacterSelectItem selectItem in SelectItemList)
         {
             selectItem.GetComponent<Button>().interactable = false;
@@ -387,12 +392,10 @@ public class SelectController : MonoBehaviour
         SpellBase spell = Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
         return Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
     }
-    /// <summary>
-    /// ****** CharcaterID not sync
-    /// </summary>
+    // Check All Set -> Can Ready
     public void Check_ReadyButton()
     {
-        if (LocalPlayerController.CharacterID == -1 || LocalPlayerController.Spell_1 == 0 || LocalPlayerController.Spell_2 == 0) 
+        if (isSelected || LocalPlayerController.CharacterID == -1 || LocalPlayerController.Spell_1 == 0 || LocalPlayerController.Spell_2 == 0) 
         {
             ReadyButton.interactable = false;
         }

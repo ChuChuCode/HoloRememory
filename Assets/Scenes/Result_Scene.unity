@@ -424,10 +424,10 @@ RectTransform:
   - {fileID: 1499351771}
   m_Father: {fileID: 1968896860}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 282.35962, y: -23.189392}
-  m_SizeDelta: {x: 188.23975, y: 46.378784}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 46.378784}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &547781572
 MonoBehaviour:
@@ -2308,10 +2308,10 @@ RectTransform:
   - {fileID: 1763883110}
   m_Father: {fileID: 1968896860}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 94.11987, y: -23.189392}
-  m_SizeDelta: {x: 188.23975, y: 46.378784}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 46.378784}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1593406150
 MonoBehaviour:
@@ -2657,6 +2657,7 @@ GameObject:
   - component: {fileID: 1968896860}
   - component: {fileID: 1968896863}
   - component: {fileID: 1968896862}
+  - component: {fileID: 1968896864}
   m_Layer: 5
   m_Name: Button Panel
   m_TagString: Untagged
@@ -2723,6 +2724,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1968896859}
   m_CullTransparentMesh: 1
+--- !u!114 &1968896864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968896859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 1
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
+  m_ChildControlWidth: 1
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

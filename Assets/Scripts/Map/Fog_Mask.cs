@@ -24,13 +24,24 @@ public class Fog_Mask : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Mask");
         Origin = transform.parent;
         // gameObject.transform.SetParent(null);
+        
+        
+    }
+    void Update()
+    {
         // If not same team(Team1 or Team1Building) -> Disable
+        if (!gameObject.activeSelf) return;
         if (LayerMask.LayerToName(transform.root.gameObject.layer).IndexOf( LayerMask.LayerToName(GameController.Instance.LocalPlayer.gameObject.layer) ) == -1 )
         {
             gameObject.SetActive(false);
         }
+        // Set Layer to Mask
+        if (LayerMask.LayerToName(gameObject.layer) != "Mask")
+        {
+            gameObject.layer = LayerMask.NameToLayer("Mask");
+        }
     }
-    void LateUpdate()
+        void LateUpdate()
     {
         transform.rotation = Quaternion.identity;
         Vector3[] vertices = new Vector3[Split_Num+1];

@@ -118,6 +118,7 @@ public class Network_Manager : NetworkManager
         {
             foreach (PlayerObject player in PlayersInfoList)
             {
+                print(player.PlayerName);
                 NetworkConnectionToClient conn = player.connectionToClient;
                 // GameObject oldPlayer = conn.identity.gameObject;
                 // Spawn Prefab
@@ -161,9 +162,11 @@ public class Network_Manager : NetworkManager
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
 
                 Player_List.Add(gameplayInsance);
+                gameplayInsance.CmdSetKDA(0,0,0,0,0);
                 // All Player Info *** need to change to client
-                CharacterInfoPanel.Instance.Add_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
+                // CharacterInfoPanel.Instance.RpcAdd_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
+            
         }
         if (newSceneName.StartsWith("Result_Scene"))
         {
@@ -189,12 +192,12 @@ public class Network_Manager : NetworkManager
 
                 // Set CharacterBase Info to Result_Player
                 player.CanKDAChange(playerobject.kill, playerobject.death,playerobject.assist);
+
                 // Destroy CharacterBase
                 NetworkServer.Destroy(playerobject.gameObject);
             }
             Player_List.Clear();
             // *** need to change to client
-            // ResultController.Instance.Show_Result(LoseTeam,LocalPlayerTeamID);
         }
         
     }
