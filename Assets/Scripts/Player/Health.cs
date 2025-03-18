@@ -1,3 +1,4 @@
+using HR.UI;
 using Mirror;
 using UnityEngine;
 namespace HR.Object{
@@ -14,7 +15,8 @@ public class Health : NetworkBehaviour
     /// <summary>Set Health to maxHealth.</summary>
     public virtual void InitialHealth()
     {
-        CmdSetlHealth(maxHealth);
+        if (isServer) currentHealth = maxHealth;
+        else if (isClient) CmdSetlHealth(maxHealth);
     }
     /// <summary>
     /// Let gameobject get damage. Return is dead or not.
@@ -22,12 +24,14 @@ public class Health : NetworkBehaviour
     public virtual bool GetDamage(int damage)
     {
         int beforeHealth = currentHealth;
-        CmdSetlHealth(currentHealth - damage);
+        if (isServer) currentHealth -= damage;
+        else if (isClient) CmdSetlHealth(currentHealth - damage);
         return beforeHealth > 0 && currentHealth <= 0 ;
     }
     public virtual void Heal(int health)
     {
-        CmdSetlHealth(currentHealth + health);
+        if (isServer) currentHealth += health;
+        else if (isClient) CmdSetlHealth(currentHealth + health);
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
@@ -42,7 +46,8 @@ public class Health : NetworkBehaviour
     }
     public virtual void Set_Health(int OldValue,int NewValue)
     {
-        print(gameObject.name + " : " + OldValue + " -> " + NewValue);
+        Selectable.instance.updateInfo(this);
+        // print(gameObject.name + " : " + OldValue + " -> " + NewValue);
     }
 }
 

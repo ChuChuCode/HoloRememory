@@ -96,7 +96,7 @@ public class SubaruController : CharacterBase
     {
         // If count = 0 when key Up 
         if (duck_array.Count == 0) return false;
-        animator.SetTrigger("Special");
+        GetComponent<NetworkAnimator>().SetTrigger("Special");
         duck_rush_timer = Time.time;
         
         foreach (var duck in duck_array)
@@ -120,7 +120,7 @@ public class SubaruController : CharacterBase
     {
         if (!IsPressed_R) return false;
         if (duck_array.Count == 0) return false;
-        animator.SetTrigger("Special");
+        GetComponent<NetworkAnimator>().SetTrigger("Special");
         duck_ult_timer = Time.time;
         // Delete Duck
         int duck_index = UnityEngine.Random.Range(0,duck_array.Count);
@@ -217,17 +217,15 @@ public class SubaruController : CharacterBase
     }
     protected override void OnDestroy()
     {
-        foreach (var duck in duck_array)
-        {
-            if (duck == null) continue;
-            NetworkServer.Destroy(duck.gameObject);
-        }
+        if (!NetworkClient.active) return;
+        Delete_Ducks();
         base.OnDestroy();
     }
     protected override void NormalAttack()
     {
-        AnimationMethod.Target = Target;
-        animator.Play("Attack");
+        // AnimationMethod.Target = Target;
+        CmdSetTarget(Target);
+        base.NormalAttack();
     }
     public override void Death()
     {
@@ -312,6 +310,21 @@ public class SubaruController : CharacterBase
         if (IsPressed_Q) duck.Q_UI_Set(true);
         duck.MainDestination = transform;
         duck_array.Add(duck);
+    }
+    [Command]
+    void CmdSetTarget(Transform Enemy)
+    {
+        AnimationMethod.Target = Enemy;
+    }
+    [Command]
+    void Delete_Ducks()
+    {
+        if (!isLocalPlayer) return;
+        foreach (var duck in duck_array)
+        {
+            if (duck == null) continue;
+            NetworkServer.Destroy(duck.gameObject);
+        }
     }
 }
 

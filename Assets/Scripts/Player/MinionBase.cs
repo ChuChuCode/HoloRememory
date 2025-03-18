@@ -14,9 +14,10 @@ public class MinionBase : Health
     const string CHASE = "Chase";
     const string ATTACK = "Attack";
     const string DEAD = "Dead";
-    
+    [Header("Current State")]
     [SerializeField] protected string current_State = "";
     [SerializeField] protected Dictionary<string, Action> CharacterState;
+    [Header("Agent")]
     public NavMeshAgent agent;
     [SerializeField] protected Animator animator;
     [Tooltip("Follow Player or go to a fixed destination")]

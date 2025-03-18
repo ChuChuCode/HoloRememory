@@ -20,6 +20,7 @@ public class SubaruAnimationMethod : NetworkBehaviour
     }
     public void Spawn_Ball()
     {
+        if (!isOwned) return;
         CmdSpawn_Ball();
     }
     [Command]

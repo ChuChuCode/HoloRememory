@@ -38,7 +38,7 @@ public class Network_Test : MonoBehaviour
         {
             foreach (var player in NetworkServer.connections)
             {
-                if (player.Value != null)
+                if (player.Value.identity != null)
                     GUILayout.Label($"Player {player.Value.connectionId} - {player.Value.identity.gameObject.name}",style);
             }
         }

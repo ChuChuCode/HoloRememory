@@ -36,18 +36,23 @@ public class MinionSpawner : NetworkBehaviour
             Minions temp_Minion = Instantiate(Minion_Prefab,transform.position,transform.rotation);
             // Set Target
             temp_Minion.MainDestination = EnemyTarget;
-            // Set Layer for all child
-            // Set Layer to all
-            Transform[] children = temp_Minion.GetComponentsInChildren<Transform>(includeInactive: true);
-            foreach(Transform child in children)
-            {
-                child.gameObject.layer = LayerMask.NameToLayer(layerName);
-            }
-
             // Update Enemy Layer
             temp_Minion.Update_Enemy_Layer(LayerMask.NameToLayer(layerName));
             NetworkServer.Spawn(temp_Minion.gameObject);
+            // Set Layer to all
+            RpcMinionSetLayer(temp_Minion);
+
             yield return new WaitForSeconds(1f);
+        }
+    }
+    [ClientRpc]
+    void RpcMinionSetLayer(Minions temp_Minion)
+    {
+        // Set Layer for all child
+        Transform[] children = temp_Minion.GetComponentsInChildren<Transform>(includeInactive: true);
+        foreach(Transform child in children)
+        {
+            child.gameObject.layer = LayerMask.NameToLayer(layerName);
         }
     }
 }

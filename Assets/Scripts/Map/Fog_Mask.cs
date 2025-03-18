@@ -10,9 +10,9 @@ public class Fog_Mask : MonoBehaviour
     [SerializeField] LayerMask LandMask;
     enum Mask_Type
     {
-        Character = 5,
-        Minion = 3,
-        Tower = 7
+        Character = 7,
+        Minion = 5,
+        Tower = 10
     }
     Transform Origin;
     Mesh mesh;

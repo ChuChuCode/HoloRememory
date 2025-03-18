@@ -11,6 +11,7 @@ public class ProjectileBase : NetworkBehaviour
 
     void Update()
     {
+        if (!isServer) return;
         if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
         {
             Destroy(gameObject);
@@ -23,6 +24,7 @@ public class ProjectileBase : NetworkBehaviour
         Vector3 direction = Center - transform.position;
         transform.position += direction.normalized * speed * Time.deltaTime;
     }
+    [ServerCallback]
     void OnTriggerEnter(Collider other) 
     {
         if (other.transform.root == Target)
@@ -38,7 +40,7 @@ public class ProjectileBase : NetworkBehaviour
                 TriggerisnotPlayer(health);
             }
             // Destory Ball
-            Destroy(gameObject);
+            NetworkServer.Destroy(gameObject);
         }
     }
     protected virtual void TriggerisPlayer(CharacterBase characterBase)

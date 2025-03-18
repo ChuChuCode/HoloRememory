@@ -232,6 +232,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0e11975eb85034def8840178aa6a1155, type: 3}
       insertIndex: -1
       addedObject: {fileID: 707403493168404520}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0e11975eb85034def8840178aa6a1155, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4118217702580548646}
   m_SourcePrefab: {fileID: 100100000, guid: 0e11975eb85034def8840178aa6a1155, type: 3}
 --- !u!1 &354735035284507887 stripped
 GameObject:
@@ -306,6 +309,7 @@ MonoBehaviour:
   top: {fileID: 426715744526136612}
   middle: {fileID: 1737695573631553376}
   Base: {fileID: 1737695573631553376}
+  lineRenderer: {fileID: 6516124688982971797}
   Attack_Ball: {fileID: 1977883244337380264, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
 --- !u!120 &6516124688982971797
 LineRenderer:
@@ -449,6 +453,39 @@ CapsuleCollider:
   m_Height: 1.32
   m_Direction: 1
   m_Center: {x: 0, y: 0.105, z: 0}
+--- !u!114 &4118217702580548646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354735035284507887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 1128034119263229525}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!4 &1128034119263229525 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0e11975eb85034def8840178aa6a1155, type: 3}

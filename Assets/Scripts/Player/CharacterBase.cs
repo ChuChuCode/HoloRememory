@@ -10,6 +10,7 @@ using UnityEngine.VFX;
 using static HR.UI.Skill_Icon;
 using Mirror;
 using HR.Object.Spell;
+using HR.Network;
 
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
@@ -74,7 +75,7 @@ public class CharacterBase: Health
     [SerializeField] protected bool isRecall = false;
     [SyncVar] public SpellBase[] Spells = new SpellBase[2];
     [SyncVar] public Equipment_ScriptableObject[] EquipmentSlots = new Equipment_ScriptableObject[6];
-    [Header("Stats")]
+    [Header("Status")]
     public int attack;
     public int defense;
     public float attackSpeed;
@@ -92,8 +93,22 @@ public class CharacterBase: Health
     [Header("Number of Minions and Towers Destroyed")]
     [SyncVar(hook = nameof(KDAChange))] public int minion = -1;
     [SyncVar(hook = nameof(KDAChange))] public int tower = -1;
+    private Network_Manager manager;
+
+    public Network_Manager Manager
+    {
+        get
+        {
+            if (manager != null)
+            {
+                return manager;
+            }
+            return manager = Network_Manager.singleton as Network_Manager;
+        }
+    }
     protected virtual void Awake()
     {
+        Manager.Player_List.Add(this);
         // NavMeshAgent Check
         if (!TryGetComponent<NavMeshAgent>(out agent))
         {
@@ -109,7 +124,7 @@ public class CharacterBase: Health
         {
             Debug.LogError("CharacterBase must have a CharacterSkillBase Component.",skillComponent);
         }
-
+        DontDestroyOnLoad(gameObject);
     }
     protected virtual void OnEnable() 
     {
@@ -121,7 +136,9 @@ public class CharacterBase: Health
     }
     protected virtual void Start()
     {
-        DontDestroyOnLoad(gameObject);
+        // Set Layer
+        int PlayerLayer = LayerMask.NameToLayer("Team" + TeamID.ToString());
+        SetLayer(PlayerLayer);
         // Remove layer to mouse raycast only Enemy and Land
         MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (LayerMask.LayerToName(gameObject.layer) == "Team1")
@@ -160,8 +177,9 @@ public class CharacterBase: Health
         InitialHealth();
 
         // Initial Info
-        attack = DefaultAttack;
-        defense = DefaultDefense;
+        // attack = DefaultAttack;
+        // defense = DefaultDefense;
+        Update_Status(DefaultAttack,DefaultDefense);
         attackSpeed = DefaultAttackSpeed;
         moveSpeed = DefaultMoveSpeed;
 
@@ -737,16 +755,16 @@ public class CharacterBase: Health
     /// <summary>This method relate to Passive Skill.</summary>
     public virtual void Passive(){}
     /// <summary>This is invoked when Mouse Move. Now use "Get_Project_Mouse" to Update Project Point.</summary>
-    public virtual void OnMousePositionInput()
-    {
-        Vector3 mousePos = InputComponent.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
-        RaycastHit hit;
-        ray = Camera.main.ScreenPointToRay(mousePos);
-        if (Physics.Raycast(ray, out hit))
-        {
-            mouseProject = hit.point;
-        }
-    }
+    // public virtual void OnMousePositionInput()
+    // {
+    //     Vector3 mousePos = InputComponent.instance.playerInput.Player.MousePosition.ReadValue<Vector2>();
+    //     RaycastHit hit;
+    //     ray = Camera.main.ScreenPointToRay(mousePos);
+    //     if (Physics.Raycast(ray, out hit))
+    //     {
+    //         mouseProject = hit.point;
+    //     }
+    // }
     /// <summary>This method calculate the project point from camera to scene object in Land Layer.</summary>
     protected void Get_Project_Mouse()
     {
@@ -807,7 +825,7 @@ public class CharacterBase: Health
                     Target = hit.transform.root;
                 }
                 Vector3 moveVelocity = AgentDestination - transform.position;
-
+                agent.isStopped = false;
                 // Rotate Immediately
                 agent.velocity = moveVelocity.normalized * agent.speed;
                 // Walk goal
@@ -828,12 +846,12 @@ public class CharacterBase: Health
         // Check if Enemy reach attack range
         if (Target == null) 
         {
-            animator.SetTrigger("AttackStop");
+            animator.SetBool("isAttack",false);
             return;
         }
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, Attack_Range,MouseTargetLayer);
+        float distance = Vector3.Distance(Target.position,transform.position);
         // If Target is in range -> stop and attack
-        if (hitColliders.Any(item => item.transform.root.name == Target.name))
+        if ( distance < Attack_Range)
         {
             // Not Move
             agent.destination = transform.position;
@@ -848,7 +866,7 @@ public class CharacterBase: Health
     }
     protected virtual void NormalAttack()
     {
-        animator.Play("Attack");
+        animator.SetBool("isAttack",true);
     }
     /// Minimap Method
     public void Set_Destination(Vector3 position,bool SpawnParticle)
@@ -929,17 +947,11 @@ public class CharacterBase: Health
     public override bool GetDamage(int damage)
     {
         bool isdead = base.GetDamage(damage);
-        // Update UI
-        MainInfoUI.instance.updateInfo();
-        Selectable.instance.updateInfo(this);
         return isdead;
     }
     public override void Heal(int health)
     {
         base.Heal(health);
-        // Update UI
-        MainInfoUI.instance.updateInfo();
-        Selectable.instance.updateInfo(this);
     }
     /// <summary> Add or Spend Money </summary>
     public void AddMoney(int money)
@@ -1063,8 +1075,9 @@ public class CharacterBase: Health
     public void UpdateStats()
     {
         // Reset
-        attack = DefaultAttack;
-        defense = DefaultDefense;
+        // attack = DefaultAttack;
+        // defense = DefaultDefense;
+        Update_Status(DefaultAttack,DefaultDefense);
         attackSpeed = DefaultAttackSpeed;
         moveSpeed = DefaultMoveSpeed;
         // Update with equipment
@@ -1081,20 +1094,69 @@ public class CharacterBase: Health
         animator.SetFloat("AttackSpeed",attackSpeed);
         animator.SetFloat("MoveSpeed",moveSpeed);
     }
+    // Update Status to Server
+    [Command]
+    public void Update_Status(int attack,int defense)
+    {
+        this.attack = attack;
+        this.defense = defense;
+    }
+    // Hook -> change UI
     void KDAChange(int oldValue, int newValue)
     {
         CharacterInfoPanel.Instance.UpdateUI();
         if (!isOwned) return;
         LocalPlayerInfo.Instance.Update_KDA(this);
     }
-    [Server]
-    public void CmdSetKDA(int kill, int death, int assist, int minion, int tower)
+    /// <summary>
+    /// Set Kill, Death, Assist, Minion, Tower
+    /// </summary>
+    /// <param name="kill"></param>
+    /// <param name="death"></param>
+    /// <param name="assist"></param>
+    /// <param name="minion"></param>
+    /// <param name="tower"></param>
+    [ServerCallback]
+    public void SetKDA(int kill, int death, int assist, int minion, int tower)
     {
         this.kill = kill;
         this.death = death;
         this.assist = assist;
         this.minion = minion;
         this.tower = tower;
+    }
+    [ServerCallback]
+    public void AddKDA(string KDAMT)
+    {
+        switch (KDAMT)
+        {
+            case "kill":
+                kill += 1;
+                break;
+            case "death":
+                death += 1;
+                break;
+            case "assist":
+                assist += 1;
+                break;
+            case "minion":
+                minion += 1;
+                break;
+            case "tower":
+                tower += 1;
+                break;
+            default:
+                break;
+        }
+    }
+    public void SetLayer(int PlayerLayer)
+    {
+        // Set Layer to all child
+        Transform[] children = gameObject.GetComponentsInChildren<Transform>(includeInactive: true);
+        foreach(Transform child in children)
+        {
+            child.gameObject.layer = PlayerLayer;
+        }
     }
 }
 

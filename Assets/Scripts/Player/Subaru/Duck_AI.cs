@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.AI;
-using HR.UI;
 using HR.Object.Player;
 using Mirror;
 
@@ -33,6 +31,7 @@ public class Duck_AI : MinionBase
     [Header("Animator")]
     bool isMove;
     bool isAttack;
+    int attack = 10;
     protected override void Start()
     {
         if (!isOwned) return;
@@ -56,8 +55,6 @@ public class Duck_AI : MinionBase
         // if (MainDestination == null ) return;
         isMove = animator.GetBool("isMove");
         isAttack = animator.GetBool("isAttack");
-        // Search Enemy use sphere
-        hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
         
         // if health < 0 -> to dead mode
         if (currentHealth <= 0) 
@@ -104,21 +101,28 @@ public class Duck_AI : MinionBase
     }
     void State_Idle()
     {
+        agent.isStopped = true;
+        // turn idle if still walk or still attack
+        if (isMove) animator.SetBool("isMove",false);
+        if (isAttack) animator.SetBool("isAttack",false);
+
+        // Check enemy nearby 
+        hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
         // Has enemy nearby
         if (hitColliders.Length > 0)
         {
+            Target = Search_Nearest(hitColliders);
             // to Chase mode
             current_State = CHASE;
             return;
         }
-        agent.isStopped = true;
-        // turn idle if still walk
-        if (isMove) animator.SetBool("isMove",false);
+
         // timer for idle mode
         timer -= Time.deltaTime;
+        // Change Idle to Walk mode
         if (timer <= 0f)
         {
-            // find new position to idle
+            // find new position as goal
             goal = MainDestination.position + 
                 new Vector3(
                     UnityEngine.Random.Range(-1f,1f)*master_distance,
@@ -127,95 +131,138 @@ public class Duck_AI : MinionBase
                 );
             // to Walk mode
             current_State = WALK;
+            return;
         }
     }
     void State_Walk()
     {
+        agent.isStopped = false;
+        // turn walk if still idle or still attack
+        if (!isMove) animator.SetBool("isMove",true);
+        if (isAttack) animator.SetBool("isAttack",false);
+        // go to new position
+        agent.destination = goal;
+
+        // Check enemy nearby
+        hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
         // Has enemy nearby
         if (hitColliders.Length > 0)
         {
+            Target = Search_Nearest(hitColliders);
             // to Chase mode
             current_State = CHASE;
             return;
         }
-        agent.isStopped = false;
-        // turn walk if still idle
-        if (!isMove) animator.SetBool("isMove",true);
-        // go to new position
-        agent.destination = goal;
+
         // Close to position then to Idle mode
         if (Vector3.Distance(goal,transform.position) < 2f)
         {
             // Reset time
-            timer = UnityEngine.Random.Range(1f,3f);
-            // to Idle mode
-            current_State = IDLE;
-        }
-    }
-    void State_Chase()
-    {
-        // no enemy nearby(dead or run away)
-        if (hitColliders.Length == 0)
-        {
-            // reset target
-            Target = null;
-            // Reset time
-            timer = UnityEngine.Random.Range(1f,3f);
+            timer = Random.Range(1f,3f);
+            goal = transform.position;
             // to Idle mode
             current_State = IDLE;
             return;
         }
+    }
+    void State_Chase()
+    {
         agent.isStopped = false;
-        // Search target
-        if (Target == null)
-        { 
-            Target = Search_Nearest(hitColliders);
+        if (!isMove) animator.SetBool("isMove",true);
+        if (isAttack) animator.SetBool("isAttack",false);
+
+        // Check enemy faraway or dead
+        if (Target == null || Vector3.Distance(Target.transform.position,transform.position) > Search_radius || Target.GetComponent<Health>().currentHealth <= 0) 
+        {
+            // Check enemy nearby
+            hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
+            // Has enemy nearby
+            if (hitColliders.Length > 0)
+            {
+                Target = Search_Nearest(hitColliders);
+                // to Chase mode
+                current_State = CHASE;
+                return;
+            }
+            // no enemy nearby
+            else
+            {
+                // reset target
+                Target = null;
+                // Reset time
+                timer = UnityEngine.Random.Range(1f,3f);
+                // to Idle mode
+                current_State = IDLE;
+                return;
+            }
         }
+
         // If is in attack Range -> to attack state
         if (Vector3.Distance(Target.transform.position,transform.position) < 2f)
         {
             current_State = ATTACK;
             return;
         }
-        // turn walk if still idle
-        if (!isMove) animator.SetBool("isMove",true);
+
         // chase enemy
         agent.destination = Target.transform.position;
-        // Close to position then to Attack mode
     }
     void State_Attack()
     {
-        if (Target == null)
+        agent.isStopped = true;
+        // Set Attack if is not attack
+        if (!isMove) animator.SetBool("isMove",false);
+        if (!isAttack) animator.SetBool("isAttack",true);
+
+        // Check enemy faraway or dead
+        if (Target == null || 
+            Vector3.Distance(Target.transform.position,transform.position) > Search_radius || 
+            Target.GetComponent<Health>().currentHealth <= 0) 
         {
-            current_State = WALK;
-            return;
-        }
-        // no enemy nearby(dead or run away)
-        if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
-        {
-            // reset enemy
-            Target = null;
-            // Reset time
-            timer = UnityEngine.Random.Range(1f,3f);
-            // to Idle mode
-            current_State = IDLE;
-            return;
+            // Check enemy nearby
+            hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
+            // Has enemy nearby
+            if (hitColliders.Length > 0)
+            {
+                Target = Search_Nearest(hitColliders);
+                // Check distance
+                if (Vector3.Distance(Target.transform.position,transform.position) < 2f)
+                {
+                    // still attack
+                    current_State = ATTACK;
+                    return;
+                }
+                else
+                {
+                    // to Chase mode
+                    current_State = CHASE;
+                    return;
+                }
+                
+            }
+            // no enemy nearby
+            else
+            {
+                // reset target
+                Target = null;
+                // Reset time
+                timer = UnityEngine.Random.Range(1f,3f);
+                // to Idle mode
+                current_State = IDLE;
+                return;
+            }
         }
         // if is out of attack range -> chase
         if (Vector3.Distance(Target.transform.position,transform.position) >= 2f)
         {
             current_State = CHASE;
-            animator.SetBool("isAttack",false);
             return;
         }
         transform.LookAt(Target.transform.position);
-        agent.isStopped = true;
-        // Set Attack if is not attack
-        if (!isAttack) animator.SetBool("isAttack",true);
     }
     void State_Dead()
     {
-        if (timer == deadTime) animator.Play("Dead");
+        if (timer == deadTime) GetComponent<NetworkAnimator>().SetTrigger("isDead");
         // Delete Object when timer is done
         timer -= Time.deltaTime;
         if (timer <= 0f )
@@ -291,6 +338,24 @@ public class Duck_AI : MinionBase
     {
         if (!isOwned) return;
         CmdSetlHealth(maxHealth);
+    }
+    public void Attack()
+    {
+        if (!NetworkServer.active) return;
+        CmdAttack(Target);
+    }
+    [Command]
+    void CmdAttack(Transform enemy)
+    {
+        if (enemy == null || enemy.GetComponent<Health>().currentHealth <= 0) return;
+        if (enemy.TryGetComponent<CharacterBase>(out CharacterBase character))
+        {
+            character.GetDamage(attack);
+        }
+        else
+        {
+            enemy.GetComponent<Health>().GetDamage(attack);
+        }
     }
 }
 

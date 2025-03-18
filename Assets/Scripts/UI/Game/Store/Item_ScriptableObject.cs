@@ -50,8 +50,10 @@ namespace HR.UI
 
         public override void CharacterInfoChange(CharacterBase characterBase)
         {
-            characterBase.attack += attackValue;
-            characterBase.defense += defenseValue;
+            // characterBase.attack += attackValue;
+            // characterBase.defense += defenseValue;
+            // Update to Server
+            characterBase.Update_Status(characterBase.attack + attackValue,characterBase.defense + defenseValue);
             if (moveSpeedValue != 0)
             {
                 characterBase.moveSpeed += moveSpeedValue;

@@ -116,31 +116,42 @@ public class Network_Manager : NetworkManager
         /// Game Scene
         if (newSceneName.StartsWith("Game_Scene"))
         {
+            int team1Index = 0, team2Index = 0;
             foreach (PlayerObject player in PlayersInfoList)
             {
-                print(player.PlayerName);
                 NetworkConnectionToClient conn = player.connectionToClient;
                 // GameObject oldPlayer = conn.identity.gameObject;
                 // Spawn Prefab
                 CharacterSelectComponent characterModelComponent = characterSelectComponentsList.Find(component => component.ID == player.CharacterID);
                 CharacterBase characterModel = characterModelComponent.CharacterModel;
                 CharacterBase gameplayInsance;
-                // Set Layer
-                int LayerIgnoreRaycast = LayerMask.NameToLayer("Team" + player.TeamID.ToString());
+
                 if (player.TeamID == 1)
                 {
-                    gameplayInsance = Instantiate(characterModel,GameController.Instance.Team1_transform.position,Quaternion.identity);
+                    // Start Point with 10 distance Position
+                    Vector3 SpawnPosition = new Vector3(Mathf.Cos(team1Index * 72 * Mathf.Deg2Rad),0,Mathf.Sin(team1Index * 72 * Mathf.Deg2Rad)) *3;
+                    SpawnPosition += GameController.Instance.Team1_transform.position;
+                    // Face to Start Point
+                    Quaternion rotation = Quaternion.LookRotation(GameController.Instance.Team1_transform.position - SpawnPosition);
+                    gameplayInsance = Instantiate(characterModel,SpawnPosition,rotation);
+                    team1Index++;
                 }
                 else
                 {
-                    gameplayInsance = Instantiate(characterModel,GameController.Instance.Team2_transform.position,Quaternion.identity);
+                    // Start Point with 10 distance Position
+                    Vector3 SpawnPosition = new Vector3(Mathf.Cos(team2Index * 72 * Mathf.Deg2Rad),0,Mathf.Sin(team2Index * 72 * Mathf.Deg2Rad)) *3;
+                    SpawnPosition += GameController.Instance.Team2_transform.position;
+                    // Face to Start Point
+                    Quaternion rotation = Quaternion.LookRotation(GameController.Instance.Team1_transform.position - SpawnPosition);
+                    gameplayInsance = Instantiate(characterModel,SpawnPosition,rotation);
+                    team2Index++;
                 }
-                // Set Layer to all child
-                Transform[] children = gameplayInsance.GetComponentsInChildren<Transform>(includeInactive: true);
-                foreach(Transform child in children)
-                {
-                    child.gameObject.layer = LayerIgnoreRaycast;
-                }
+                // // Set Layer to all child
+                // Transform[] children = gameplayInsance.GetComponentsInChildren<Transform>(includeInactive: true);
+                // foreach(Transform child in children)
+                // {
+                //     child.gameObject.layer = PlayerLayer;
+                // }
                 
                 gameplayInsance.ConnectionID = player.ConnectionID;
                 gameplayInsance.PlayerIdNumber = player.PlayerIdNumber;
@@ -161,8 +172,8 @@ public class Network_Manager : NetworkManager
                 // NetworkServer.Spawn(gameplayInsance.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
 
-                Player_List.Add(gameplayInsance);
-                gameplayInsance.CmdSetKDA(0,0,0,0,0);
+                // Player_List.Add(gameplayInsance);
+                gameplayInsance.SetKDA(0,0,0,0,0);
                 // All Player Info *** need to change to client
                 // CharacterInfoPanel.Instance.RpcAdd_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }

@@ -22,7 +22,6 @@ public class CharacterInfoPanel : NetworkBehaviour
     [Header("Kill Number")]
     [SerializeField] TMP_Text Team1_Kill_Text;
     [SerializeField] TMP_Text Team2_Kill_Text;
-    bool isInitial = false;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -86,15 +85,11 @@ public class CharacterInfoPanel : NetworkBehaviour
                 playerInfo_Components.Initial(characterBase);
             }
         }
-        isInitial = true;
     }
     // UI Update
     public void UpdateUI()
     {
-        if (!isInitial)
-        {
-            Bind_Character();
-        }
+        Bind_Character();
         // Calculate Team 1 tower number and Info
         int tower_number = 0;
         int kill_number = 0;

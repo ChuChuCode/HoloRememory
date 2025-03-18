@@ -19,7 +19,7 @@ public class LobbyListManager : MonoBehaviour
             instance = this;
         }
     }
-    // 
+    // Lobby List Button
     public void GetListOfLobbies()
     {
         // UI Set

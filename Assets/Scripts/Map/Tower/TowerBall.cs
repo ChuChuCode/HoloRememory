@@ -12,14 +12,8 @@ public class TowerBall : ProjectileBase
         bool isdead = characterBase.GetDamage(AttackDamage);
         if (isdead)
         {
-            // Update KDA
-            characterBase.death++;
-            // If Plaer is Local Player(Owner)
-            if (characterBase.GetComponent<NetworkIdentity>().isLocalPlayer)
-            {
-                CharacterInfoPanel.Instance.UpdateUI();
-                LocalPlayerInfo.Instance.Update_KDA(characterBase);
-            }
+            // Update KDA death + 1
+            characterBase.AddKDA("death");
         }
     }
     // protected override void TriggerisnotPlayer(Health health)

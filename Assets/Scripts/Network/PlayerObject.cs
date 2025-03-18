@@ -214,7 +214,7 @@ public class PlayerObject : NetworkBehaviour
     {
         CmdSetKDA(kill,death,assist);
     }
-    [Server]
+    [ServerCallback]
     void CmdSetKDA(int kill,int death,int assist)
     {
         this.kill = kill;
@@ -223,8 +223,6 @@ public class PlayerObject : NetworkBehaviour
     }
     void PlayerKDAUpdate(int OldValue,int NewValue)
     {
-        print("isOwned : " + isOwned);
-        if (!isOwned) return;
         ResultController.Instance.UpdateUI();
         ResultController.Instance.Show_Result(manager.LoseTeam, TeamID);
     }

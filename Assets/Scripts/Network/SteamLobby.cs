@@ -40,7 +40,6 @@ public class SteamLobby : MonoBehaviour
 
     void Start()
     {
-        
         // networkManager = Network_Manager.singleton as Network_Manager;
         // If initialized failed
         if (!SteamManager.Initialized) return;
@@ -111,9 +110,9 @@ public class SteamLobby : MonoBehaviour
     public void GetLobbyList()
     {
         if (lobbyIDs.Count > 0) lobbyIDs.Clear();
-
         SteamMatchmaking.AddRequestLobbyListResultCountFilter(60);
         SteamMatchmaking.RequestLobbyList();
+
     }
     public void JoinLobby(CSteamID lobbyID)
     {
@@ -121,11 +120,13 @@ public class SteamLobby : MonoBehaviour
     }
     void OnGetLobbyList(LobbyMatchList_t callback)
     {
+        // Will call twice when Leave Game Back to Lobby
         if (LobbyListManager.instance.listOfLobbies.Count > 0) LobbyListManager.instance.DestroyLobbies();
         for(int i = 0 ; i < callback.m_nLobbiesMatching ; i++)
         {
             CSteamID lobbyID = SteamMatchmaking.GetLobbyByIndex(i);
             lobbyIDs.Add(lobbyID);
+            // Triggers a LobbyDataUpdate_t callback.
             SteamMatchmaking.RequestLobbyData(lobbyID);
         }
     }

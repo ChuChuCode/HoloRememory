@@ -1,6 +1,7 @@
 using HR.UI;
 using UnityEngine;
 using HR.Object.Skill;
+using Mirror;
 
 namespace HR.Object.Map{
 public class AttackTowerBehaviour : TowerBase
@@ -16,25 +17,24 @@ public class AttackTowerBehaviour : TowerBase
     [SerializeField] Transform top;
     [SerializeField] Transform middle;
     [SerializeField] Transform Base;
-    LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
     float Attack_CD_timer = -2f;
     float Attack_CD = 2f;
     [SerializeField] TowerBall Attack_Ball;
     protected override void Start()
     {
-        lineRenderer = GetComponent<LineRenderer>();
         lineRenderer.positionCount = 1;
         lineRenderer.SetPosition(0, top.position);
         current_State = State.Idle;
         base.Start();
-    }
-
+    } 
     public override void Death()
     {
         top.gameObject.SetActive(false);
         middle.gameObject.SetActive(false);
         base.Death();
     }
+    [ServerCallback]
     void Update()
     {
         if (isDead) return;
@@ -60,13 +60,15 @@ public class AttackTowerBehaviour : TowerBase
                     }
                 }
                 enemy = null;
-                lineRenderer.positionCount = 1;
+                // lineRenderer.positionCount = 1;
+                RpcSetLine(1,null);
                 return;
             case State.Attack:
                 if (enemy == null || enemy.GetComponent<Health>().currentHealth <= 0) 
                 {
                     enemy = null;
-                    lineRenderer.positionCount = 1;
+                    // lineRenderer.positionCount = 1;
+                    RpcSetLine(1,null);
                     current_State = State.Idle;
                     return;
                 }
@@ -77,7 +79,8 @@ public class AttackTowerBehaviour : TowerBase
                 {
                     current_State = State.Idle;
                     enemy = null;
-                    lineRenderer.positionCount = 1;
+                    // lineRenderer.positionCount = 1;
+                    RpcSetLine(1,null);
                     return;
                 }
                 // shoot attack if is not in CD
@@ -85,31 +88,57 @@ public class AttackTowerBehaviour : TowerBase
                 {
                     // Spawn attack ball and Set Target = enemy 
                     TowerBall ball = Instantiate(Attack_Ball,top.transform.position,Quaternion.identity);
-                    // **** Spawn on Server
+                    // Set Target
                     ball.Target = enemy;
                     // Set new timer
                     Attack_CD_timer = Time.time;
+                    // Spawn on Server
+                    NetworkServer.Spawn(ball.gameObject);
                 }                
-                // Set Line
-                lineRenderer.positionCount = 2;
-                // Set Collider Center
-                Collider collider = enemy.GetComponentInChildren<Collider>();
-                Vector3 Center = collider.bounds.center;
-                // Vector3 Center = enemy.position + new Vector3(0, enemy.GetComponent<NavMeshAgent>().height/2 - enemy.GetComponent<NavMeshAgent>().baseOffset ,0);
-                lineRenderer.SetPosition(1, Center);
-                // Set Model
-                top.LookAt(enemy.position);
-                Base.LookAt(Base.position+direction);
+                // // Set Line
+                // lineRenderer.positionCount = 2;
+                // // Set Collider Center
+                // Collider collider = enemy.GetComponentInChildren<Collider>();
+                // Vector3 Center = collider.bounds.center;
+                // // Vector3 Center = enemy.position + new Vector3(0, enemy.GetComponent<NavMeshAgent>().height/2 - enemy.GetComponent<NavMeshAgent>().baseOffset ,0);
+                // lineRenderer.SetPosition(1, Center);
+                // // Set Model
+                // top.LookAt(enemy.position);
+                // Base.LookAt(Base.position+direction);
+                RpcSetLine(2,enemy);
                 return;
 
             case State.Break:
                 if (!isDead)
                 {
-                    lineRenderer.positionCount = 1;
+                    // lineRenderer.positionCount = 1;
+                    RpcSetLine(1,null);
                     isDead = true;
                     Death();
                 }
                 return;
+        }
+    }
+    [ClientRpc]
+    void RpcSetLine(int lineNum,Transform enemy)
+    {
+        if (lineNum == 1) 
+        {
+            lineRenderer.positionCount = 1;
+        }
+        else
+        {
+            lineRenderer.positionCount = 2;
+            Vector3 direction = enemy.position - Base.position;
+            direction.y = 0;
+            // Set Collider Center
+            Collider collider = enemy.GetComponentInChildren<Collider>();
+            Vector3 Center = collider.bounds.center;
+            // Vector3 Center = enemy.position + new Vector3(0, enemy.GetComponent<NavMeshAgent>().height/2 - enemy.GetComponent<NavMeshAgent>().baseOffset ,0);
+            lineRenderer.SetPosition(1, Center);
+            // Set Model
+            top.LookAt(enemy.position);
+            Base.LookAt(Base.position + direction);
         }
     }
 }
