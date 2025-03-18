@@ -24,8 +24,6 @@ public class Fog_Mask : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("Mask");
         Origin = transform.parent;
         // gameObject.transform.SetParent(null);
-        
-        
     }
     void Update()
     {

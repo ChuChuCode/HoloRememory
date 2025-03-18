@@ -60,7 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: -50.7, y: 37.4, z: -30.4}
+  m_FollowOffset: {x: -30, y: 46, z: -30}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -139,13 +139,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 662897849428042945}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.6532815, y: -0.27059805, z: -0.27059805, w: 0.6532815}
+  m_LocalRotation: {x: -0.6845838, y: -0.17704543, z: -0.17704543, w: 0.6845838}
   m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1.22, y: 2.2082372, z: 15.23215}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4166337301617512707}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -45}
+  m_LocalEulerAnglesHint: {x: -90, y: 16, z: -45}
 --- !u!212 &7679291926893134765
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -399,13 +399,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 979213066434147236}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.5389823, y: -0.6905222, z: -0.38024688, w: 0.29679906}
+  m_LocalRotation: {x: -0.5866564, y: -0.64249694, z: -0.30153412, w: 0.3900117}
   m_LocalPosition: {x: 0, y: 8.450766, z: 64.60647}
   m_LocalScale: {x: 1.2199998, y: 2.2082367, z: 15.232148}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2549284598391650422}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -45}
+  m_LocalEulerAnglesHint: {x: -122.32, y: 16, z: -104.05301}
 --- !u!212 &765105621503755814
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -903,7 +903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: -50.7, y: 37.4, z: -30.4}
+  m_FollowOffset: {x: -30, y: 46, z: -30}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -1084,8 +1084,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7639259309447892091}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24217372, y: 0.47335282, z: -0.13716282, w: 0.8357484}
-  m_LocalPosition: {x: -50.7, y: 37.4, z: -30.399998}
+  m_LocalRotation: {x: 0.37071815, y: 0.35052386, z: -0.1535564, w: 0.8462397}
+  m_LocalPosition: {x: -30, y: 46, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6970,7 +6970,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1193460364012659850, guid: e07cf410c50978b44afdc54d72832ffa, type: 3}
       propertyPath: Mask_Radius
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7459317776223033204, guid: e07cf410c50978b44afdc54d72832ffa, type: 3}
       propertyPath: m_Name

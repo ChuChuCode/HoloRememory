@@ -51,16 +51,24 @@ public class LobbyController : MonoBehaviour
             Instance = this;
         }
     }
+    void Start()
+    {
+        if (Manager.PlayersInfoList.Count > 0)
+        {
+            LocalPlayerController = GameObject.Find("LocalGamePlayer").GetComponent<PlayerObject>();
+            SetStartButton();
+        }
+    }
     public void UpdateLobbyName()
     {
         CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
         LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID),"name");
     }
-    public void FindLocalPlayer()
+    public void SetStartButton()
     {
         // LocalPlayerController = GameObject.Find("LocalGamePlayer").GetComponent<PlayerObject>();
         // Hide Start Button if is not Host
-        if (LocalPlayerController.PlayerIdNumber != 1)
+        if (!NetworkServer.active)
         {
             StartButton.gameObject.SetActive(false);
         }

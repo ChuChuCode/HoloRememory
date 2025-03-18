@@ -53,7 +53,7 @@ public class PlayerObject : NetworkBehaviour
         // Set Network_Manager
         manager.LocalPlayerObject = this;
         // Set Start UI
-        LobbyController.Instance.FindLocalPlayer();
+        LobbyController.Instance.SetStartButton();
         LobbyController.Instance.UpdateLobbyName();
         // Spell_1 = PlayerPrefs.GetInt("Spell_1", 1);
         // Spell_2 = PlayerPrefs.GetInt("Spell_2", 2);
