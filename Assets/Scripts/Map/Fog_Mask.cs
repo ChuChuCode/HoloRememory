@@ -29,7 +29,8 @@ public class Fog_Mask : MonoBehaviour
     {
         // If not same team(Team1 or Team1Building) -> Disable
         if (!gameObject.activeSelf) return;
-        if (LayerMask.LayerToName(transform.root.gameObject.layer).IndexOf( LayerMask.LayerToName(GameController.Instance.LocalPlayer.gameObject.layer) ) == -1 )
+        if (GameController.Instance.LocalPlayer.gameObject != null && 
+            LayerMask.LayerToName(transform.root.gameObject.layer).IndexOf( LayerMask.LayerToName(GameController.Instance.LocalPlayer.gameObject.layer) ) == -1 )
         {
             gameObject.SetActive(false);
         }

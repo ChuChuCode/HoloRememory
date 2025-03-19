@@ -1104,7 +1104,7 @@ public class CharacterBase: Health
     // Hook -> change UI
     void KDAChange(int oldValue, int newValue)
     {
-        CharacterInfoPanel.Instance.UpdateUI();
+        // CharacterInfoPanel.Instance.UpdateUI();
         if (!isOwned) return;
         LocalPlayerInfo.Instance.Update_KDA(this);
     }

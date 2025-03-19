@@ -66,7 +66,11 @@ public class CharacterInfoPanel : NetworkBehaviour
         }
         gameObject.SetActive(false);
     }
-    void Bind_Character()
+    void OnEnable()
+    {
+        UpdateUI();
+    }
+        void Bind_Character()
     {
         foreach (PlayerInfo_Component playerInfo_Components in Team1_PlayerInfo_Components)
         {

@@ -7,6 +7,7 @@ using Steamworks;
 using System.Linq;
 using HR.UI;
 using HR.Object.Spell;
+using Mirror;
 
 namespace HR.Network.Select{
 public class SelectController : MonoBehaviour
@@ -26,6 +27,7 @@ public class SelectController : MonoBehaviour
     [Header("UI")]
     public TMP_Text LobbyNameText;
     public Button ReadyButton;
+    public GameObject Map_Select;
     public bool isSelected = false;
     [Header("Spell")]
     [SerializeField] Transform Spell_1_Position;
@@ -36,7 +38,6 @@ public class SelectController : MonoBehaviour
     [SerializeField] Spell_Select Spell_2;
     [Header("Manager")]
     private Network_Manager manager;
-
     public Network_Manager Manager
     {
         get
@@ -51,6 +52,8 @@ public class SelectController : MonoBehaviour
     public List<Network_SelectPlayer> Team1_networkSelectPlayersList = new List<Network_SelectPlayer>();
     public List<Network_SelectPlayer> Team2_networkSelectPlayersList = new List<Network_SelectPlayer>();
     public PlayerObject LocalPlayerController;
+    [Header("Map")]
+    [SerializeField] string map_name;
     void Awake()
     {
         if (Instance == null)
@@ -140,6 +143,14 @@ public class SelectController : MonoBehaviour
             SelectPlayer.transform.localScale = Vector3.one;
         }
         isSelected = false;
+        if (!NetworkServer.active)
+        {
+            Map_Select.SetActive(false);
+        }
+        else
+        {
+            map_name = "Game_Scene";
+        }
     }
     // Search Character with Character ID
     Sprite Search_Character(int CharacterID)
@@ -345,7 +356,7 @@ public class SelectController : MonoBehaviour
         if (AllReady)
         {
             // Start Game
-            LocalPlayerController.CanStartGame("Game_Scene");
+            LocalPlayerController.CanStartGame(map_name);
         }
     }
     // Ready Button
@@ -403,6 +414,10 @@ public class SelectController : MonoBehaviour
         {
             ReadyButton.interactable = true;
         }
+    }
+    public void change_map(string map_name)
+    {
+        this.map_name = map_name;
     }
 }
 

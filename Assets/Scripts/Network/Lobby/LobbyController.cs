@@ -53,6 +53,7 @@ public class LobbyController : MonoBehaviour
     }
     void Start()
     {
+        // If restart game -> PlayersInfoList has player -> re-get LocalGamePlayer object and Set Start Button
         if (Manager.PlayersInfoList.Count > 0)
         {
             LocalPlayerController = GameObject.Find("LocalGamePlayer").GetComponent<PlayerObject>();

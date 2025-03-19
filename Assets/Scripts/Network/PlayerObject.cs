@@ -58,32 +58,33 @@ public class PlayerObject : NetworkBehaviour
         // Spell_1 = PlayerPrefs.GetInt("Spell_1", 1);
         // Spell_2 = PlayerPrefs.GetInt("Spell_2", 2);
     }
-    public void Reset_All()
-    {
-        Ready = false;
-        CharacterID = -1;
-        Spell_1 = 0;
-        Spell_2 = 0;
-    }
     public override void OnStopClient()
     {
         Manager.PlayersInfoList.Remove(this);
         if (SceneManager.GetActiveScene().name == "Lobby_Scene")  LobbyController.Instance.UpdatePlayerList();
     }
     // if is owned -> call Cmd
+    public void ChangeReady(bool ready)
+    {
+        if (isOwned)
+        {
+            CmdSetPlayerReady(ready);
+        }
+    }
     public void ChangeReady()
     {
         // if this oject is player's
         if (isOwned)
         {
-            CmdSetPlayerReady();
+            CmdSetPlayerReady(!this.Ready);
         }
     }
     // client -> server(only on server)
     [Command]
-    void CmdSetPlayerReady()
+    void CmdSetPlayerReady(bool ready)
     {
-        this.Ready = !this.Ready;
+        this.Ready = ready;
+        print(ready);
     }
     /// Ready Change
     void PlayerReadyUpdate(bool OldValue,bool NewValue)
