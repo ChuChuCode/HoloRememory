@@ -376,8 +376,8 @@ public class SelectController : MonoBehaviour
         // Set LocalPlayer Ready = true
         LocalPlayerController.ChangeReady();
         // Set to PlayerPref
-        PlayerPrefs.SetInt("Spell_1", 1) ;
-        PlayerPrefs.SetInt("Spell_2", 2) ;
+        PlayerPrefs.SetInt("Spell_1", LocalPlayerController.Spell_1) ;
+        PlayerPrefs.SetInt("Spell_2", LocalPlayerController.Spell_2) ;
         // Set UI Disable
         foreach (CharacterSelectItem selectItem in SelectItemList)
         {

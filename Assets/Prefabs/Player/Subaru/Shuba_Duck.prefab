@@ -1683,7 +1683,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 960
   Search_radius: 5
-  attack_radius: 2
+  attack_radius: 1
   deadTime: 1
   healthBar: {fileID: 6221899985002140448}
   rd: {fileID: 8713174955817428959}
