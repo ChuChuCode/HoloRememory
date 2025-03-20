@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 using HR.Network.Lobby;
 using HR.Network.Select;
 using HR.Network.Result;
+using UnityEngine;
 
 namespace HR.Network{
 public class PlayerObject : NetworkBehaviour
@@ -16,8 +17,8 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public int TeamID = 0;
     [SyncVar(hook = nameof(CharacterSelect))] public int CharacterID = -1;
-    [SyncVar(hook = nameof(PlayerSpell1Update))] public int Spell_1 = -1;
-    [SyncVar(hook = nameof(PlayerSpell2Update))] public int Spell_2 = -1;
+    [SyncVar(hook = nameof(PlayerSpellUpdate))] public int Spell_1 = -1;
+    [SyncVar(hook = nameof(PlayerSpellUpdate))] public int Spell_2 = -1;
     [SyncVar(hook = nameof(PlayerKDAUpdate))] public int kill = -1;
     [SyncVar(hook = nameof(PlayerKDAUpdate))] public int death = -1;
     [SyncVar(hook = nameof(PlayerKDAUpdate))] public int assist = -1;
@@ -55,8 +56,9 @@ public class PlayerObject : NetworkBehaviour
         // Set Start UI
         LobbyController.Instance.SetStartButton();
         LobbyController.Instance.UpdateLobbyName();
-        // Spell_1 = PlayerPrefs.GetInt("Spell_1", 1);
-        // Spell_2 = PlayerPrefs.GetInt("Spell_2", 2);
+        // Set Spell index
+        CanSpell1Change( PlayerPrefs.GetInt("Spell_1", 1) );
+        CanSpell2Change( PlayerPrefs.GetInt("Spell_2", 2) );
     }
     public override void OnStopClient()
     {
@@ -84,12 +86,14 @@ public class PlayerObject : NetworkBehaviour
     void CmdSetPlayerReady(bool ready)
     {
         this.Ready = ready;
-        print(ready);
     }
     /// Ready Change
     void PlayerReadyUpdate(bool OldValue,bool NewValue)
     {
-        if (SceneManager.GetActiveScene().name == "Lobby_Scene") LobbyController.Instance.UpdatePlayerList();
+        if (SceneManager.GetActiveScene().name == "Lobby_Scene") 
+        {
+            LobbyController.Instance.UpdatePlayerList();
+        }
     }
     /// Name Change
     [Command]
@@ -173,13 +177,6 @@ public class PlayerObject : NetworkBehaviour
     {
         Spell_1 = SpellID;
     }
-    /// <summary>
-    /// When Server Changed Spell 1 will call this method on client
-    /// </summary>
-    void PlayerSpell1Update(int OldValue,int NewValue)
-    {
-        SelectController.Instance.UpdatePlayerList();
-    }
     /// Spell 2 change
     public void CanSpell2Change(int SpellID)
     {
@@ -193,9 +190,15 @@ public class PlayerObject : NetworkBehaviour
     {
         Spell_2 = SpellID;
     }
-    void PlayerSpell2Update(int OldValue,int NewValue)
+    /// <summary>
+    /// When Server Changed Spell 1 will call this method on client
+    /// </summary>
+    void PlayerSpellUpdate(int OldValue,int NewValue)
     {
-        SelectController.Instance.UpdatePlayerList();
+        if (SceneManager.GetActiveScene().name == "Select_Scene") 
+        {
+            SelectController.Instance.UpdatePlayerList();
+        }
     }
     public void LeaveGame()
     {

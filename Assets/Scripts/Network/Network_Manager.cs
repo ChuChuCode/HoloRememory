@@ -111,12 +111,10 @@ public class Network_Manager : NetworkManager
                 // Reset all parameter
                 player.Ready = false;
                 player.CharacterID = -1;
-                player.Spell_1 = 0;
-                player.Spell_2 = 0;
             }
         }
         /// Game Scene
-        if (newSceneName.StartsWith("Game_Scene") || newSceneName.StartsWith("Test_Scene"))
+        if (newSceneName.StartsWith("Game") )
         {
             int team1Index = 0, team2Index = 0;
             foreach (PlayerObject player in PlayersInfoList)

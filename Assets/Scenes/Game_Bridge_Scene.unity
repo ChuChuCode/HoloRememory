@@ -4989,7 +4989,7 @@ MonoBehaviour:
   layerName: Team1
   EnemyTarget: {fileID: 218656936}
   spawntime_interval: 30
-  SpawnNumber: 6
+  SpawnNumber: 5
 --- !u!1001 &513122967
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17114,7 +17114,7 @@ MonoBehaviour:
   layerName: Team2
   EnemyTarget: {fileID: 717695456}
   spawntime_interval: 30
-  SpawnNumber: 6
+  SpawnNumber: 5
 --- !u!1 &1602165437
 GameObject:
   m_ObjectHideFlags: 0
@@ -17161,7 +17161,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.06666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: dbb6dc150945c214185c6a73337699d6, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 581de7bb774cec84086880f554d13de9, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &1602165439
 Transform:

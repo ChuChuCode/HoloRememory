@@ -67,7 +67,7 @@ public class SelectController : MonoBehaviour
         CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
         LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID),"name");
         ReadyButton.interactable = false;
-        // Set Character Select
+        // Initial Character Select
         foreach(CharacterSelectComponent characterSelectComponent in Manager.characterSelectComponentsList)
         {
             CharacterSelectItem temp_characterSelectComponent = Instantiate(CharacterPrefab);
@@ -108,7 +108,7 @@ public class SelectController : MonoBehaviour
             // Set Image
             temp_Spell1.SetSprite(spell_sprite.Spell_Sprite);
         }
-        // Set UI
+        // Initial UI
         foreach (PlayerObject player in Manager.PlayersInfoList)
         {
             Network_SelectPlayer network_SelectPlayer = Instantiate(SelectPlayerPrefab);
@@ -124,6 +124,14 @@ public class SelectController : MonoBehaviour
             network_SelectPlayer.ConnectionID = player.ConnectionID;
             network_SelectPlayer.PlayerSteamID = player.PlayerSteamID;
             network_SelectPlayer.TeamID = player.TeamID;
+            network_SelectPlayer.Spell_1.sprite = Search_Spell(player.Spell_1).Spell_Sprite;
+            network_SelectPlayer.Spell_2.sprite = Search_Spell(player.Spell_2).Spell_Sprite;
+            // Set Spell default
+            if (player.isLocalPlayer)
+            {
+                SelectSpell(1, player.Spell_1);
+                SelectSpell(2, player.Spell_2);
+            }
             network_SelectPlayer.SetPlayerValues();
             // Set Team
             if (network_SelectPlayer.TeamID == 1)
@@ -149,7 +157,7 @@ public class SelectController : MonoBehaviour
         }
         else
         {
-            map_name = "Game_Scene";
+            map_name = "Game_Bridge_Scene";
         }
     }
     // Search Character with Character ID
@@ -187,76 +195,76 @@ public class SelectController : MonoBehaviour
             UpdatePlayerUI();
         }
     }
-    public void CreateHostPlayerItem()
-    {
-        print("HOST create");
-        foreach(PlayerObject player in Manager.PlayersInfoList)
-        {
-            Network_SelectPlayer network_SelectPlayer = Instantiate(SelectPlayerPrefab);
-            GameObject SelectPlayer = network_SelectPlayer.gameObject;
+    // public void CreateHostPlayerItem()
+    // {
+    //     print("HOST create");
+    //     foreach(PlayerObject player in Manager.PlayersInfoList)
+    //     {
+    //         Network_SelectPlayer network_SelectPlayer = Instantiate(SelectPlayerPrefab);
+    //         GameObject SelectPlayer = network_SelectPlayer.gameObject;
 
-            network_SelectPlayer.PlayerName = player.PlayerName;
-            network_SelectPlayer.ConnectionID = player.ConnectionID;
-            network_SelectPlayer.PlayerSteamID = player.PlayerSteamID;
-            network_SelectPlayer.TeamID = player.TeamID;
-            // network_SelectPlayer.isReady = player.Ready;
-            network_SelectPlayer.SetPlayerValues();
+    //         network_SelectPlayer.PlayerName = player.PlayerName;
+    //         network_SelectPlayer.ConnectionID = player.ConnectionID;
+    //         network_SelectPlayer.PlayerSteamID = player.PlayerSteamID;
+    //         network_SelectPlayer.TeamID = player.TeamID;
+    //         // network_SelectPlayer.isReady = player.Ready;
+    //         network_SelectPlayer.SetPlayerValues();
 
-            SelectPlayer.transform.localScale = Vector3.one;
-            // Set Team if #Team1_player < 5 -> add to Team1
-            if (network_SelectPlayer.TeamID == 1)
-            {
-                // Add to team1 list
-                Team1_networkSelectPlayersList.Add(network_SelectPlayer);
-                // Add to UI
-                SelectPlayer.transform.SetParent(Team1_transform);
-            }
-            else
-            {
-                // Add to team2 list
-                Team2_networkSelectPlayersList.Add(network_SelectPlayer);
-                // Add to UI
-                SelectPlayer.transform.SetParent(Team2_transform);
-            }
-        }
-        // PlayerItemCreated = true;
-    }
-    public void CreateClientPlayerItem()
-    {
-        print("CLIENT ceate");
-        foreach(PlayerObject player in Manager.PlayersInfoList)
-        {
-            if (!Team1_networkSelectPlayersList.Any(b => b.ConnectionID == player.ConnectionID) && !Team2_networkSelectPlayersList.Any(b => b.ConnectionID == player.ConnectionID))
-            {
-                Network_SelectPlayer network_SelectPlayer = Instantiate(SelectPlayerPrefab);
-                GameObject SelectPlayer = network_SelectPlayer.gameObject;
+    //         SelectPlayer.transform.localScale = Vector3.one;
+    //         // Set Team if #Team1_player < 5 -> add to Team1
+    //         if (network_SelectPlayer.TeamID == 1)
+    //         {
+    //             // Add to team1 list
+    //             Team1_networkSelectPlayersList.Add(network_SelectPlayer);
+    //             // Add to UI
+    //             SelectPlayer.transform.SetParent(Team1_transform);
+    //         }
+    //         else
+    //         {
+    //             // Add to team2 list
+    //             Team2_networkSelectPlayersList.Add(network_SelectPlayer);
+    //             // Add to UI
+    //             SelectPlayer.transform.SetParent(Team2_transform);
+    //         }
+    //     }
+    //     // PlayerItemCreated = true;
+    // }
+    // public void CreateClientPlayerItem()
+    // {
+    //     print("CLIENT ceate");
+    //     foreach(PlayerObject player in Manager.PlayersInfoList)
+    //     {
+    //         if (!Team1_networkSelectPlayersList.Any(b => b.ConnectionID == player.ConnectionID) && !Team2_networkSelectPlayersList.Any(b => b.ConnectionID == player.ConnectionID))
+    //         {
+    //             Network_SelectPlayer network_SelectPlayer = Instantiate(SelectPlayerPrefab);
+    //             GameObject SelectPlayer = network_SelectPlayer.gameObject;
 
-                network_SelectPlayer.PlayerName = player.PlayerName;
-                network_SelectPlayer.ConnectionID = player.ConnectionID;
-                network_SelectPlayer.PlayerSteamID = player.PlayerSteamID;
-                network_SelectPlayer.TeamID = player.TeamID;
-                // network_SelectPlayer.isReady = player.Ready;
-                network_SelectPlayer.SetPlayerValues();
+    //             network_SelectPlayer.PlayerName = player.PlayerName;
+    //             network_SelectPlayer.ConnectionID = player.ConnectionID;
+    //             network_SelectPlayer.PlayerSteamID = player.PlayerSteamID;
+    //             network_SelectPlayer.TeamID = player.TeamID;
+    //             // network_SelectPlayer.isReady = player.Ready;
+    //             network_SelectPlayer.SetPlayerValues();
 
-                SelectPlayer.transform.localScale = Vector3.one;
-                // Set Team if #Team1_player < 5 -> add to Team1
-                if (network_SelectPlayer.TeamID == 1)
-                {
-                    // Add to team1 list
-                    Team1_networkSelectPlayersList.Add(network_SelectPlayer);
-                    // Add to UI
-                    SelectPlayer.transform.SetParent(Team1_transform);
-                }
-                else
-                {
-                    // Add to team2 list
-                    Team2_networkSelectPlayersList.Add(network_SelectPlayer);
-                    // Add to UI
-                    SelectPlayer.transform.SetParent(Team2_transform);
-                }
-            }
-        }
-    }
+    //             SelectPlayer.transform.localScale = Vector3.one;
+    //             // Set Team if #Team1_player < 5 -> add to Team1
+    //             if (network_SelectPlayer.TeamID == 1)
+    //             {
+    //                 // Add to team1 list
+    //                 Team1_networkSelectPlayersList.Add(network_SelectPlayer);
+    //                 // Add to UI
+    //                 SelectPlayer.transform.SetParent(Team1_transform);
+    //             }
+    //             else
+    //             {
+    //                 // Add to team2 list
+    //                 Team2_networkSelectPlayersList.Add(network_SelectPlayer);
+    //                 // Add to UI
+    //                 SelectPlayer.transform.SetParent(Team2_transform);
+    //             }
+    //         }
+    //     }
+    // }
     public void UpdatePlayerUI()
     {
         foreach(PlayerObject player in Manager.PlayersInfoList)
@@ -268,8 +276,8 @@ public class SelectController : MonoBehaviour
                     // Update Character Image
                     PlayerListItemScript.SetCharacterImage(Search_Character(player.CharacterID));
                     // Update Spell Image
-                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1)?.Spell_Sprite;
-                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2)?.Spell_Sprite;
+                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1).Spell_Sprite;
+                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2).Spell_Sprite;
                     // if player is local player -> update Ready Button
                     if (player == LocalPlayerController)
                     {
@@ -284,8 +292,8 @@ public class SelectController : MonoBehaviour
                     // Update Character Image
                     PlayerListItemScript.SetCharacterImage(Search_Character(player.CharacterID));
                     // Update Spell Image
-                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1)?.Spell_Sprite;
-                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2)?.Spell_Sprite;
+                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1).Spell_Sprite;
+                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2).Spell_Sprite;
                     // if player is local player -> update Ready Button
                     if (player == LocalPlayerController)
                     {
@@ -296,46 +304,46 @@ public class SelectController : MonoBehaviour
         }
         Check_ReadyButton();
     }
-    public void RemovePlayerItem()
-    {
-        List<Network_SelectPlayer> playerListItemToRemove = new List<Network_SelectPlayer>();
+    // public void RemovePlayerItem()
+    // {
+    //     List<Network_SelectPlayer> playerListItemToRemove = new List<Network_SelectPlayer>();
 
-        foreach(Network_SelectPlayer playerlistItem in Team1_networkSelectPlayersList)
-        {
-            if(!Manager.PlayersInfoList.Any(b => b.ConnectionID == playerlistItem.ConnectionID))
-            {
-                playerListItemToRemove.Add(playerlistItem);
-            }
-        }
-        if (playerListItemToRemove.Count > 0)
-        {
-            foreach(Network_SelectPlayer playerlistItemToRemove in playerListItemToRemove)
-            {
-                GameObject ObjectToRemove = playerlistItemToRemove.gameObject;
-                Team1_networkSelectPlayersList.Remove(playerlistItemToRemove);
-                Destroy(ObjectToRemove);
-                ObjectToRemove = null;
-            }
-        }
-        playerListItemToRemove = new List<Network_SelectPlayer>();
-        foreach(Network_SelectPlayer playerlistItem in Team2_networkSelectPlayersList)
-        {
-            if(!Manager.PlayersInfoList.Any(b => b.ConnectionID == playerlistItem.ConnectionID))
-            {
-                playerListItemToRemove.Add(playerlistItem);
-            }
-        }
-        if (playerListItemToRemove.Count > 0)
-        {
-            foreach(Network_SelectPlayer playerlistItemToRemove in playerListItemToRemove)
-            {
-                GameObject ObjectToRemove = playerlistItemToRemove.gameObject;
-                Team2_networkSelectPlayersList.Remove(playerlistItemToRemove);
-                Destroy(ObjectToRemove);
-                ObjectToRemove = null;
-            }
-        }
-    }
+    //     foreach(Network_SelectPlayer playerlistItem in Team1_networkSelectPlayersList)
+    //     {
+    //         if(!Manager.PlayersInfoList.Any(b => b.ConnectionID == playerlistItem.ConnectionID))
+    //         {
+    //             playerListItemToRemove.Add(playerlistItem);
+    //         }
+    //     }
+    //     if (playerListItemToRemove.Count > 0)
+    //     {
+    //         foreach(Network_SelectPlayer playerlistItemToRemove in playerListItemToRemove)
+    //         {
+    //             GameObject ObjectToRemove = playerlistItemToRemove.gameObject;
+    //             Team1_networkSelectPlayersList.Remove(playerlistItemToRemove);
+    //             Destroy(ObjectToRemove);
+    //             ObjectToRemove = null;
+    //         }
+    //     }
+    //     playerListItemToRemove = new List<Network_SelectPlayer>();
+    //     foreach(Network_SelectPlayer playerlistItem in Team2_networkSelectPlayersList)
+    //     {
+    //         if(!Manager.PlayersInfoList.Any(b => b.ConnectionID == playerlistItem.ConnectionID))
+    //         {
+    //             playerListItemToRemove.Add(playerlistItem);
+    //         }
+    //     }
+    //     if (playerListItemToRemove.Count > 0)
+    //     {
+    //         foreach(Network_SelectPlayer playerlistItemToRemove in playerListItemToRemove)
+    //         {
+    //             GameObject ObjectToRemove = playerlistItemToRemove.gameObject;
+    //             Team2_networkSelectPlayersList.Remove(playerlistItemToRemove);
+    //             Destroy(ObjectToRemove);
+    //             ObjectToRemove = null;
+    //         }
+    //     }
+    // }
     public void CheckIfAllReady()
     {
         bool AllReady = false;
@@ -367,6 +375,9 @@ public class SelectController : MonoBehaviour
         isSelected = true;
         // Set LocalPlayer Ready = true
         LocalPlayerController.ChangeReady();
+        // Set to PlayerPref
+        PlayerPrefs.SetInt("Spell_1", 1) ;
+        PlayerPrefs.SetInt("Spell_2", 2) ;
         // Set UI Disable
         foreach (CharacterSelectItem selectItem in SelectItemList)
         {
@@ -415,9 +426,11 @@ public class SelectController : MonoBehaviour
             ReadyButton.interactable = true;
         }
     }
-    public void change_map(string map_name)
+    public void change_map(string mapName)
     {
-        this.map_name = map_name;
+        if (!NetworkServer.active) return;
+        this.map_name = mapName;
+        print(this.map_name);
     }
 }
 

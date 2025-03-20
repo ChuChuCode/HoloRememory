@@ -11,7 +11,7 @@ public class MinionSpawner : NetworkBehaviour
     [SerializeField] Transform EnemyTarget;
     int first_SpawnTime = 10;
     [SerializeField] int spawntime_interval = 30;
-    [SerializeField] int SpawnNumber = 6;
+    [SerializeField] int SpawnNumber = 5;
     int next_SpawnTime;
 
     void Start()
