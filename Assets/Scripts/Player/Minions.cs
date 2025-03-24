@@ -28,7 +28,7 @@ public class Minions : MinionBase
         if (!isServer) return;
         if (currentHealth <= 0) 
         {
-            // if (!isDead) timer = deadTime;
+            if (!isDead) timer = deadTime;
             Target = null;
             isDead = true;
             agent.isStopped = true;
@@ -110,9 +110,9 @@ public class Minions : MinionBase
     }
     void State_Dead()
     {
-        if (timer == deadTime) animator.Play("Dead");
         if (timer == deadTime) 
         {
+            animator.Play("Dead");
             Detect_Surround();
         }
         // Delete Object when timer is done

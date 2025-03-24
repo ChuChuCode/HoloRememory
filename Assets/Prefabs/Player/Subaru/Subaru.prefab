@@ -1317,7 +1317,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   Character_Level: 0
-  Character_exp: 0
+  Character_exp: -1
   Experience_List: 
   Q_Level: 0
   W_Level: 0

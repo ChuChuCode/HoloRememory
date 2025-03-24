@@ -13,7 +13,6 @@ public class AttackTowerBehaviour : TowerBase
     }
     [SerializeField] State current_State;
     [SerializeField] LayerMask enemy_layer;
-    [SerializeField] Transform enemy;
     [SerializeField] Transform top;
     [SerializeField] Transform middle;
     [SerializeField] Transform Base;
@@ -28,7 +27,7 @@ public class AttackTowerBehaviour : TowerBase
         current_State = State.Idle;
         base.Start();
     } 
-    public override void Death()
+    protected override void Death()
     {
         top.gameObject.SetActive(false);
         middle.gameObject.SetActive(false);
@@ -53,32 +52,32 @@ public class AttackTowerBehaviour : TowerBase
                         if (hitColliders[index].transform.root.GetComponent<Health>().currentHealth > 0)
                         {
                             /// need minion find first then other
-                            enemy = hitColliders[index].transform.root;
+                            Target = hitColliders[index].transform.root;
                             current_State = State.Attack;
                             return;
                         }
                     }
                 }
-                enemy = null;
+                Target = null;
                 // lineRenderer.positionCount = 1;
                 RpcSetLine(1,null);
                 return;
             case State.Attack:
-                if (enemy == null || enemy.GetComponent<Health>().currentHealth <= 0) 
+                if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
                 {
-                    enemy = null;
+                    Target = null;
                     // lineRenderer.positionCount = 1;
                     RpcSetLine(1,null);
                     current_State = State.Idle;
                     return;
                 }
                 //check distance 
-                Vector3 direction = enemy.position - Base.position;
+                Vector3 direction = Target.position - Base.position;
                 direction.y = 0;
                 if (direction.magnitude > attack_radius)
                 {
                     current_State = State.Idle;
-                    enemy = null;
+                    Target = null;
                     // lineRenderer.positionCount = 1;
                     RpcSetLine(1,null);
                     return;
@@ -89,7 +88,7 @@ public class AttackTowerBehaviour : TowerBase
                     // Spawn attack ball and Set Target = enemy 
                     TowerBall ball = Instantiate(Attack_Ball,top.transform.position,Quaternion.identity);
                     // Set Target
-                    ball.Target = enemy;
+                    ball.Target = Target;
                     // Set new timer
                     Attack_CD_timer = Time.time;
                     // Spawn on Server
@@ -105,7 +104,7 @@ public class AttackTowerBehaviour : TowerBase
                 // // Set Model
                 // top.LookAt(enemy.position);
                 // Base.LookAt(Base.position+direction);
-                RpcSetLine(2,enemy);
+                RpcSetLine(2,Target);
                 return;
 
             case State.Break:

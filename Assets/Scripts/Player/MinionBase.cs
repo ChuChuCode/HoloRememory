@@ -4,14 +4,14 @@ using UnityEngine.AI;
 using HR.UI;
 using HR.Object.Player;
 using System;
-using Mirror;
 
 
 namespace HR.Object{
 [RequireComponent(typeof(NavMeshAgent))]
-public class MinionBase : Health
+public abstract class MinionBase : Health
 {
-    // Constant string
+    #region Parameter
+    [Header("State Strings")]
     const string WALK = "Walk";
     const string CHASE = "Chase";
     const string ATTACK = "Attack";
@@ -31,11 +31,10 @@ public class MinionBase : Health
     protected float timer = 1f;
     [SerializeField] protected float deadTime = 1f;
     [SerializeField] protected Bar healthBar;
-    /// <summary>
-    /// Add initial current_State then call base.Start().
-    /// </summary>
-    protected virtual void Start()
+    #endregion
+    protected override void Awake()
     {
+        base.Awake();
         // NavMeshAgent Check
         if (!TryGetComponent<NavMeshAgent>(out agent))
         {
@@ -46,6 +45,12 @@ public class MinionBase : Health
         {
             Debug.LogError("CharacterBase must have a Outline Component.");
         }
+    }
+    /// <summary>
+    /// Add initial current_State then call base.Start().
+    /// </summary>
+    protected virtual void Start()
+    {
         // Initial State Dictionary
         CharacterState = new Dictionary<string, Action>{};
         // Add State to Dictionary
@@ -57,7 +62,7 @@ public class MinionBase : Health
         }
     }
     /// <summary>Add State to CharacterState Dictionary.</summary>
-    protected virtual void Add_State(){}
+    protected abstract void Add_State();
     protected virtual void Update()
     {
         if (CharacterState.ContainsKey(current_State))
@@ -81,11 +86,10 @@ public class MinionBase : Health
         Selectable.instance.updateInfo(this);
         return isdead;
     }
-    public override void Death()
+    protected override void Death()
     {
         // Set Health to 0
         currentHealth = 0;
-        healthBar.SetValue(0);
         Destroy(gameObject);
     }
     public void Update_Enemy_Layer(int layer)
@@ -104,6 +108,7 @@ public class MinionBase : Health
     {
         List<CharacterSkillBase> tempCharacterSkill = new List<CharacterSkillBase>();
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
+        // Check is CharacterSkillBase
         foreach (Collider collider in hitColliders)
         {
             CharacterSkillBase tempSkill = collider.transform.root.GetComponent<CharacterSkillBase>();

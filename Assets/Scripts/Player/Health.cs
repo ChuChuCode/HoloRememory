@@ -3,28 +3,49 @@ using Mirror;
 using UnityEngine;
 namespace HR.Object{
 
-public class Health : NetworkBehaviour
+public abstract class Health : NetworkBehaviour
 {
-    /// <summary>Get exp when be killed.</summary>
+    #region Patameter
+    [Tooltip("Get exp when be killed.")]
     public int exp;
+    [Tooltip("Get coin when be killed.")]
     public int coin;
     [SyncVar] public int maxHealth ;
-    [SyncVar(hook = nameof(Set_Health))] public int currentHealth;
+    [SyncVar(hook = nameof(Set_Health))] public int currentHealth = 1;
     [SyncVar] public bool isDead = false;
     public Transform Target;
-    void Start()
+    #endregion
+    protected virtual void Awake()
     {
-           
+        // Check exp setting
+        if (exp == 0)
+        {
+            Debug.LogWarning($"Please set exp parameter for {GetType().Name}:{gameObject.name}.");
+        }
+        // Check coin setting
+        if (coin == 0)
+        {
+            Debug.LogWarning($"Please set coin parameter for {GetType().Name}:{gameObject.name}.");
+        }
+        if (maxHealth == 0)
+        {
+            Debug.LogWarning($"Please set maxHealth parameter for {GetType().Name}:{gameObject.name}.");
+        }
     }
-        /// <summary>Set Health to maxHealth.</summary>
-        public virtual void InitialHealth()
+    #region Method for Health
+    /// <summary>
+    /// Set currentHealth to maxHealth.
+    /// </summary>
+    public virtual void InitialHealth()
     {
         if (isServer) currentHealth = maxHealth;
         else if (isClient) CmdSetlHealth(maxHealth);
     }
     /// <summary>
-    /// Let gameobject get damage. Return is dead or not.
+    /// Decrease health to currentHealth.
     /// </summary>
+    /// <param name="damage">Decreased health.</param>
+    /// <returns>Is gameobject dead or not.</returns>
     public virtual bool GetDamage(int damage)
     {
         int beforeHealth = currentHealth;
@@ -32,6 +53,10 @@ public class Health : NetworkBehaviour
         else if (isClient) CmdSetlHealth(currentHealth - damage);
         return beforeHealth > 0 && currentHealth <= 0 ;
     }
+    /// <summary>
+    /// Add health to currentHealth.
+    /// </summary>
+    /// <param name="health">Added health.</param>
     public virtual void Heal(int health)
     {
         if (isServer) currentHealth += health;
@@ -41,24 +66,35 @@ public class Health : NetworkBehaviour
             currentHealth = maxHealth;
         }
     }
-    /// <summary>Do things when Dead.</summary>
-    public virtual void Death(){}
+    /// <summary>
+    /// Change currentHealth from Client to Server.(Only set thing on Authority Object)
+    /// </summary>
+    /// <param name="NewHealth">Changed currentHealth.</param>
     [Command]
     public virtual void CmdSetlHealth(int NewHealth)
     {
         currentHealth = NewHealth;
     }
+    /// <summary>
+    /// Hook for currentHealth
+    /// </summary>
     public virtual void Set_Health(int OldValue,int NewValue)
     {
         Selectable.instance.updateInfo(this);
         // print(gameObject.name + " : " + OldValue + " -> " + NewValue);
     }
     /// <summary>
-    /// Get Distance from gameobject to Enemy edge(center distance - Enemy radius)
+    // Do things when Dead.
+    // </summary>
+    protected abstract void Death();
+    #endregion
+
+    #region Other Method
+    /// <summary>
+    /// Get Distance from gameobject to Enemy edge(center distance - Enemy radius).
     /// </summary>
-    /// <param name="enemy"></param>
-    /// <returns></returns>
-    /// 
+    /// <param name="enemy">Target to attack.</param>
+    /// <returns>Distance from gameobject to Enemy edge.</returns>
     protected float Get_Target_Radius(Transform enemy)
     {
         float radius = 0;
@@ -75,6 +111,11 @@ public class Health : NetworkBehaviour
         
         return Vector3.Distance(enemy.transform.position,transform.position) - radius;
     }
+    /// <summary>
+    /// Check the nearest object in hitColliders array
+    /// </summary>
+    /// <param name="hitColliders">Array of colliders.</param>
+    /// <returns>The nearest object from GameObject.</returns>
     protected Transform Search_Nearest(Collider[] hitColliders)
     {
         if (hitColliders.Length == 0) return null;
@@ -92,6 +133,7 @@ public class Health : NetworkBehaviour
         }
         return target;
     }
+    #endregion
 }
 
 }

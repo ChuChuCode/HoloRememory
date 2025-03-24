@@ -15,7 +15,7 @@ using HR.Network;
 namespace HR.Object.Player{
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(CharacterSkillBase))]
-public class CharacterBase: Health
+public abstract class CharacterBase: Health
 {
     [Header("Animator")]
     [SerializeField] protected Animator animator;
@@ -71,6 +71,8 @@ public class CharacterBase: Health
     [SerializeField] protected float Attack_Range;
     [Header("Recall")]
     float RecallTime = 8f;
+    [Header("Dead Time")]
+    float DeadTime = 3f;
     [SerializeField] protected VisualEffect RecallEffect;
     [SerializeField] protected bool isRecall = false;
     [SyncVar] public SpellBase[] Spells = new SpellBase[2];
@@ -93,6 +95,8 @@ public class CharacterBase: Health
     [Header("Number of Minions and Towers Destroyed")]
     [SyncVar(hook = nameof(KDAChange))] public int minion = -1;
     [SyncVar(hook = nameof(KDAChange))] public int tower = -1;
+    [Header("Character Info")]
+    AnimatorStateInfo stateInfo;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -106,9 +110,9 @@ public class CharacterBase: Health
             return manager = Network_Manager.singleton as Network_Manager;
         }
     }
-    protected virtual void Awake()
+    protected override void Awake()
     {
-        Manager.Player_List.Add(this);
+        base.Awake();
         // NavMeshAgent Check
         if (!TryGetComponent<NavMeshAgent>(out agent))
         {
@@ -124,6 +128,7 @@ public class CharacterBase: Health
         {
             Debug.LogError("CharacterBase must have a CharacterSkillBase Component.",skillComponent);
         }
+        Manager.Player_List.Add(this);
         DontDestroyOnLoad(gameObject);
     }
     protected virtual void OnEnable() 
@@ -277,6 +282,39 @@ public class CharacterBase: Health
     protected virtual void Update()
     {
         if (!isLocalPlayer) return;
+
+        // Skill Reset
+        if (MainInfoUI.instance != null)
+        {
+            SkillUpdate(false);
+        }
+
+        // Dead already and wait to respawn
+        if (isDead) 
+        {
+            return;
+        }
+        // Dead now 
+        if (currentHealth <= 0 && !isDead)
+        {
+            // Screen to black/white
+            DeadScreen.instance.isDead(true);
+            agent.isStopped = true;
+            animator.Play("Dead");
+
+            isDead = true;
+            //****** Unregister control -> need to change to only skill
+            InputComponent.instance.playerInput.Player.Disable();
+            
+            // Dead Time Start
+            Death();
+            return;
+        }
+
+        // Check Free Camera Reset -> Camera_Reset
+        Camera_Reset();
+        
+        HandleMoveAnmation();
         // Passive skill
         Passive();
         // RayCast Mouse
@@ -286,7 +324,62 @@ public class CharacterBase: Health
         // Normal Attack
         Attack();
     }
-    protected virtual void OnDestroy() 
+    protected virtual void SkillUpdate(bool isRespawn)
+    {
+        if (isRespawn) 
+        {
+            // Change all cool down to 0
+        }
+        else
+        {
+            // Update cool down per Update
+        }
+    }
+    protected override void Death()
+    {
+        float dead_start_time = Time.time;
+        Target = null;
+        StartCoroutine(nameof(DeadCountDown),dead_start_time);
+    }
+    IEnumerator DeadCountDown(float dead_start_time)
+    {
+        while (Time.time - dead_start_time < DeadTime)
+        {
+            // Update UI wait time
+            yield return null;
+        }
+
+        // Health Initial
+        InitialHealth();
+        // Respawn
+        if (gameObject.layer == LayerMask.NameToLayer("Team1"))
+        {
+            agent.Warp(GameController.Instance.Team1_transform.position);
+        }
+        else if (gameObject.layer == LayerMask.NameToLayer("Team2"))
+        {
+            agent.Warp(GameController.Instance.Team2_transform.position);
+        }
+
+        // Reset Skill Cooldown
+        SkillUpdate(true);
+
+        // Screen Control
+        DeadScreen.instance.isDead(false);
+
+        // Animation Control
+        agent.isStopped = false;
+        animator.Play("Idle");
+
+        // Register control
+        InputComponent.instance.playerInput.Player.Enable();
+
+        // Reset isDead
+        isDead = false;
+
+        yield return null;
+    }
+        protected virtual void OnDestroy() 
     {
         // Reset all bindings
         InputComponent.instance.Reset();
@@ -700,21 +793,21 @@ public class CharacterBase: Health
     } 
 
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnQKeyDown(){return true;}
+    public abstract bool OnQKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnQKeyUp(){return true;}
+    public abstract bool OnQKeyUp();
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnWKeyDown(){return true;}
+    public abstract bool OnWKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnWKeyUp(){return true;}
+    public abstract bool OnWKeyUp();
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnEKeyDown(){return true;}
+    public abstract bool OnEKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnEKeyUp(){return true;}
+    public abstract bool OnEKeyUp();
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnRKeyDown(){return true;}
+    public abstract bool OnRKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public virtual bool OnRKeyUp(){return true;}
+    public abstract bool OnRKeyUp();
     public void OnQKeyModifierUp()
     {
         // If Q Button is shown
@@ -825,17 +918,17 @@ public class CharacterBase: Health
     }
     #region Skill UI
     /// <summary>Hide Q skill preview.</summary>
-    protected virtual void Hide_Q_UI(){}
+    protected abstract void Hide_Q_UI();
     /// <summary>Hide W skill preview.</summary>
-    protected virtual void Hide_W_UI(){}
+    protected abstract void Hide_W_UI();
     /// <summary>Hide E skill preview.</summary>
-    protected virtual void Hide_E_UI(){}
+    protected abstract void Hide_E_UI();
     /// <summary>Hide R skill preview.</summary>
-    protected virtual void Hide_R_UI(){}
+    protected abstract void Hide_R_UI();
     #endregion
     // Passive Skill
     /// <summary>This method relate to Passive Skill.</summary>
-    public virtual void Passive(){}
+    protected abstract void Passive();
     /// <summary>This is invoked when Mouse Move. Now use "Get_Project_Mouse" to Update Project Point.</summary>
     // public virtual void OnMousePositionInput()
     // {
@@ -1238,6 +1331,32 @@ public class CharacterBase: Health
         foreach(Transform child in children)
         {
             child.gameObject.layer = PlayerLayer;
+        }
+    }
+    protected void HandleMoveAnmation()
+    {
+        // If stand Animation => stop move and rotate
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if(stateInfo.IsTag("stand"))
+        {
+            agent.isStopped = true;
+            animator.SetBool("isMove",false);
+            return;
+        }
+        else
+        {
+            agent.isStopped = false;
+        }
+        bool isRun = agent.velocity.magnitude > 0;
+        // Run when idle
+        if (isRun)
+        {
+            animator.SetBool("isMove",true);
+        }
+        // idle when run
+        else
+        {
+            animator.SetBool("isMove",false);
         }
     }
 }

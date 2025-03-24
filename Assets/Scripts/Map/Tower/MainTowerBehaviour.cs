@@ -30,7 +30,7 @@ public class MainTowerBehaviour : TowerBase
             Death();
         }
     }
-    public override void Death()
+    protected override void Death()
     {
         base.Death();
         StartCoroutine(nameof(EndGame));

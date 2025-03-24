@@ -35,7 +35,7 @@ public class SubaruMovementController_old : Health
 
     AnimatorStateInfo stateInfo;
 
-    void Awake()
+    protected override void Awake()
     {
         playerInput = new PlayerInputActions();
         characterController = GetComponent<CharacterController>();
@@ -193,8 +193,8 @@ public class SubaruMovementController_old : Health
         currentHealth = maxHealth;
     }
 
-    public override void Death()
+    protected override void Death()
     {
-        
+        throw new NotImplementedException();
     }
 }

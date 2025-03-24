@@ -5,7 +5,7 @@ using HR.Object.Map;
 
 public class MiddleTowerBehaviour : TowerBase
 {
-    public override void Death()
+    protected override void Death()
     {
         GetComponent<Collider>().enabled = false;
         if (Next_Tower_Collider != null)

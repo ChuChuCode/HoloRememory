@@ -68,8 +68,8 @@ public class CharacterSkillBase : NetworkBehaviour
     }
     public void AddExp(int exp)
     {
-        if (!isOwned) return;
-        CmdAddExp(exp);
+        if (isServer) this.Character_exp += exp;
+        else if (isClient) CmdAddExp(exp);
         // int new_Level = Detect_Level();
         // print("Character_Level : " + Character_Level );
         // print("Character_exp : " + Character_exp );

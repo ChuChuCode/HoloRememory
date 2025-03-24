@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1412844442378232966}
   - component: {fileID: 4427909071664426912}
   - component: {fileID: 8858132206322532672}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Trial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 1977883244337380264}
   - component: {fileID: -5928496391528407538}
   - component: {fileID: 2166354357350685228}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: MinionAttackBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
