@@ -69,6 +69,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "A",
+                    "type": "Button",
+                    "id": "667a0608-5e50-4db3-9c7c-f1e1a6fcb5ae",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Right_Mouse",
                     "type": "Button",
                     "id": "16b4b54b-ef35-4997-9e80-864564744578",
@@ -592,6 +601,17 @@
                     "processors": "",
                     "groups": ";KeyBoard and Mouse",
                     "action": "F",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3f6daf38-eb85-4c53-ab42-746f5db165a0",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "A",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

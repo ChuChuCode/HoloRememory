@@ -91,6 +91,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""A"",
+                    ""type"": ""Button"",
+                    ""id"": ""667a0608-5e50-4db3-9c7c-f1e1a6fcb5ae"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Right_Mouse"",
                     ""type"": ""Button"",
                     ""id"": ""16b4b54b-ef35-4997-9e80-864564744578"",
@@ -616,6 +625,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""F"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3f6daf38-eb85-4c53-ab42-746f5db165a0"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -811,6 +831,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_R = m_Player.FindAction("R", throwIfNotFound: true);
         m_Player_D = m_Player.FindAction("D", throwIfNotFound: true);
         m_Player_F = m_Player.FindAction("F", throwIfNotFound: true);
+        m_Player_A = m_Player.FindAction("A", throwIfNotFound: true);
         m_Player_Right_Mouse = m_Player.FindAction("Right_Mouse", throwIfNotFound: true);
         m_Player_Left_Mouse = m_Player.FindAction("Left_Mouse", throwIfNotFound: true);
         m_Player_Camera_Change = m_Player.FindAction("Camera_Change", throwIfNotFound: true);
@@ -910,6 +931,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_R;
     private readonly InputAction m_Player_D;
     private readonly InputAction m_Player_F;
+    private readonly InputAction m_Player_A;
     private readonly InputAction m_Player_Right_Mouse;
     private readonly InputAction m_Player_Left_Mouse;
     private readonly InputAction m_Player_Camera_Change;
@@ -939,6 +961,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @R => m_Wrapper.m_Player_R;
         public InputAction @D => m_Wrapper.m_Player_D;
         public InputAction @F => m_Wrapper.m_Player_F;
+        public InputAction @A => m_Wrapper.m_Player_A;
         public InputAction @Right_Mouse => m_Wrapper.m_Player_Right_Mouse;
         public InputAction @Left_Mouse => m_Wrapper.m_Player_Left_Mouse;
         public InputAction @Camera_Change => m_Wrapper.m_Player_Camera_Change;
@@ -987,6 +1010,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @F.started += instance.OnF;
             @F.performed += instance.OnF;
             @F.canceled += instance.OnF;
+            @A.started += instance.OnA;
+            @A.performed += instance.OnA;
+            @A.canceled += instance.OnA;
             @Right_Mouse.started += instance.OnRight_Mouse;
             @Right_Mouse.performed += instance.OnRight_Mouse;
             @Right_Mouse.canceled += instance.OnRight_Mouse;
@@ -1066,6 +1092,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @F.started -= instance.OnF;
             @F.performed -= instance.OnF;
             @F.canceled -= instance.OnF;
+            @A.started -= instance.OnA;
+            @A.performed -= instance.OnA;
+            @A.canceled -= instance.OnA;
             @Right_Mouse.started -= instance.OnRight_Mouse;
             @Right_Mouse.performed -= instance.OnRight_Mouse;
             @Right_Mouse.canceled -= instance.OnRight_Mouse;
@@ -1233,6 +1262,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnR(InputAction.CallbackContext context);
         void OnD(InputAction.CallbackContext context);
         void OnF(InputAction.CallbackContext context);
+        void OnA(InputAction.CallbackContext context);
         void OnRight_Mouse(InputAction.CallbackContext context);
         void OnLeft_Mouse(InputAction.CallbackContext context);
         void OnCamera_Change(InputAction.CallbackContext context);

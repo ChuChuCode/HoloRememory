@@ -172,7 +172,7 @@ public class Duck_AI : MinionBase
         if (isAttack) animator.SetBool("isAttack",false);
 
         // Check enemy faraway or dead
-        if (Target == null || Vector3.Distance(Target.transform.position,transform.position) > Search_radius || Target.GetComponent<Health>().currentHealth <= 0) 
+        if (Target == null || Get_Target_Radius(Target) > Search_radius || Target.GetComponent<Health>().currentHealth <= 0) 
         {
             // Check enemy nearby
             hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
@@ -198,7 +198,8 @@ public class Duck_AI : MinionBase
         }
 
         // If is in attack Range -> to attack state
-        if (Vector3.Distance(Target.transform.position,transform.position) < 2f)
+        // Get Colldier Type and get Distance
+        if (Get_Target_Radius(Target) < 2f)
         {
             current_State = ATTACK;
             return;
@@ -216,7 +217,7 @@ public class Duck_AI : MinionBase
 
         // Check enemy faraway or dead
         if (Target == null || 
-            Vector3.Distance(Target.transform.position,transform.position) > Search_radius || 
+            Get_Target_Radius(Target) > Search_radius || 
             Target.GetComponent<Health>().currentHealth <= 0) 
         {
             // Check enemy nearby
@@ -226,7 +227,7 @@ public class Duck_AI : MinionBase
             {
                 Target = Search_Nearest(hitColliders);
                 // Check distance
-                if (Vector3.Distance(Target.transform.position,transform.position) < 2f)
+                if (Get_Target_Radius(Target) < 2f)
                 {
                     // still attack
                     current_State = ATTACK;
@@ -253,7 +254,7 @@ public class Duck_AI : MinionBase
             }
         }
         // if is out of attack range -> chase
-        if (Vector3.Distance(Target.transform.position,transform.position) >= 2f)
+        if (Get_Target_Radius(Target) >= 2f)
         {
             current_State = CHASE;
             return;
@@ -310,22 +311,6 @@ public class Duck_AI : MinionBase
             current_State = IDLE;
         }
     }
-    Transform Search_Nearest(Collider[] hitColliders)
-    {
-        Transform target = hitColliders[0].transform.root;
-        float distance = Vector3.Distance(transform.position, hitColliders[0].transform.position);
-
-        for (int i = 1; i < hitColliders.Length; i++)
-        {
-            float temp_distance = Vector3.Distance(transform.position, hitColliders[i].transform.position);
-            if ( temp_distance < distance)
-            {
-                target = hitColliders[i].transform.root;
-                distance = temp_distance;
-            }
-        }
-        return target;
-    }
     /// <summary>
     /// Set Q Skill Priview Show.
     /// </summary>
@@ -341,7 +326,7 @@ public class Duck_AI : MinionBase
     }
     public void Attack()
     {
-        if (!NetworkServer.active) return;
+        if (!isOwned) return;
         CmdAttack(Target);
     }
     [Command]

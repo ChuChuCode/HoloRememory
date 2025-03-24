@@ -6,7 +6,9 @@ using HR.Object.Player;
 using System;
 using Mirror;
 
+
 namespace HR.Object{
+[RequireComponent(typeof(NavMeshAgent))]
 public class MinionBase : Health
 {
     // Constant string
@@ -22,7 +24,6 @@ public class MinionBase : Health
     [SerializeField] protected Animator animator;
     [Tooltip("Follow Player or go to a fixed destination")]
     public Transform MainDestination;
-    [SerializeField] protected Transform Target;
     [SerializeField] protected LayerMask Layer_Enemy;
     [Header("Attack")]
     [SerializeField] protected float Search_radius = 8f;
@@ -35,7 +36,7 @@ public class MinionBase : Health
     /// </summary>
     protected virtual void Start()
     {
-        // Outline NavMeshAgent Check
+        // NavMeshAgent Check
         if (!TryGetComponent<NavMeshAgent>(out agent))
         {
             Debug.LogError("CharacterBase must have a NavMeshAgent Component.",agent);

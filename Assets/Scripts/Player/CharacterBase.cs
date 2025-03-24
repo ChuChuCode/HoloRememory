@@ -37,7 +37,8 @@ public class CharacterBase: Health
     [SyncVar] public int TeamID;
     [SyncVar] public int CharacterID;
     [SyncVar] public string PlayerName;
-
+    [Header("Attack Pressed")]
+    [SerializeField] protected bool IsPressed_Attack = false;
     [Header("Skill Pressed")]
     [SerializeField] protected bool IsPressed_Q = false;
     [SerializeField] protected bool IsPressed_W = false;
@@ -65,7 +66,6 @@ public class CharacterBase: Health
     // prevent cancel and walk at the same time
     private bool isSkillCanceled = false;
     [SerializeField] protected LayerMask MouseTargetLayer;
-    public Transform Target;
     protected Ray ray;
     [Header("Attack")]
     [SerializeField] protected float Attack_Range;
@@ -229,6 +229,10 @@ public class CharacterBase: Health
         InputComponent.instance.playerInput.Player.F.started += _ => FKeyDown();
         InputComponent.instance.playerInput.Player.F.canceled += _ => FKeyUp();
 
+        // A attack
+        InputComponent.instance.playerInput.Player.A.started += _ => AKeyDown();
+        InputComponent.instance.playerInput.Player.A.canceled += _ => AKeyUp();
+
         // Equipment Key
         InputComponent.instance.playerInput.Player.Equipment1.started += _ => UseEquipmentKeyDown(0);
         InputComponent.instance.playerInput.Player.Equipment2.started += _ => UseEquipmentKeyDown(1);
@@ -305,9 +309,13 @@ public class CharacterBase: Health
         MainInfoUI.instance.updateInfo();
         Selectable.instance.updateInfo(this);
     }
-        /// <summary>This is invoked when Mouse Right Click Down.</summary>
-        public virtual void OnRightMouseClick()
+    /// <summary>This is invoked when Mouse Right Click Down.</summary>
+    public virtual void OnRightMouseClick()
     {
+        if (IsPressed_Attack)
+        {
+            IsPressed_Attack = false;
+        }
         // Check skill is Hovering
         if (IsPressed_Q)
         {
@@ -453,8 +461,13 @@ public class CharacterBase: Health
     /// <summary>This is invoked when Mouse Left Click Down.</summary>
     public virtual void OnLeftMouseClick()
     {
+        if (IsPressed_Attack)
+        {
+
+            AKeyUp();
+        }
         // Check skill is Previewing
-        if (IsPressed_Q)
+        else if (IsPressed_Q)
         {
             // Hide Q preview
             Hide_Q_UI();
@@ -616,6 +629,75 @@ public class CharacterBase: Health
         IsPressed_F = false;
         Spells[1].SpellKeyUp(this);
     }
+    public virtual void AKeyDown()
+    {
+        IsPressed_Attack = true;
+        // Attack Show Range
+        
+    }
+    public virtual void AKeyUp()
+    {
+        if (!IsPressed_Attack) return;
+        IsPressed_Attack = false;
+        Stop_Recall();
+        // Calculate mouse Project
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit,Mathf.Infinity,MouseTargetLayer))
+        {
+            // if mouseRaycast to Land Layer 
+            if (hit.transform.root.gameObject.layer == LayerMask.NameToLayer("Land"))
+            {
+                // Layer Mask for enemy only
+                LayerMask enemyLayer = MouseTargetLayer & ~(1 << LayerMask.NameToLayer("Land"));
+                Vector3 moveVelocity;
+                // Find hit.point near enemy
+                Collider[] hitColliders = Physics.OverlapSphere(hit.point, Attack_Range, enemyLayer);
+                Transform temp = Search_Nearest(hitColliders);
+                if (temp != null)
+                {
+                    agent.isStopped = false;
+                    Target = temp.transform.root;
+                    agent.destination = Target.position;
+                    moveVelocity = Target.position - transform.position;
+                    // Rotate Immediately
+                    agent.velocity = moveVelocity.normalized * agent.speed;
+                    return;
+                }
+                // No Target near hit.point -> Find enemy near character(player)
+                hitColliders = Physics.OverlapSphere(transform.position, Attack_Range, enemyLayer);
+                temp = Search_Nearest(hitColliders);
+                if (temp != null)
+                {
+                    agent.isStopped = false;
+                    Target = temp.transform.root;
+                    agent.destination = Target.position;
+                    moveVelocity = Target.position - transform.position;
+                    // Rotate Immediately
+                    agent.velocity = moveVelocity.normalized * agent.speed;
+                    return;
+                }
+                // No enemy near player -> walk to hit.point
+                agent.isStopped = false;
+                agent.destination = hit.point;
+                Target = null;
+                moveVelocity = hit.point - transform.position;
+                // Rotate Immediately
+                agent.velocity = moveVelocity.normalized * agent.speed;
+                Instantiate(Target_Particle,hit.point + new Vector3(0,0.01f,0), Quaternion.identity);
+                return;
+            }
+            // Enemy Layer -> Set Enemy Transform and Calculate in CharacterMove()
+            else
+            {
+                agent.isStopped = false;
+                Target = hit.transform.root;
+                agent.destination = hit.transform.root.position;
+                Vector3 moveVelocity = hit.transform.root.position - transform.position;
+                // Rotate Immediately
+                agent.velocity = moveVelocity.normalized * agent.speed;
+            }
+        }
+    } 
 
     /// <summary>Return false to avoid skill use.</summary>
     public virtual bool OnQKeyDown(){return true;}
@@ -849,7 +931,7 @@ public class CharacterBase: Health
             animator.SetBool("isAttack",false);
             return;
         }
-        float distance = Vector3.Distance(Target.position,transform.position);
+        float distance = Get_Target_Radius(Target);
         // If Target is in range -> stop and attack
         if ( distance < Attack_Range)
         {

@@ -31,62 +31,74 @@ public class Selectable : MonoBehaviour
         {
             // Get Component
             Transform temp = raycastHit.transform.root;
-            if (temp.CompareTag("Selectable") && temp != select)
+            // If is Selectable
+            if (temp.CompareTag("Selectable") )
             {
-                // still highlight but differnet object
-                if (highlight != null && temp != highlight)
+                // change only when hover one is not select
+                if (temp != select)
                 {
-                    highlight.gameObject.GetComponent<Outline>().enabled = false;
+                    // still highlight but differnet object
+                    if (highlight != null && highlight != select)
+                    {
+                        // hide old highlight
+                        highlight.gameObject.GetComponent<Outline>().enabled = false;
+                    }
+                    // replace new highlight
+                    highlight = temp;
+                    // new highlight show
+                    highlight.gameObject.GetComponent<Outline>().OutlineWidth = 1f;
+                    highlight.gameObject.GetComponent<Outline>().enabled = true;
+                    highlight.gameObject.GetComponent<Outline>().UpdateMaterialProperties();
+                    // Check Outline Color
+                    Check_Outline_Color(highlight);
                 }
-                // New one highlight
-                highlight = temp;
-                highlight.gameObject.GetComponent<Outline>().enabled = true;
-                highlight.gameObject.GetComponent<Outline>().OutlineWidth = 1.5f;
-                // Check Outline Color
-                Check_Outline_Color(highlight);
             }
             else
             {
-                if (highlight != null)
+                // hide highlight
+                if (highlight != null && highlight != select)
                 {
                     highlight.gameObject.GetComponent<Outline>().enabled = false;
-                    highlight = null;
                 }
+                highlight = null;
             }
         }
         else
         {
-            if (highlight != null)
+            // hide highlight
+            if (highlight != null && highlight != select)
             {
                 highlight.gameObject.GetComponent<Outline>().enabled = false;
-                highlight = null;
             }
+            highlight = null;
         }
         // Left Click
         if ( InputComponent.instance.playerInput.Player.Left_Mouse.WasPressedThisFrame()
             && !EventSystem.current.IsPointerOverGameObject())
         {
-            // if is hgihlight and click
+            // if is highlight and click
             if (highlight != null)
             {
-                // If already select
+                // hide old select
                 if (select != null)
                 {
                     select.gameObject.GetComponent<Outline>().enabled = false;
                 }
                 // Select UI show
                 SelectInfo.SetActive(true);
-                // Set Outline
+                // Replace new select
                 select = highlight;
                 select.gameObject.GetComponent<Outline>().enabled = true;
-                select.gameObject.GetComponent<Outline>().OutlineWidth = 1f;
+                select.gameObject.GetComponent<Outline>().UpdateMaterialProperties();
                 // Check Outline Color
                 Check_Outline_Color(select);
-                highlight = null;
+                select.gameObject.GetComponent<Outline>().OutlineWidth = 2f;
+
                 // Set HP/SP
                 HP.SetMaxValue(select.GetComponent<Health>().maxHealth);
                 HP.SetValue(select.GetComponent<Health>().currentHealth);
             }
+            // if not highlight and click
             else
             {
                 // If already select 
@@ -94,7 +106,7 @@ public class Selectable : MonoBehaviour
                 {
                     // Select UI hide
                     SelectInfo.SetActive(false);
-                    // Set Outline
+                    // hide Outline
                     select.gameObject.GetComponent<Outline>().enabled = false;
                     select = null;
                 }

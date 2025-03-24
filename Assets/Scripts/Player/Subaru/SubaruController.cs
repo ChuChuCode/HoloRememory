@@ -15,7 +15,7 @@ public class SubaruController : CharacterBase
     [Header("Passive")]
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     [SerializeField] Duck_AI Duck_prefab;
-    int max_duck_num = 3;
+    [SerializeField] int max_duck_num = 3;
     [Header("Duck Skills")]
     [SerializeField] Duck_Ult Duck_Ult;
     int isRunHash;

@@ -62,7 +62,7 @@ public class Minions : MinionBase
             return;
         }
         // Check Distance
-        float distance = Vector3.Distance(transform.position, Target.position);
+        float distance = Get_Target_Radius(Target);
         if (distance > Search_radius)
         {
             Target = null;
@@ -87,7 +87,7 @@ public class Minions : MinionBase
             return;
         }
         // Check Distance
-        float distance = Vector3.Distance(transform.position, Target.position);
+        float distance = Get_Target_Radius(Target);
         if (distance > Search_radius)
         {
             Target = null;

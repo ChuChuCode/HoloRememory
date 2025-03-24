@@ -1620,7 +1620,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.3424911
+  m_Radius: 0.3
   m_Center: {x: 0.00009635836, y: 0.34187418, z: 0.049009755}
 --- !u!4 &5051056400881711221 stripped
 Transform:
@@ -1674,11 +1674,11 @@ MonoBehaviour:
   maxHealth: 300
   currentHealth: 1
   isDead: 0
+  Target: {fileID: 0}
   current_State: 
   agent: {fileID: 0}
   animator: {fileID: 883360396524798469}
   MainDestination: {fileID: 0}
-  Target: {fileID: 0}
   Layer_Enemy:
     serializedVersion: 2
     m_Bits: 960
@@ -1752,7 +1752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   outlineMode: 0
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 2
+  outlineWidth: 0
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []

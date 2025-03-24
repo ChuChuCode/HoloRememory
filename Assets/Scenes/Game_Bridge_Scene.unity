@@ -6852,7 +6852,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 1.02e-43, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 7.5327346e+28, y: 6e-44, z: 1.29e-43, w: 5.188e-42}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -9424,8 +9424,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.24217367, y: 0.47335285, z: -0.13716282, w: 0.83574843}
-  m_LocalPosition: {x: -44.229, y: 40.547, z: -23.043999}
+  m_LocalRotation: {x: 0.37071818, y: 0.35052392, z: -0.15355648, w: 0.8462396}
+  m_LocalPosition: {x: -23.529, y: 49.147, z: -22.644001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14760,8 +14760,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 0
-  outlineColor: {r: 0.007843138, g: 1, b: 0, a: 1}
-  outlineWidth: 3
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
@@ -14825,6 +14825,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   isDead: 0
+  Target: {fileID: 0}
   ShowGizmos: 0
   Next_Tower_Collider: {fileID: 0}
   attack_radius: 5
@@ -16668,8 +16669,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 0
-  outlineColor: {r: 0.007843138, g: 1, b: 0, a: 1}
-  outlineWidth: 3
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
@@ -16733,6 +16734,7 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   isDead: 0
+  Target: {fileID: 0}
   ShowGizmos: 0
   Next_Tower_Collider: {fileID: 0}
   attack_radius: 5
