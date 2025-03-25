@@ -104,10 +104,10 @@ public abstract class MinionBase : Health
             Layer_Enemy &= ~(1 << LayerMask.NameToLayer("Team2Building"));
         }    
     }
-    protected void Detect_Surround()
+    protected void Exp_Detect_Surround()
     {
         List<CharacterSkillBase> tempCharacterSkill = new List<CharacterSkillBase>();
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, Search_radius, Layer_Enemy);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 10f, Layer_Enemy);
         // Check is CharacterSkillBase
         foreach (Collider collider in hitColliders)
         {

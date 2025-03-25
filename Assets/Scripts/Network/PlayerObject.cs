@@ -5,6 +5,7 @@ using HR.Network.Lobby;
 using HR.Network.Select;
 using HR.Network.Result;
 using UnityEngine;
+using HR.Object.Player;
 
 namespace HR.Network{
 public class PlayerObject : NetworkBehaviour
@@ -22,6 +23,8 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerKDAUpdate))] public int kill = -1;
     [SyncVar(hook = nameof(PlayerKDAUpdate))] public int death = -1;
     [SyncVar(hook = nameof(PlayerKDAUpdate))] public int assist = -1;
+    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int minion = -1;
+    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int tower = -1;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -157,7 +160,10 @@ public class PlayerObject : NetworkBehaviour
     }
     void CharacterSelect(int OldValue,int NewValue)
     {
-        SelectController.Instance.UpdatePlayerUI();
+        if (SceneManager.GetActiveScene().name == "Select_Scene")
+        {
+            SelectController.Instance.UpdatePlayerUI();
+        }
     }
     [Command]
     public void CmdAddMessage(string userName, string message)
@@ -218,21 +224,26 @@ public class PlayerObject : NetworkBehaviour
         }
         Destroy(Manager.gameObject);
     }
-    public void CanKDAChange(int kill,int death,int assist)
+    public void CanKDAChange(CharacterBase characterBase)
     {
-        CmdSetKDA(kill,death,assist);
+        CmdSetKDA(characterBase);
     }
     [ServerCallback]
-    void CmdSetKDA(int kill,int death,int assist)
+    void CmdSetKDA(CharacterBase characterBase)
     {
-        this.kill = kill;
-        this.death = death;
-        this.assist = assist;
+        this.kill = characterBase.kill;
+        this.death = characterBase.death;
+        this.assist = characterBase.assist;
+        this.minion = characterBase.minion;
+        this.tower = characterBase.tower;
     }
     void PlayerKDAUpdate(int OldValue,int NewValue)
     {
-        ResultController.Instance.UpdateUI();
-        ResultController.Instance.Show_Result(manager.LoseTeam, TeamID);
+        if (SceneManager.GetActiveScene().name == "Result_Scene")
+        {
+            ResultController.Instance.UpdateUI();
+            ResultController.Instance.Show_Result(manager.LoseTeam, TeamID);
+        } 
     }
 }
 

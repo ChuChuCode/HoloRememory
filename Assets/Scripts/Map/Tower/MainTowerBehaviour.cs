@@ -37,8 +37,6 @@ public class MainTowerBehaviour : TowerBase
     }
     IEnumerator EndGame()
     {
-        // Input Reset
-        InputComponent.instance.Reset();
         // Show Result UI
         StatusController.Instance.gameObject.SetActive(true);
         // Show Win/Lose

@@ -638,169 +638,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
-        },
-        {
-            ""name"": ""Player_old"",
-            ""id"": ""3406a063-99c8-4e0a-9e73-a1f7d577898e"",
-            ""actions"": [
-                {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""8eefb6cb-2f3f-4700-939c-f9239288abd9"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Attack"",
-                    ""type"": ""Button"",
-                    ""id"": ""dc21d329-3da1-4d1e-8b36-108a78d484bf"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": ""Press(behavior=1)"",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""MousePosition"",
-                    ""type"": ""Value"",
-                    ""id"": ""bf48b7bd-ff64-428a-8458-6f41cc766b66"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Special"",
-                    ""type"": ""Button"",
-                    ""id"": ""ddfd338c-aae9-4276-8e48-226e561df1c4"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Ult"",
-                    ""type"": ""Button"",
-                    ""id"": ""99fb8271-c815-430b-8ba9-ce33475e3439"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""4fe94138-4d8e-4aae-ad93-7e44104de175"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""75d420c3-da40-47c0-8a05-c2c57ad506c5"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""23923fb4-233b-4104-abd0-d3dfb87f1082"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""f2cdae94-9d6e-4e85-88f8-b032ddc1c63a"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""473d156f-4e5b-4b7f-9ce7-31874fea78c7"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c15c9419-ac93-4293-a544-4ec891bc339f"",
-                    ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c84f1e98-dc93-4ade-a116-3c6583594373"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Attack"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""520c0fe7-b891-4a47-8355-8e1a2f1da319"",
-                    ""path"": ""<Mouse>/position"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MousePosition"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c8a8a781-a3c0-4184-b236-76d819d3c190"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Special"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""94a78783-63e1-47e1-9a9a-4698a489f216"",
-                    ""path"": ""<Keyboard>/r"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Ult"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
         }
     ],
     ""controlSchemes"": [
@@ -850,19 +687,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Equipment4 = m_Player.FindAction("Equipment4", throwIfNotFound: true);
         m_Player_Equipment5 = m_Player.FindAction("Equipment5", throwIfNotFound: true);
         m_Player_Equipment6 = m_Player.FindAction("Equipment6", throwIfNotFound: true);
-        // Player_old
-        m_Player_old = asset.FindActionMap("Player_old", throwIfNotFound: true);
-        m_Player_old_Move = m_Player_old.FindAction("Move", throwIfNotFound: true);
-        m_Player_old_Attack = m_Player_old.FindAction("Attack", throwIfNotFound: true);
-        m_Player_old_MousePosition = m_Player_old.FindAction("MousePosition", throwIfNotFound: true);
-        m_Player_old_Special = m_Player_old.FindAction("Special", throwIfNotFound: true);
-        m_Player_old_Ult = m_Player_old.FindAction("Ult", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, PlayerInputActions.Player.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_Player_old.enabled, "This will cause a leak and performance issues, PlayerInputActions.Player_old.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -1166,84 +995,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
-
-    // Player_old
-    private readonly InputActionMap m_Player_old;
-    private List<IPlayer_oldActions> m_Player_oldActionsCallbackInterfaces = new List<IPlayer_oldActions>();
-    private readonly InputAction m_Player_old_Move;
-    private readonly InputAction m_Player_old_Attack;
-    private readonly InputAction m_Player_old_MousePosition;
-    private readonly InputAction m_Player_old_Special;
-    private readonly InputAction m_Player_old_Ult;
-    public struct Player_oldActions
-    {
-        private @PlayerInputActions m_Wrapper;
-        public Player_oldActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Player_old_Move;
-        public InputAction @Attack => m_Wrapper.m_Player_old_Attack;
-        public InputAction @MousePosition => m_Wrapper.m_Player_old_MousePosition;
-        public InputAction @Special => m_Wrapper.m_Player_old_Special;
-        public InputAction @Ult => m_Wrapper.m_Player_old_Ult;
-        public InputActionMap Get() { return m_Wrapper.m_Player_old; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(Player_oldActions set) { return set.Get(); }
-        public void AddCallbacks(IPlayer_oldActions instance)
-        {
-            if (instance == null || m_Wrapper.m_Player_oldActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_Player_oldActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-            @Attack.started += instance.OnAttack;
-            @Attack.performed += instance.OnAttack;
-            @Attack.canceled += instance.OnAttack;
-            @MousePosition.started += instance.OnMousePosition;
-            @MousePosition.performed += instance.OnMousePosition;
-            @MousePosition.canceled += instance.OnMousePosition;
-            @Special.started += instance.OnSpecial;
-            @Special.performed += instance.OnSpecial;
-            @Special.canceled += instance.OnSpecial;
-            @Ult.started += instance.OnUlt;
-            @Ult.performed += instance.OnUlt;
-            @Ult.canceled += instance.OnUlt;
-        }
-
-        private void UnregisterCallbacks(IPlayer_oldActions instance)
-        {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-            @Attack.started -= instance.OnAttack;
-            @Attack.performed -= instance.OnAttack;
-            @Attack.canceled -= instance.OnAttack;
-            @MousePosition.started -= instance.OnMousePosition;
-            @MousePosition.performed -= instance.OnMousePosition;
-            @MousePosition.canceled -= instance.OnMousePosition;
-            @Special.started -= instance.OnSpecial;
-            @Special.performed -= instance.OnSpecial;
-            @Special.canceled -= instance.OnSpecial;
-            @Ult.started -= instance.OnUlt;
-            @Ult.performed -= instance.OnUlt;
-            @Ult.canceled -= instance.OnUlt;
-        }
-
-        public void RemoveCallbacks(IPlayer_oldActions instance)
-        {
-            if (m_Wrapper.m_Player_oldActionsCallbackInterfaces.Remove(instance))
-                UnregisterCallbacks(instance);
-        }
-
-        public void SetCallbacks(IPlayer_oldActions instance)
-        {
-            foreach (var item in m_Wrapper.m_Player_oldActionsCallbackInterfaces)
-                UnregisterCallbacks(item);
-            m_Wrapper.m_Player_oldActionsCallbackInterfaces.Clear();
-            AddCallbacks(instance);
-        }
-    }
-    public Player_oldActions @Player_old => new Player_oldActions(this);
     private int m_KeyBoardandMouseSchemeIndex = -1;
     public InputControlScheme KeyBoardandMouseScheme
     {
@@ -1281,13 +1032,5 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnEquipment4(InputAction.CallbackContext context);
         void OnEquipment5(InputAction.CallbackContext context);
         void OnEquipment6(InputAction.CallbackContext context);
-    }
-    public interface IPlayer_oldActions
-    {
-        void OnMove(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
-        void OnMousePosition(InputAction.CallbackContext context);
-        void OnSpecial(InputAction.CallbackContext context);
-        void OnUlt(InputAction.CallbackContext context);
     }
 }

@@ -113,7 +113,7 @@ public class Minions : MinionBase
         if (timer == deadTime) 
         {
             animator.Play("Dead");
-            Detect_Surround();
+            Exp_Detect_Surround();
         }
         // Delete Object when timer is done
         timer -= Time.deltaTime;

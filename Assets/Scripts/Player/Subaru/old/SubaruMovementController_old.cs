@@ -42,17 +42,17 @@ public class SubaruMovementController_old : Health
 
         isRunHash = Animator.StringToHash("isMove");
 
-        playerInput.Player_old.Move.started += OnMovementInput;
-        playerInput.Player_old.Move.canceled += OnMovementInput;
-        playerInput.Player_old.Move.performed += OnMovementInput;
+        // playerInput.Player_old.Move.started += OnMovementInput;
+        // playerInput.Player_old.Move.canceled += OnMovementInput;
+        // playerInput.Player_old.Move.performed += OnMovementInput;
         
-        playerInput.Player_old.Special.started += OnMouseRigtClick;
+        // playerInput.Player_old.Special.started += OnMouseRigtClick;
 
-        playerInput.Player_old.MousePosition.started += OnMousePositionInput;
-        playerInput.Player_old.MousePosition.performed += OnMousePositionInput;
-        playerInput.Player_old.MousePosition.canceled += OnMousePositionInput;
+        // playerInput.Player_old.MousePosition.started += OnMousePositionInput;
+        // playerInput.Player_old.MousePosition.performed += OnMousePositionInput;
+        // playerInput.Player_old.MousePosition.canceled += OnMousePositionInput;
 
-        playerInput.Player_old.Ult.started += OnRkeyUltInput;
+        // playerInput.Player_old.Ult.started += OnRkeyUltInput;
 
         InitialHealth();
         
@@ -181,11 +181,11 @@ public class SubaruMovementController_old : Health
     }
     void OnEnable() 
     {
-        playerInput.Player_old.Enable();    
+        // playerInput.Player_old.Enable();    
     }
     void OnDisable()
     {
-        playerInput.Player_old.Disable();
+        // playerInput.Player_old.Disable();
     }
 
     public override void InitialHealth()

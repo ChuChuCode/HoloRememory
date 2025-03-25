@@ -130,6 +130,7 @@ public class CharacterSkillBase : NetworkBehaviour
             // Set Level UI
             MainInfoUI.instance.Set_Level(Character_Level);
         }
+        if (!isOwned) return;
         // print("Set_Exp::Character_Level : " + Character_Level);
         float ratio = Exp_Ratio(Character_Level);
         // print("Set_Exp::ratio : " + ratio);

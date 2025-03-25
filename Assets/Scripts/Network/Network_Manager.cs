@@ -96,6 +96,12 @@ public class Network_Manager : NetworkManager
             foreach (PlayerObject player in PlayersInfoList)
             {
                 player.Ready = false;
+                player.CharacterID = -1;
+                player.kill = -1;
+                player.death = -1;
+                player.assist = -1;
+                player.minion = -1;
+                player.tower = -1;
             }
             // Set LocalPlayer ** need to change to client
             LobbyController.Instance.LocalPlayerController = LocalPlayerObject;
@@ -110,7 +116,6 @@ public class Network_Manager : NetworkManager
             {
                 // Reset all parameter
                 player.Ready = false;
-                player.CharacterID = -1;
             }
         }
         /// Game Scene
@@ -183,9 +188,9 @@ public class Network_Manager : NetworkManager
         {
             // int LocalPlayerTeamID = 0;
             // Delete all PlayerObject
-            foreach(CharacterBase playerobject in Player_List)
+            foreach(PlayerObject player in PlayersInfoList)
             {
-                PlayerObject player = PlayersInfoList.Find(player => player.ConnectionID == playerobject.ConnectionID);
+                CharacterBase playerobject = Player_List.Find(playerobject => player.ConnectionID == playerobject.ConnectionID);
                 // Change back to PlayerObject
                 // Ensure the client is ready before replacing the player
                 if (!NetworkClient.ready)
@@ -195,10 +200,10 @@ public class Network_Manager : NetworkManager
                 NetworkServer.ReplacePlayerForConnection(playerobject.connectionToClient,player.gameObject,ReplacePlayerOptions.KeepAuthority);
 
                 // Set CharacterBase Info to Result_Player
-                player.CanKDAChange(playerobject.kill, playerobject.death,playerobject.assist);
+                player.CanKDAChange(playerobject);
 
                 // Destroy CharacterBase
-                // NetworkServer.Destroy(playerobject.gameObject);
+                NetworkServer.Destroy(playerobject.gameObject);
             }
             Player_List.Clear();
         }

@@ -328,15 +328,15 @@ public class Duck_AI : MinionBase
     public void Attack()
     {
         if (!isOwned) return;
-        CmdAttack(Target);
+        CmdAttack(Target,MainDestination);
     }
     [Command]
-    void CmdAttack(Transform enemy)
+    void CmdAttack(Transform enemy,Transform MainDestination)
     {
         if (enemy == null || enemy.GetComponent<Health>().currentHealth <= 0) return;
         Health health = enemy.GetComponent<Health>();
         CharacterBase LocalPlayer = MainDestination.GetComponent<CharacterBase>();
-        if (health is CharacterBase )
+        if (health is CharacterBase)
         {
             CharacterBase character = health as CharacterBase;
             bool isdead = character.GetDamage(attack);

@@ -24,7 +24,7 @@ public class InputComponent : MonoBehaviour
     }
     public void Reset()
     {
-        playerInput.Disable();
+        playerInput.Dispose();
         playerInput = new PlayerInputActions();
         playerInput.Enable();
     }
