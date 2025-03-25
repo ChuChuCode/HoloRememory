@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Mirror;
@@ -14,20 +12,26 @@ public class LocalPlayerInfo : NetworkBehaviour
     [SerializeField] TMP_Text Assist_Text;
     [SerializeField] TMP_Text Minion_Text;
     [SerializeField] TMP_Text Time_Text;
-    float started_time = 0f;
-    [SyncVar] public float timer;
+    [SyncVar] double started_time = 0f;
+    public double timer;
     void Awake()
     {
         if (Instance == null) Instance = this;
-        started_time = Time.time;
     }
-    void Update()
+    void Start()
+    {
+        if (isServer)
+        {
+            started_time = NetworkTime.time;
+        }
+    }
+        void Update()
     {
         Time_Text.text = Time_format();
     }
-    float GetTime()
+    double GetTime()
     {
-        float duration = Time.time - started_time;
+        double duration = NetworkTime.time - started_time;
         return duration;
     }
     string Time_format()

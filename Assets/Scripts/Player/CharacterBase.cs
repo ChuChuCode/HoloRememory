@@ -300,7 +300,7 @@ public abstract class CharacterBase: Health
             // Screen to black/white
             DeadScreen.instance.isDead(true);
             agent.isStopped = true;
-            animator.Play("Dead");
+            animator.SetBool("isDead",true);
 
             isDead = true;
             //****** Unregister control -> need to change to only skill
@@ -369,7 +369,8 @@ public abstract class CharacterBase: Health
 
         // Animation Control
         agent.isStopped = false;
-        animator.Play("Idle");
+        // animator.Play("Idle");
+        animator.SetBool("isDead",false);
 
         // Register control
         InputComponent.instance.playerInput.Player.Enable();

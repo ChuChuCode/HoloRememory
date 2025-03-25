@@ -296,8 +296,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  exp: 0
-  coin: 0
+  exp: 100
+  coin: 100
   maxHealth: 1000
   currentHealth: 1
   isDead: 0
@@ -309,7 +309,6 @@ MonoBehaviour:
   enemy_layer:
     serializedVersion: 2
     m_Bits: 64
-  enemy: {fileID: 0}
   top: {fileID: 426715744526136612}
   middle: {fileID: 1737695573631553376}
   Base: {fileID: 1737695573631553376}

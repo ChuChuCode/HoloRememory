@@ -1,6 +1,7 @@
 using UnityEngine;
 using HR.Object.Player;
 using Mirror;
+using HR.Object.Map;
 
 namespace HR.Object.Minion{
 public class Duck_AI : MinionBase
@@ -333,13 +334,41 @@ public class Duck_AI : MinionBase
     void CmdAttack(Transform enemy)
     {
         if (enemy == null || enemy.GetComponent<Health>().currentHealth <= 0) return;
-        if (enemy.TryGetComponent<CharacterBase>(out CharacterBase character))
+        Health health = enemy.GetComponent<Health>();
+        CharacterBase LocalPlayer = MainDestination.GetComponent<CharacterBase>();
+        if (health is CharacterBase )
         {
-            character.GetDamage(attack);
+            CharacterBase character = health as CharacterBase;
+            bool isdead = character.GetDamage(attack);
+            if (isdead)
+            {
+                LocalPlayer.AddKDA("kill");
+                LocalPlayer.AddMoney(character.coin);
+                character.AddKDA("death");
+            }
         }
-        else
+        else if (health is MinionBase)
         {
-            enemy.GetComponent<Health>().GetDamage(attack);
+            MinionBase minion = health as MinionBase;
+            bool isdead = minion.GetDamage(attack);
+            if (isdead)
+            {
+                LocalPlayer.AddMoney(minion.coin);
+                if (health is Minions)
+                {
+                    LocalPlayer.AddKDA("minion");
+                }
+            }
+        }
+        else if (health is TowerBase)
+        {
+            TowerBase tower = health as TowerBase;
+            bool isdead = tower.GetDamage(attack);
+            if (isdead)
+            {
+                LocalPlayer.AddKDA("tower");
+                LocalPlayer.AddMoney(tower.coin);
+            }
         }
     }
     [Command]

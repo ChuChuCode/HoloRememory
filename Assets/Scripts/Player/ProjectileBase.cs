@@ -1,9 +1,11 @@
 using UnityEngine;
 using Mirror;
 using HR.Object.Player;
+using HR.Object.Map;
+using HR.Object.Minion;
 
 namespace HR.Object.Skill{
-public class ProjectileBase : NetworkBehaviour
+public abstract class ProjectileBase : NetworkBehaviour
 {
     public Transform Target;
     [SerializeField] protected float speed;
@@ -14,7 +16,7 @@ public class ProjectileBase : NetworkBehaviour
         if (!isServer) return;
         if (Target == null || Target.GetComponent<Health>().currentHealth <= 0) 
         {
-            Destroy(gameObject);
+            NetworkServer.Destroy(gameObject);
             return;
         }
         // Get Component center
@@ -29,39 +31,55 @@ public class ProjectileBase : NetworkBehaviour
     {
         if (other.transform.root == Target)
         {
-            // Check is player or not
-            if (other.transform.root.TryGetComponent<CharacterBase>(out CharacterBase characterBase))
+            Health health = other.transform.root.GetComponent<Health>();
+            if (health is CharacterBase )
             {
-                TriggerisPlayer(characterBase);
+                CharacterBase character = health as CharacterBase;
+                bool isdead = character.GetDamage(AttackDamage);
+                if (isdead)
+                {
+                    TriggerCharacterBaseDead(character);
+                }
             }
-            else 
-            { 
-                Health health = other.transform.root.GetComponent<Health>();
-                TriggerisnotPlayer(health);
+            else if (health is MinionBase)
+            {
+                MinionBase minion = health as MinionBase;
+                bool isdead = minion.GetDamage(AttackDamage);
+                if (isdead)
+                {
+                    TriggerMinionBaseDead(minion);
+                }
+            }
+            else if (health is TowerBase)
+            {
+                TowerBase tower = health as TowerBase;
+                bool isdead = tower.GetDamage(AttackDamage);
+                if (isdead)
+                {
+                    TriggeTowerBaseDead(tower);
+                }
             }
             // Destory Ball
             NetworkServer.Destroy(gameObject);
         }
     }
-    protected virtual void TriggerisPlayer(CharacterBase characterBase)
+    protected virtual void TriggerCharacterBaseDead(CharacterBase characterBase)
     {
-        // Check is dead or not
-        bool isdead = characterBase.GetDamage(AttackDamage);
-        if (isdead)
+        characterBase.AddKDA("death");
+    }
+    protected virtual void TriggerMinionBaseDead(MinionBase minion)
+    {
+        if (minion is Minions)
         {
-            // Do the things when enemy dead
+            // CharacterBase.AddKDA("minion");
+            // CharacterBase.AddMoney(minion.coin);
         }
     }
-    protected virtual void TriggerisnotPlayer(Health health)
+    protected virtual void TriggeTowerBaseDead(TowerBase tower)
     {
-        // Check is dead or not
-        bool isdead = health.GetDamage(AttackDamage);
-        if (isdead)
-        {
-            // Do the things when enemy dead
-        }
+        // CharacterBase.AddKDA("tower");
+        // CharacterBase.AddMoney(tower.coin);
     }
-
 }
 
 }

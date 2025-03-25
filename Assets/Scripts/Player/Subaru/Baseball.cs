@@ -3,60 +3,33 @@ using HR.UI;
 using HR.Object.Player;
 using HR.Object.Map;
 using HR.Object.Minion;
-using UnityEngine;
 
 namespace HR.Object.Skill{
 public class Baseball : ProjectileBase
 {
     public CharacterBase BallOwner;
     protected int attack_radius;
-    protected override void TriggerisPlayer(CharacterBase characterBase)
+    protected override void TriggerCharacterBaseDead(CharacterBase characterBase)
     {
-        // Check is dead or not
-        bool isdead = characterBase.GetDamage(AttackDamage);
-        if (isdead)
+        // Gain Money
+        BallOwner.AddMoney(characterBase.coin);
+        // kill number +1
+        BallOwner.AddKDA("kill");
+        base.TriggerCharacterBaseDead(characterBase);
+    }
+
+    protected override void TriggerMinionBaseDead(MinionBase minion)
+    {
+        BallOwner.AddMoney(minion.coin);
+        if (minion is Minions)
         {
-            // Add Money
-            BallOwner.AddMoney(characterBase.coin);
-            // Update KDA
-            characterBase.death++;
-            BallOwner.kill++;
-            if (characterBase.GetComponent<NetworkIdentity>().isLocalPlayer)
-            {
-                LocalPlayerInfo.Instance.Update_KDA(characterBase);
-            }
+            BallOwner.AddKDA("minion");
         }
     }
-    protected override void TriggerisnotPlayer(Health health)
+    protected override void TriggeTowerBaseDead(TowerBase tower)
     {
-        // Check is dead or not
-        bool isdead = health.GetDamage(AttackDamage);
-        if (isdead)
-        {
-            // Add Money
-            BallOwner.AddMoney(health.coin);
-            // Minion or Tower
-            if (health is Minions)
-            {
-                // Add Minion number
-                BallOwner.minion++;
-                if (BallOwner.GetComponent<NetworkIdentity>().isLocalPlayer)
-                {
-                    CharacterInfoPanel.Instance.UpdateUI();
-                    LocalPlayerInfo.Instance.Update_KDA(BallOwner);
-                }
-            }
-            else if (health is TowerBase)
-            {
-                // Add Destory Tower number
-                BallOwner.tower++;
-                if (BallOwner.GetComponent<NetworkIdentity>().isLocalPlayer)
-                {
-                    CharacterInfoPanel.Instance.UpdateUI();
-                    LocalPlayerInfo.Instance.Update_KDA(BallOwner);
-                }
-            }
-        }
+        BallOwner.AddKDA("tower");
+        BallOwner.AddMoney(tower.coin);
     }
     // Since attack damage will change while game playing, so we need to set it when we create the ball.
     public void Set_AttackDamage()

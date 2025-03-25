@@ -96,8 +96,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  exp: 100
-  coin: 100
+  exp: 20
+  coin: 10
   maxHealth: 100
   currentHealth: 1
   isDead: 0

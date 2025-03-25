@@ -186,13 +186,6 @@ public class Network_Manager : NetworkManager
             foreach(CharacterBase playerobject in Player_List)
             {
                 PlayerObject player = PlayersInfoList.Find(player => player.ConnectionID == playerobject.ConnectionID);
-                // ResultController.Instance.Spawn_Result_Prefab(characterModelComponent.CharacterImage,playerobject);
-
-                // Check Team1 or Team2
-                // if (playerobject.GetComponent<NetworkIdentity>().isLocalPlayer)
-                // {
-                //     LocalPlayerTeamID = playerobject.TeamID;
-                // }
                 // Change back to PlayerObject
                 // Ensure the client is ready before replacing the player
                 if (!NetworkClient.ready)
@@ -205,12 +198,24 @@ public class Network_Manager : NetworkManager
                 player.CanKDAChange(playerobject.kill, playerobject.death,playerobject.assist);
 
                 // Destroy CharacterBase
-                NetworkServer.Destroy(playerobject.gameObject);
+                // NetworkServer.Destroy(playerobject.gameObject);
             }
             Player_List.Clear();
-            // *** need to change to client
         }
-        
+    }
+    public override void OnClientSceneChanged()
+    {
+        base.OnClientSceneChanged();
+        if (SceneManager.GetActiveScene().name == "Result_Scene")
+        {
+            // Delete all PlayerObject
+            foreach(CharacterBase playerobject in Player_List)
+            {
+                // Destroy CharacterBase
+                Destroy(playerobject.gameObject);
+            }
+            Player_List.Clear();
+        }
     }
     // Server Change Scene
     public void ChangeScene(string SceneName)
