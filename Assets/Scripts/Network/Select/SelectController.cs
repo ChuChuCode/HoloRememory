@@ -383,7 +383,6 @@ public class SelectController : MonoBehaviour
         {
             selectItem.GetComponent<Button>().interactable = false;
         }
-        StartCoroutine(nameof(CheckStartGame));
     }
     // Set other player interactable false
     public void Character_Interactable(int CharacterID,bool isInteractable)
@@ -391,11 +390,6 @@ public class SelectController : MonoBehaviour
         CharacterSelectItem selected = SelectItemList.Find(component => component.CharacterID == CharacterID);
         if (selected == null) return;
         selected.GetComponent<Button>().interactable = isInteractable;
-    }
-    IEnumerator CheckStartGame()
-    {
-        yield return new WaitForSeconds(1);
-        CheckIfAllReady();
     }
     // Spell_Button_Component click method -> Call Spell_Select
     public void SelectSpell(int spell_Slot,int spell_Index)
@@ -426,11 +420,11 @@ public class SelectController : MonoBehaviour
             ReadyButton.interactable = true;
         }
     }
+    // Map Button
     public void change_map(string mapName)
     {
         if (!NetworkServer.active) return;
         this.map_name = mapName;
-        print(this.map_name);
     }
 }
 

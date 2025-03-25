@@ -270,7 +270,7 @@ public class Duck_AI : MinionBase
         {
             // Delete from list
             MainDestination.GetComponent<SubaruController>().duck_array.Remove(this);
-            Death();
+            if (isOwned) CmdDead();
         }
     }
     void State_Back()
@@ -341,6 +341,12 @@ public class Duck_AI : MinionBase
         {
             enemy.GetComponent<Health>().GetDamage(attack);
         }
+    }
+    [Command]
+    void CmdDead()
+    {
+        currentHealth = 0;
+        NetworkServer.Destroy(this.gameObject);
     }
 }
 

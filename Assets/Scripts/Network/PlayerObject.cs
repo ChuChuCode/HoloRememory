@@ -94,6 +94,10 @@ public class PlayerObject : NetworkBehaviour
         {
             LobbyController.Instance.UpdatePlayerList();
         }
+        if (SceneManager.GetActiveScene().name == "Select_Scene")
+        {
+            if (isServer) SelectController.Instance.CheckIfAllReady();
+        }
     }
     /// Name Change
     [Command]

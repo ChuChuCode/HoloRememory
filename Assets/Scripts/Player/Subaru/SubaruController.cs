@@ -163,12 +163,13 @@ public class SubaruController : CharacterBase
         }
         
     }
-        protected override void OnDestroy()
-    {
-        if (!NetworkClient.active) return;
-        Delete_Ducks();
-        base.OnDestroy();
-    }
+    /// Authority Object will Delect itself when diconnnected
+    // protected override void OnDestroy()
+    // {
+    //     if (!isLocalPlayer) return;
+    //     Delete_Ducks();
+    //     base.OnDestroy();
+    // }
     protected override void NormalAttack()
     {
         // AnimationMethod.Target = Target;
@@ -177,8 +178,13 @@ public class SubaruController : CharacterBase
     }
     protected override void Death()
     {
-        // All Duck Dead on Server
-        Delete_Ducks();
+        if (!isLocalPlayer) return;
+        // All Duck Dead on Server 
+        // duck_array in on client
+        foreach (Duck_AI duck in duck_array)
+        {
+            Dead_Ducks(duck);
+        }
         base.Death();
     }
     protected override void OnRecall()
@@ -233,14 +239,10 @@ public class SubaruController : CharacterBase
         AnimationMethod.Target = Enemy;
     }
     [Command]
-    void Delete_Ducks()
+    void Dead_Ducks(Duck_AI duck)
     {
-        if (!isLocalPlayer) return;
-        foreach (var duck in duck_array)
-        {
-            if (duck == null) continue;
-            duck.currentHealth = 0;
-        }
+        if (duck == null) return;
+        duck.currentHealth = 0;
     }
 }
 
