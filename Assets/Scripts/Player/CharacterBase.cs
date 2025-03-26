@@ -3,7 +3,6 @@ using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using HR.UI;
 using HR.Network.Game;
-using System.Linq;
 using HR.Global;
 using System.Collections;
 using UnityEngine.VFX;
@@ -19,17 +18,23 @@ public abstract class CharacterBase: Health
 {
     [Header("Animator")]
     [SerializeField] protected Animator animator;
+    [SerializeField] protected NetworkAnimator networkAnimator;
+
     [Header("Image Sprite")]
     public Sprite CharacterImage;
     [SerializeField] Sprite Q_skill_Image;
     [SerializeField] Sprite W_skill_Image;
     [SerializeField] Sprite E_skill_Image;
     [SerializeField] Sprite R_skill_Image;
+
     [Header("Economy")]
     public int ownMoney = 0;
+
     [Header("Agent")]
     public NavMeshAgent agent;
+    [Header("Skillbase")]
     protected CharacterSkillBase skillComponent;
+
     [Header("Network Parameter")]
     [SyncVar] public int ConnectionID;
     [SyncVar] public int PlayerIdNumber;
@@ -37,16 +42,26 @@ public abstract class CharacterBase: Health
     [SyncVar] public int TeamID;
     [SyncVar] public int CharacterID;
     [SyncVar] public string PlayerName;
+
+    [Space(20)]
+    [Header("Button Pressed Zone")]
+    [Space(20)]
+
     [Header("Attack Pressed")]
     [SerializeField] protected bool IsPressed_Attack = false;
+    [SerializeField] protected float Attack_Range;
+
     [Header("Skill Pressed")]
     [SerializeField] protected bool IsPressed_Q = false;
     [SerializeField] protected bool IsPressed_W = false;
     [SerializeField] protected bool IsPressed_E = false;
     [SerializeField] protected bool IsPressed_R = false;
+
     [Header("Spell Pressed")]
     [SerializeField] protected bool IsPressed_D = false;
     [SerializeField] protected bool IsPressed_F = false;
+    [SyncVar] public SpellBase[] Spells = new SpellBase[2];
+
     [Header("Item Pressed")]
     [SerializeField] protected bool IsPressed_1 = false;
     [SerializeField] protected bool IsPressed_2 = false;
@@ -54,6 +69,11 @@ public abstract class CharacterBase: Health
     [SerializeField] protected bool IsPressed_4 = false;
     [SerializeField] protected bool IsPressed_5 = false;
     [SerializeField] protected bool IsPressed_6 = false;
+    [SyncVar] public Equipment_ScriptableObject[] EquipmentSlots = new Equipment_ScriptableObject[6];
+
+    [Header("Store Item Pressed")]
+    public bool CanPurchase = false;
+
     [Header("Camera")]
     [Tooltip("Fix Camera on Character")]
     [SerializeField] protected GameObject Fixed_Cam;
@@ -67,16 +87,13 @@ public abstract class CharacterBase: Health
     private bool isSkillCanceled = false;
     [SerializeField] protected LayerMask MouseTargetLayer;
     protected Ray ray;
-    [Header("Attack")]
-    [SerializeField] protected float Attack_Range;
-    [Header("Recall")]
-    float RecallTime = 8f;
     [Header("Dead Time")]
     float DeadTime = 3f;
+    [Header("Recall")]
+    float RecallTime = 8f;
     [SerializeField] protected VisualEffect RecallEffect;
     [SerializeField] protected bool isRecall = false;
-    [SyncVar] public SpellBase[] Spells = new SpellBase[2];
-    [SyncVar] public Equipment_ScriptableObject[] EquipmentSlots = new Equipment_ScriptableObject[6];
+    
     [Header("Status")]
     public int attack;
     public int defense;
@@ -95,6 +112,7 @@ public abstract class CharacterBase: Health
     [Header("Number of Minions and Towers Destroyed")]
     [SyncVar(hook = nameof(KDAChange))] public int minion = -1;
     [SyncVar(hook = nameof(KDAChange))] public int tower = -1;
+
     [Header("Character Info")]
     AnimatorStateInfo stateInfo;
     private Network_Manager manager;
@@ -128,8 +146,10 @@ public abstract class CharacterBase: Health
         {
             Debug.LogError("CharacterBase must have a CharacterSkillBase Component.",skillComponent);
         }
+        networkAnimator = GetComponent<NetworkAnimator>();
         Manager.Player_List.Add(this);
         DontDestroyOnLoad(gameObject);
+        CanPurchase = true;
     }
     protected virtual void OnEnable() 
     {
@@ -144,6 +164,7 @@ public abstract class CharacterBase: Health
         // Set Layer
         int PlayerLayer = LayerMask.NameToLayer("Team" + TeamID.ToString());
         SetLayer(PlayerLayer);
+
         // Remove layer to mouse raycast only Enemy and Land
         MouseTargetLayer &= ~(1 <<gameObject.layer);
         if (LayerMask.LayerToName(gameObject.layer) == "Team1")
@@ -154,6 +175,7 @@ public abstract class CharacterBase: Health
         {
             MouseTargetLayer &= ~(1 << LayerMask.NameToLayer("Team2Building"));
         }    
+
         if (!isLocalPlayer) return;
 
         // Set Skill UI and Spells
@@ -165,7 +187,7 @@ public abstract class CharacterBase: Health
         MainInfoUI.instance.D.Set_Skill_Icon(Spells[0]?.Spell_Sprite);
         MainInfoUI.instance.F.Set_Skill_Icon(Spells[1]?.Spell_Sprite);
 
-        // Set Level
+        // Set Level and exp add 1 from -1 to 0
         skillComponent.AddExp(1);
 
         // Set LocalPlayer for MiniMap, ShowPath, StorePanel
@@ -238,6 +260,9 @@ public abstract class CharacterBase: Health
         InputComponent.instance.playerInput.Player.A.started += _ => AKeyDown();
         InputComponent.instance.playerInput.Player.A.canceled += _ => AKeyUp();
 
+        // S cancel walk
+        InputComponent.instance.playerInput.Player.S.started += _ => SKeyDown();
+
         // Equipment Key
         InputComponent.instance.playerInput.Player.Equipment1.started += _ => UseEquipmentKeyDown(0);
         InputComponent.instance.playerInput.Player.Equipment2.started += _ => UseEquipmentKeyDown(1);
@@ -278,10 +303,36 @@ public abstract class CharacterBase: Health
         InputComponent.instance.playerInput.Player.Tab.started += _ => OnTabKeyDown();
         InputComponent.instance.playerInput.Player.Tab.canceled += _ => OnTabKeyUp();
 
+        // Animation keys
+        InputComponent.instance.playerInput.Player.Animation1.started += _ => OnAnimationKeyDown(1);
+        InputComponent.instance.playerInput.Player.Animation2.started += _ => OnAnimationKeyDown(2);
+        InputComponent.instance.playerInput.Player.Animation3.started += _ => OnAnimationKeyDown(3);
+        InputComponent.instance.playerInput.Player.Animation4.started += _ => OnAnimationKeyDown(4);
+        InputComponent.instance.playerInput.Player.Animation5.started += _ => OnAnimationKeyDown(5);
+        InputComponent.instance.playerInput.Player.Animation6.started += _ => OnAnimationKeyDown(6);
+
     }
     protected virtual void Update()
     {
         if (!isLocalPlayer) return;
+
+        // Check Distance between character and Spawn Point
+        if (CanPurchase)
+        {
+            float SpawnDistance = 0;
+            if (gameObject.layer == LayerMask.NameToLayer("Team1"))
+            {
+                SpawnDistance = Vector3.Distance(transform.position, GameController.Instance.Team1_transform.position);
+            }
+            else if (gameObject.layer == LayerMask.NameToLayer("Team2"))
+            {
+                SpawnDistance = Vector3.Distance(transform.position, GameController.Instance.Team2_transform.position);
+            }
+            if (SpawnDistance > 10f)
+            {
+                CanPurchase = false;
+            }
+        }
 
         // Skill Reset
         if (MainInfoUI.instance != null)
@@ -319,6 +370,8 @@ public abstract class CharacterBase: Health
         Passive();
         // RayCast Mouse
         Get_Project_Mouse();
+        // Auto Attack
+        AutoAttack();
         // Move
         CharacterMove();
         // Normal Attack
@@ -377,6 +430,9 @@ public abstract class CharacterBase: Health
 
         // Reset isDead
         isDead = false;
+
+        // Reset CanPurchase
+        CanPurchase = true;
 
         yield return null;
     }
@@ -791,7 +847,15 @@ public abstract class CharacterBase: Health
                 agent.velocity = moveVelocity.normalized * agent.speed;
             }
         }
-    } 
+    }
+    public virtual void SKeyDown()
+    {
+        Target = null;
+        agent.destination = transform.position;
+        agent.isStopped = true;
+        animator.SetBool("isAttack",false);
+        animator.SetBool("isMove",false);
+    }
 
     /// <summary>Return false to avoid skill use.</summary>
     public abstract bool OnQKeyDown();
@@ -917,6 +981,17 @@ public abstract class CharacterBase: Health
         // Close UI
         CharacterInfoPanel.Instance.gameObject.SetActive(false);
     }
+    public virtual void OnAnimationKeyDown(int AnimationID)
+    {
+        Target = null;
+        agent.destination = transform.position;
+        agent.isStopped = true;
+        animator.SetBool("isAttack",false);
+        animator.SetBool("isMove",false);
+        animator.SetFloat("AnimationID",AnimationID);
+        networkAnimator.SetTrigger("Animation");
+    }
+
     #region Skill UI
     /// <summary>Hide Q skill preview.</summary>
     protected abstract void Hide_Q_UI();
@@ -1016,6 +1091,25 @@ public abstract class CharacterBase: Health
         // {
         //     agent.destination = Target.position;
         // }
+    }
+    protected void AutoAttack()
+    {
+        
+        // Attack only stop
+        if (agent.velocity.magnitude > 0) return;
+        LayerMask enemyLayer = MouseTargetLayer & ~(1 << LayerMask.NameToLayer("Land"));
+        Collider[]hitColliders = Physics.OverlapSphere(transform.position, Attack_Range, enemyLayer);
+        Transform temp = Search_Nearest(hitColliders);
+        if (temp != null)
+        {
+            agent.isStopped = false;
+            Target = temp.transform.root;
+            agent.destination = Target.position;
+            Vector3 moveVelocity = Target.position - transform.position;
+            // Rotate Immediately
+            agent.velocity = moveVelocity.normalized * agent.speed;
+            return;
+        }
     }
     protected void Attack()
     {

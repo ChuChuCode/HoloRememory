@@ -62,6 +62,7 @@ public class StorePanel : MonoBehaviour
     public bool EquipmentButtonClick(Equipment_ScriptableObject tempEquipment)
     {
         if (LocalPlayer == null) return false;
+        if (!LocalPlayer.CanPurchase) return false;
         // Check if the player has enough money
         if (LocalPlayer.ownMoney < tempEquipment.costMoney) return false;
         // Check if the player has enough space

@@ -78,6 +78,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "S",
+                    "type": "Button",
+                    "id": "2f848ecd-9fa1-4cfe-97df-416c03ce31b4",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Right_Mouse",
                     "type": "Button",
                     "id": "16b4b54b-ef35-4997-9e80-864564744578",
@@ -234,6 +243,60 @@
                     "name": "Equipment6",
                     "type": "Button",
                     "id": "845de536-df80-46f3-bc6b-24a7f00415e0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Animation1",
+                    "type": "Button",
+                    "id": "e420a24e-5411-472c-8801-b5bc47b0e78b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Animation2",
+                    "type": "Button",
+                    "id": "ff7f8892-bed8-4b85-9b3d-2e56bdd75c2f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Animation3",
+                    "type": "Button",
+                    "id": "f8ab74d2-05be-4fbc-b407-ec98eaba6d43",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Animation4",
+                    "type": "Button",
+                    "id": "fb5c0dfd-22fa-4b97-af50-a3a500d909bc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Animation5",
+                    "type": "Button",
+                    "id": "7ab08edf-5321-42ba-988a-bc552da06603",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Animation6",
+                    "type": "Button",
+                    "id": "136aee9c-c159-4f83-a4bc-6df885e35463",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -403,6 +466,204 @@
                     "processors": "",
                     "groups": ";KeyBoard and Mouse",
                     "action": "Q Level Up",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "75504dd1-f1de-4828-82d9-dae6552f2770",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Animation1",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "9ace989a-f9d6-45a7-80fe-4596c22b15cb",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation1",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "0095d911-8f20-409c-bbde-063a4caaef75",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation1",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "05542d81-01e7-4fc4-80ec-87f9bac4c545",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Animation2",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "13f82600-d053-456c-b552-6ce2a118db81",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation2",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "75d0be6d-0f05-4e22-b23c-0ced51df5b6a",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation2",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "a33c943e-3100-4b41-9f36-83c15961ae95",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Animation3",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "7db55ddf-73d2-49a6-9079-568536104ed1",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation3",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "a3d4a273-0ce6-48e4-bca0-d7ee8c0b5f69",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation3",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "78e01284-a6ec-431e-b9dc-1de20ae2138e",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Animation4",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "63d55507-f7fa-46ef-b7c4-07636a07fef8",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation4",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "26be9c17-0202-43dc-8d6e-4e7d8742eebb",
+                    "path": "<Keyboard>/4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation4",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "6124fd47-7291-415b-bccc-81920ab52129",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Animation5",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "d7586fd2-e21c-4abd-97e9-b31f20beead3",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation5",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "02a10366-5031-48de-9cd4-accbdc71be6b",
+                    "path": "<Keyboard>/5",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation5",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "One Modifier",
+                    "id": "0b5af672-cd5a-48d1-9ae6-d1838938c522",
+                    "path": "OneModifier(overrideModifiersNeedToBePressedFirst=true)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Animation6",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "55526bbf-5b26-4f46-b7e9-40081b8c20bb",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation6",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "35c0ad20-ffce-40f2-adda-6e7ca381f575",
+                    "path": "<Keyboard>/6",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "Animation6",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -612,6 +873,17 @@
                     "processors": "",
                     "groups": ";KeyBoard and Mouse",
                     "action": "A",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9c977c24-79f1-4748-ba0f-c25427543b8a",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";KeyBoard and Mouse",
+                    "action": "S",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

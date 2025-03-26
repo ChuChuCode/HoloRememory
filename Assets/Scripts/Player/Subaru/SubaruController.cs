@@ -9,12 +9,15 @@ namespace HR.Object.Player{
 public class SubaruController : CharacterBase
 {
     [SerializeField] SubaruAnimationMethod AnimationMethod;
+
     [Header("Passive")]
     public List<Duck_AI> duck_array = new List<Duck_AI>();
     [SerializeField] Duck_AI Duck_prefab;
     [SerializeField] int max_duck_num = 3;
+
     [Header("Duck Skills")]
     [SerializeField] Duck_Ult Duck_Ult;
+
     [Header("Skill Timer")]
     float duck_spawn_cd = 10f;
     float duck_spawn_timer = 5f;
@@ -22,8 +25,10 @@ public class SubaruController : CharacterBase
     float duck_rush_timer = -10f;
     float duck_ult_cd = 20f;
     float duck_ult_timer = -20f;
+
     [Header("Skill Image")]
     [SerializeField] GameObject R_UI;
+    
     protected override void Passive()
     {
         if (Duck_Spawnable() && duck_array.Count < max_duck_num )

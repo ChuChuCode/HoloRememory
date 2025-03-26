@@ -100,6 +100,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""S"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f848ecd-9fa1-4cfe-97df-416c03ce31b4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Right_Mouse"",
                     ""type"": ""Button"",
                     ""id"": ""16b4b54b-ef35-4997-9e80-864564744578"",
@@ -256,6 +265,60 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""Equipment6"",
                     ""type"": ""Button"",
                     ""id"": ""845de536-df80-46f3-bc6b-24a7f00415e0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Animation1"",
+                    ""type"": ""Button"",
+                    ""id"": ""e420a24e-5411-472c-8801-b5bc47b0e78b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Animation2"",
+                    ""type"": ""Button"",
+                    ""id"": ""ff7f8892-bed8-4b85-9b3d-2e56bdd75c2f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Animation3"",
+                    ""type"": ""Button"",
+                    ""id"": ""f8ab74d2-05be-4fbc-b407-ec98eaba6d43"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Animation4"",
+                    ""type"": ""Button"",
+                    ""id"": ""fb5c0dfd-22fa-4b97-af50-a3a500d909bc"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Animation5"",
+                    ""type"": ""Button"",
+                    ""id"": ""7ab08edf-5321-42ba-988a-bc552da06603"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Animation6"",
+                    ""type"": ""Button"",
+                    ""id"": ""136aee9c-c159-4f83-a4bc-6df885e35463"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -425,6 +488,204 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";KeyBoard and Mouse"",
                     ""action"": ""Q Level Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""75504dd1-f1de-4828-82d9-dae6552f2770"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation1"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""9ace989a-f9d6-45a7-80fe-4596c22b15cb"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""0095d911-8f20-409c-bbde-063a4caaef75"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""05542d81-01e7-4fc4-80ec-87f9bac4c545"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation2"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""13f82600-d053-456c-b552-6ce2a118db81"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""75d0be6d-0f05-4e22-b23c-0ced51df5b6a"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""a33c943e-3100-4b41-9f36-83c15961ae95"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation3"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""7db55ddf-73d2-49a6-9079-568536104ed1"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""a3d4a273-0ce6-48e4-bca0-d7ee8c0b5f69"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""78e01284-a6ec-431e-b9dc-1de20ae2138e"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation4"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""63d55507-f7fa-46ef-b7c4-07636a07fef8"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""26be9c17-0202-43dc-8d6e-4e7d8742eebb"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation4"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""6124fd47-7291-415b-bccc-81920ab52129"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation5"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""d7586fd2-e21c-4abd-97e9-b31f20beead3"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""02a10366-5031-48de-9cd4-accbdc71be6b"",
+                    ""path"": ""<Keyboard>/5"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation5"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""0b5af672-cd5a-48d1-9ae6-d1838938c522"",
+                    ""path"": ""OneModifier(overrideModifiersNeedToBePressedFirst=true)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Animation6"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""55526bbf-5b26-4f46-b7e9-40081b8c20bb"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation6"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""35c0ad20-ffce-40f2-adda-6e7ca381f575"",
+                    ""path"": ""<Keyboard>/6"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""Animation6"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -636,6 +897,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""A"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9c977c24-79f1-4748-ba0f-c25427543b8a"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyBoard and Mouse"",
+                    ""action"": ""S"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -669,6 +941,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_D = m_Player.FindAction("D", throwIfNotFound: true);
         m_Player_F = m_Player.FindAction("F", throwIfNotFound: true);
         m_Player_A = m_Player.FindAction("A", throwIfNotFound: true);
+        m_Player_S = m_Player.FindAction("S", throwIfNotFound: true);
         m_Player_Right_Mouse = m_Player.FindAction("Right_Mouse", throwIfNotFound: true);
         m_Player_Left_Mouse = m_Player.FindAction("Left_Mouse", throwIfNotFound: true);
         m_Player_Camera_Change = m_Player.FindAction("Camera_Change", throwIfNotFound: true);
@@ -687,6 +960,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Equipment4 = m_Player.FindAction("Equipment4", throwIfNotFound: true);
         m_Player_Equipment5 = m_Player.FindAction("Equipment5", throwIfNotFound: true);
         m_Player_Equipment6 = m_Player.FindAction("Equipment6", throwIfNotFound: true);
+        m_Player_Animation1 = m_Player.FindAction("Animation1", throwIfNotFound: true);
+        m_Player_Animation2 = m_Player.FindAction("Animation2", throwIfNotFound: true);
+        m_Player_Animation3 = m_Player.FindAction("Animation3", throwIfNotFound: true);
+        m_Player_Animation4 = m_Player.FindAction("Animation4", throwIfNotFound: true);
+        m_Player_Animation5 = m_Player.FindAction("Animation5", throwIfNotFound: true);
+        m_Player_Animation6 = m_Player.FindAction("Animation6", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -761,6 +1040,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_D;
     private readonly InputAction m_Player_F;
     private readonly InputAction m_Player_A;
+    private readonly InputAction m_Player_S;
     private readonly InputAction m_Player_Right_Mouse;
     private readonly InputAction m_Player_Left_Mouse;
     private readonly InputAction m_Player_Camera_Change;
@@ -779,6 +1059,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Equipment4;
     private readonly InputAction m_Player_Equipment5;
     private readonly InputAction m_Player_Equipment6;
+    private readonly InputAction m_Player_Animation1;
+    private readonly InputAction m_Player_Animation2;
+    private readonly InputAction m_Player_Animation3;
+    private readonly InputAction m_Player_Animation4;
+    private readonly InputAction m_Player_Animation5;
+    private readonly InputAction m_Player_Animation6;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -791,6 +1077,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @D => m_Wrapper.m_Player_D;
         public InputAction @F => m_Wrapper.m_Player_F;
         public InputAction @A => m_Wrapper.m_Player_A;
+        public InputAction @S => m_Wrapper.m_Player_S;
         public InputAction @Right_Mouse => m_Wrapper.m_Player_Right_Mouse;
         public InputAction @Left_Mouse => m_Wrapper.m_Player_Left_Mouse;
         public InputAction @Camera_Change => m_Wrapper.m_Player_Camera_Change;
@@ -809,6 +1096,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Equipment4 => m_Wrapper.m_Player_Equipment4;
         public InputAction @Equipment5 => m_Wrapper.m_Player_Equipment5;
         public InputAction @Equipment6 => m_Wrapper.m_Player_Equipment6;
+        public InputAction @Animation1 => m_Wrapper.m_Player_Animation1;
+        public InputAction @Animation2 => m_Wrapper.m_Player_Animation2;
+        public InputAction @Animation3 => m_Wrapper.m_Player_Animation3;
+        public InputAction @Animation4 => m_Wrapper.m_Player_Animation4;
+        public InputAction @Animation5 => m_Wrapper.m_Player_Animation5;
+        public InputAction @Animation6 => m_Wrapper.m_Player_Animation6;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -842,6 +1135,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @A.started += instance.OnA;
             @A.performed += instance.OnA;
             @A.canceled += instance.OnA;
+            @S.started += instance.OnS;
+            @S.performed += instance.OnS;
+            @S.canceled += instance.OnS;
             @Right_Mouse.started += instance.OnRight_Mouse;
             @Right_Mouse.performed += instance.OnRight_Mouse;
             @Right_Mouse.canceled += instance.OnRight_Mouse;
@@ -896,6 +1192,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Equipment6.started += instance.OnEquipment6;
             @Equipment6.performed += instance.OnEquipment6;
             @Equipment6.canceled += instance.OnEquipment6;
+            @Animation1.started += instance.OnAnimation1;
+            @Animation1.performed += instance.OnAnimation1;
+            @Animation1.canceled += instance.OnAnimation1;
+            @Animation2.started += instance.OnAnimation2;
+            @Animation2.performed += instance.OnAnimation2;
+            @Animation2.canceled += instance.OnAnimation2;
+            @Animation3.started += instance.OnAnimation3;
+            @Animation3.performed += instance.OnAnimation3;
+            @Animation3.canceled += instance.OnAnimation3;
+            @Animation4.started += instance.OnAnimation4;
+            @Animation4.performed += instance.OnAnimation4;
+            @Animation4.canceled += instance.OnAnimation4;
+            @Animation5.started += instance.OnAnimation5;
+            @Animation5.performed += instance.OnAnimation5;
+            @Animation5.canceled += instance.OnAnimation5;
+            @Animation6.started += instance.OnAnimation6;
+            @Animation6.performed += instance.OnAnimation6;
+            @Animation6.canceled += instance.OnAnimation6;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -924,6 +1238,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @A.started -= instance.OnA;
             @A.performed -= instance.OnA;
             @A.canceled -= instance.OnA;
+            @S.started -= instance.OnS;
+            @S.performed -= instance.OnS;
+            @S.canceled -= instance.OnS;
             @Right_Mouse.started -= instance.OnRight_Mouse;
             @Right_Mouse.performed -= instance.OnRight_Mouse;
             @Right_Mouse.canceled -= instance.OnRight_Mouse;
@@ -978,6 +1295,24 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Equipment6.started -= instance.OnEquipment6;
             @Equipment6.performed -= instance.OnEquipment6;
             @Equipment6.canceled -= instance.OnEquipment6;
+            @Animation1.started -= instance.OnAnimation1;
+            @Animation1.performed -= instance.OnAnimation1;
+            @Animation1.canceled -= instance.OnAnimation1;
+            @Animation2.started -= instance.OnAnimation2;
+            @Animation2.performed -= instance.OnAnimation2;
+            @Animation2.canceled -= instance.OnAnimation2;
+            @Animation3.started -= instance.OnAnimation3;
+            @Animation3.performed -= instance.OnAnimation3;
+            @Animation3.canceled -= instance.OnAnimation3;
+            @Animation4.started -= instance.OnAnimation4;
+            @Animation4.performed -= instance.OnAnimation4;
+            @Animation4.canceled -= instance.OnAnimation4;
+            @Animation5.started -= instance.OnAnimation5;
+            @Animation5.performed -= instance.OnAnimation5;
+            @Animation5.canceled -= instance.OnAnimation5;
+            @Animation6.started -= instance.OnAnimation6;
+            @Animation6.performed -= instance.OnAnimation6;
+            @Animation6.canceled -= instance.OnAnimation6;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1014,6 +1349,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnD(InputAction.CallbackContext context);
         void OnF(InputAction.CallbackContext context);
         void OnA(InputAction.CallbackContext context);
+        void OnS(InputAction.CallbackContext context);
         void OnRight_Mouse(InputAction.CallbackContext context);
         void OnLeft_Mouse(InputAction.CallbackContext context);
         void OnCamera_Change(InputAction.CallbackContext context);
@@ -1032,5 +1368,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnEquipment4(InputAction.CallbackContext context);
         void OnEquipment5(InputAction.CallbackContext context);
         void OnEquipment6(InputAction.CallbackContext context);
+        void OnAnimation1(InputAction.CallbackContext context);
+        void OnAnimation2(InputAction.CallbackContext context);
+        void OnAnimation3(InputAction.CallbackContext context);
+        void OnAnimation4(InputAction.CallbackContext context);
+        void OnAnimation5(InputAction.CallbackContext context);
+        void OnAnimation6(InputAction.CallbackContext context);
     }
 }
