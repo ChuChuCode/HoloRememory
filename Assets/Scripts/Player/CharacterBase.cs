@@ -1094,7 +1094,7 @@ public abstract class CharacterBase: Health
     }
     protected void AutoAttack()
     {
-        
+        if(!OptionPanel.Instance.Get_AutoAttack()) return;
         // Attack only stop
         if (agent.velocity.magnitude > 0) return;
         LayerMask enemyLayer = MouseTargetLayer & ~(1 << LayerMask.NameToLayer("Land"));

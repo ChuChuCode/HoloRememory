@@ -3,11 +3,14 @@ using HR.Network;
 using HR.Object.Player;
 using Mirror;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace HR.UI{
 public class OptionPanel : MonoBehaviour
 {
+    
     public static OptionPanel Instance;
+    [SerializeField] Toggle AutoAttacktoggle;
     [SerializeField] Setting_Component setting_Component;
     [SerializeField] GameObject End_Button;
     [SerializeField] GameObject Leave_Button;
@@ -64,6 +67,10 @@ public class OptionPanel : MonoBehaviour
             Manager.StopClient();
         }
         Destroy(Manager.gameObject);
+    }
+    public bool Get_AutoAttack()
+    {
+        return AutoAttacktoggle.isOn;
     }
 }
 
