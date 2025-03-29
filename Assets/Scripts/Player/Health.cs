@@ -14,6 +14,7 @@ public abstract class Health : NetworkBehaviour
     [SyncVar(hook = nameof(Set_Health))] public int currentHealth = 1;
     [SyncVar] public bool isDead = false;
     public Transform Target;
+    [SerializeField] protected Bar healthBar;
     #endregion
     protected virtual void Awake()
     {
@@ -82,6 +83,10 @@ public abstract class Health : NetworkBehaviour
     {
         Selectable.instance.updateInfo(this);
         // print(gameObject.name + " : " + OldValue + " -> " + NewValue);
+        // UI Update
+        if (healthBar == null) return;
+        healthBar.SetMaxValue(maxHealth);
+        healthBar.SetValue(NewValue);
     }
     /// <summary>
     // Do things when Dead.

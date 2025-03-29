@@ -30,7 +30,6 @@ public abstract class MinionBase : Health
     [SerializeField] protected float attack_radius = 5f;
     protected float timer = 1f;
     [SerializeField] protected float deadTime = 1f;
-    [SerializeField] protected Bar healthBar;
     #endregion
     protected override void Awake()
     {
@@ -70,20 +69,9 @@ public abstract class MinionBase : Health
             CharacterState[current_State]?.Invoke(); 
         }
     }
-    public override void Set_Health(int OldValue, int NewValue)
-    {
-        base.Set_Health(OldValue, NewValue);
-        // UI Update
-        healthBar.SetMaxValue(maxHealth);
-        healthBar.SetValue(NewValue);
-    }
     public override bool GetDamage(int damage)
     {
         bool isdead = base.GetDamage(damage);
-        healthBar.SetValue(currentHealth);
-
-        // Update UI
-        Selectable.instance.updateInfo(this);
         return isdead;
     }
     protected override void Death()

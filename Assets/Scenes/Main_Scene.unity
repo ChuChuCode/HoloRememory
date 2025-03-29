@@ -2379,6 +2379,7 @@ MonoBehaviour:
   - {fileID: 949071490613845438, guid: eb5de1259e7a09a4e8348a4773790463, type: 3}
   - {fileID: 8979824219940018655, guid: bb9bda1dae8e540a38001fcc91511780, type: 3}
   - {fileID: 8979824219940018655, guid: be76682800c7b5647b32cd8e926c96bd, type: 3}
+  - {fileID: 8806680022682834998, guid: ee451c912b649624f81485bbc940a0a9, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -8729,7 +8730,7 @@ Transform:
   m_GameObject: {fileID: 2022783653}
   serializedVersion: 2
   m_LocalRotation: {x: 0.37071818, y: 0.35052392, z: -0.15355648, w: 0.8462396}
-  m_LocalPosition: {x: -23.529, y: 49.147, z: -22.644001}
+  m_LocalPosition: {x: -30, y: 46, z: -30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
