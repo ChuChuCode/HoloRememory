@@ -9,7 +9,7 @@ public class Potion_ScriptableObject : Equipment_ScriptableObject
     public int gain_health;
     public override void ItemKeyDown(CharacterBase characterBase)
     {
-        characterBase.Heal(gain_health);
+        characterBase.HealthHeal(gain_health);
     }
 }
 

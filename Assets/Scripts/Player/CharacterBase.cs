@@ -16,6 +16,19 @@ namespace HR.Object.Player{
 [RequireComponent(typeof(CharacterSkillBase))]
 public abstract class CharacterBase: Health
 {
+    [Header("Timer")]
+    float HealthRegenTimer = 5f;
+    float ManaRegenTimer = 5f;
+    [Header("Mana / Energy")]
+    [SyncVar] public int maxMana;
+    [SyncVar(hook = nameof(Set_Mana))] public int currentMana = 1;
+
+    [Header("Skill Mana Cost")]
+    [SerializeField] protected int Q_Mana_Cost = 0;
+    [SerializeField] protected int W_Mana_Cost = 0;
+    [SerializeField] protected int E_Mana_Cost = 0;
+    [SerializeField] protected int R_Mana_Cost = 0;
+
     [Header("Animator")]
     [SerializeField] protected Animator animator;
     [SerializeField] protected NetworkAnimator networkAnimator;
@@ -202,6 +215,8 @@ public abstract class CharacterBase: Health
 
         // Health Initial
         InitialHealth();
+        // Mana Initial
+        InitialMana();
 
         // Initial Info
         // attack = DefaultAttack;
@@ -364,10 +379,12 @@ public abstract class CharacterBase: Health
 
         // Check Free Camera Reset -> Camera_Reset
         Camera_Reset();
-        
+        // Animation
         HandleMoveAnmation();
         // Passive skill
         Passive();
+        // Auto Regeneration
+        AutoRegen();
         // RayCast Mouse
         Get_Project_Mouse();
         // Auto Attack
@@ -404,6 +421,8 @@ public abstract class CharacterBase: Health
 
         // Health Initial
         InitialHealth();
+        // Mana Initial
+        InitialMana();
         // Respawn
         if (gameObject.layer == LayerMask.NameToLayer("Team1"))
         {
@@ -457,7 +476,54 @@ public abstract class CharacterBase: Health
         base.Set_Health(OldValue, NewValue);
         if (!isLocalPlayer) return;
         MainInfoUI.instance.updateInfo();
+    }
+    /// <summary>
+    /// Set currentMana to maxMana.
+    /// </summary>
+    public virtual void InitialMana()
+    {
+        if (isServer) currentMana = maxMana;
+        else if (isClient) CmdSetlMana(maxMana);
+    }
+    /// <summary>
+    /// Decrease health to currentMana.
+    /// </summary>
+    /// <param name="Cost">Decreased mana.</param>
+    /// <returns>Is gameobject has enough mana or not.</returns>
+    public virtual bool ManaReduced(int Cost)
+    {
+        if (currentMana < Cost) return false;
+        if (isServer) currentMana -= Cost;
+        else if (isClient) CmdSetlMana(currentMana - Cost);
+        return true;
+    }
+    /// <summary>
+    /// Add mana to currentMana.
+    /// </summary>
+    /// <param name="mana">Added mana.</param>
+    public virtual void ManaRegen(int mana)
+    {
+        if (isServer) currentMana += mana;
+        else if (isClient) CmdSetlMana(currentMana + mana);
+        if (currentMana > maxMana)
+        {
+            currentMana = maxMana;
+        }
+    }
+    /// <summary>
+    /// Change currentMana from Client to Server.(Only set thing on Authority Object)
+    /// </summary>
+    /// <param name="NewMana">Changed currentMana.</param>
+    [Command]
+    public virtual void CmdSetlMana(int NewMana)
+    {
+        currentMana = NewMana;
+    }
+    public virtual void Set_Mana(int OldValue,int NewValue)
+    {
         Selectable.instance.updateInfo(this);
+        if (!isLocalPlayer) return;
+        MainInfoUI.instance.updateInfo();
     }
     /// <summary>This is invoked when Mouse Right Click Down.</summary>
     public virtual void OnRightMouseClick()
@@ -687,6 +753,7 @@ public abstract class CharacterBase: Health
     public void QKeyDown()
     {
         if (skillComponent.Q_Level == 0) return;
+        if (currentMana < Q_Mana_Cost) return;
         if (!OnQKeyDown()) return;
         IsPressed_Q = true;
     }
@@ -703,6 +770,7 @@ public abstract class CharacterBase: Health
     public virtual void WKeyDown()
     {
         if (skillComponent.W_Level == 0) return;
+        if (currentMana < W_Mana_Cost) return;
         if (!OnWKeyDown()) return;
         IsPressed_W = true;
     }
@@ -719,6 +787,7 @@ public abstract class CharacterBase: Health
     public virtual void EKeyDown()
     {
         if (skillComponent.E_Level == 0) return;
+        if (currentMana < E_Mana_Cost) return;
         if (!OnEKeyDown()) return;
         IsPressed_E = true;
     }
@@ -736,6 +805,7 @@ public abstract class CharacterBase: Health
     public virtual void RKeyDown()
     {
         if (skillComponent.R_Level == 0) return;
+        if (currentMana < R_Mana_Cost) return;
         if (!OnRKeyDown()) return;
         IsPressed_R = true;
     }
@@ -860,19 +930,31 @@ public abstract class CharacterBase: Health
     /// <summary>Return false to avoid skill use.</summary>
     public abstract bool OnQKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public abstract bool OnQKeyUp();
+    public virtual bool OnQKeyUp()
+    {
+        return ManaReduced(Q_Mana_Cost);
+    }
     /// <summary>Return false to avoid skill use.</summary>
     public abstract bool OnWKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public abstract bool OnWKeyUp();
+    public virtual bool OnWKeyUp()
+    {
+        return ManaReduced(W_Mana_Cost);
+    }
     /// <summary>Return false to avoid skill use.</summary>
     public abstract bool OnEKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public abstract bool OnEKeyUp();
+    public virtual bool OnEKeyUp()
+    {
+        return ManaReduced(E_Mana_Cost);
+    }
     /// <summary>Return false to avoid skill use.</summary>
     public abstract bool OnRKeyDown();
     /// <summary>Return false to avoid skill use.</summary>
-    public abstract bool OnRKeyUp();
+    public virtual bool OnRKeyUp()
+    {
+        return ManaReduced(R_Mana_Cost);
+    }
     public void OnQKeyModifierUp()
     {
         // If Q Button is shown
@@ -1017,6 +1099,36 @@ public abstract class CharacterBase: Health
     //     }
     // }
     /// <summary>This method calculate the project point from camera to scene object in Land Layer.</summary>
+    /// <summary>Regeneration Check.</summary>
+    protected void AutoRegen()
+    {
+        if (currentHealth != maxHealth)
+        {
+            HealthRegenTimer -= Time.deltaTime;
+            if (HealthRegenTimer <= 0)
+            {
+                HealthRegenTimer = 5f;
+                HealthHeal(10);
+            }
+        }
+        else
+        {
+            HealthRegenTimer = 5f;
+        }
+        if (currentMana != maxMana)
+        {
+            ManaRegenTimer -= Time.deltaTime;
+            if (ManaRegenTimer <= 0)
+            {
+                ManaRegenTimer = 5f;
+                ManaRegen(5);
+            }
+        }
+        else
+        {
+            ManaRegenTimer = 5f;
+        }
+    }
     protected void Get_Project_Mouse()
     {
         // check mouse raycast
@@ -1214,15 +1326,6 @@ public abstract class CharacterBase: Health
         }
     }
     protected virtual void OnRecall(){}
-    public override bool GetDamage(int damage)
-    {
-        bool isdead = base.GetDamage(damage);
-        return isdead;
-    }
-    public override void Heal(int health)
-    {
-        base.Heal(health);
-    }
     /// <summary> Add or Spend Money </summary>
     public void AddMoney(int money)
     {

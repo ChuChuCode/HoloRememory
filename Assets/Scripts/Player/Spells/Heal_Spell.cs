@@ -26,7 +26,7 @@ public class Heal_Spell : SpellBase
     }
     public override void CharacterInfoChange(CharacterBase characterBase)
     {
-        characterBase.Heal(80);
+        characterBase.HealthHeal(80);
     }
 }
 

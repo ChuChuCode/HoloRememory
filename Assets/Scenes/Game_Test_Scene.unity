@@ -3974,6 +3974,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1711061202490142171, guid: 350508f00baa7d74b8fb78d6f1973849, type: 3}
+      propertyPath: gridCamera
+      value: 
+      objectReference: {fileID: 1152045148}
     - target: {fileID: 1837673291088341787, guid: 350508f00baa7d74b8fb78d6f1973849, type: 3}
       propertyPath: m_Size
       value: 1

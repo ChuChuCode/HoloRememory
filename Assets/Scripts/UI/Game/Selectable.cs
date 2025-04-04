@@ -124,8 +124,14 @@ public class Selectable : MonoBehaviour
             SelectInfo.SetActive(false);
             return;
         }
+        // Update Info
         HP.SetMaxValue(select.GetComponent<Health>().maxHealth);
         HP.SetValue(select.GetComponent<Health>().currentHealth);
+        if (health is CharacterBase)
+        {
+            MP.SetMaxValue(select.GetComponent<CharacterBase>().maxMana);
+            MP.SetValue(select.GetComponent<CharacterBase>().currentMana);
+        }
     }
     void Check_Outline_Color(Transform ob)
     {

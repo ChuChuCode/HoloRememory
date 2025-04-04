@@ -87,6 +87,9 @@ public class SubaruController : CharacterBase
     {
         // If count = 0 when key Up 
         if (duck_array.Count == 0) return false;
+        // If mana is not enough
+        if (!base.OnQKeyUp()) return false;
+
         GetComponent<NetworkAnimator>().SetTrigger("Special");
         duck_rush_timer = Time.time;
         
@@ -124,8 +127,11 @@ public class SubaruController : CharacterBase
     }
     public override bool OnRKeyUp()
     {
-        if (!IsPressed_R) return false;
+        // If count = 0 when key Up 
         if (duck_array.Count == 0) return false;
+        // If mana is not enough
+        if (!base.OnRKeyUp()) return false;
+
         GetComponent<NetworkAnimator>().SetTrigger("Special");
         duck_ult_timer = Time.time;
         // Delete Duck

@@ -14,13 +14,6 @@ public abstract class TowerBase : Health
         if (!isServer) return;
         InitialHealth();
     }
-    public override bool GetDamage(int damage)
-    {
-        bool isdead = base.GetDamage(damage);
-        // Update UI
-        Selectable.instance.updateInfo(this);
-        return isdead;
-    }
     protected override void Death()
     {
         GetComponent<Collider>().enabled = false;

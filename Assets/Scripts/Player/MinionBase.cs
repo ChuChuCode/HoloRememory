@@ -69,11 +69,6 @@ public abstract class MinionBase : Health
             CharacterState[current_State]?.Invoke(); 
         }
     }
-    public override bool GetDamage(int damage)
-    {
-        bool isdead = base.GetDamage(damage);
-        return isdead;
-    }
     protected override void Death()
     {
         // Set Health to 0

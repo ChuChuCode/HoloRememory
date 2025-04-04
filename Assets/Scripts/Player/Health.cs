@@ -47,7 +47,7 @@ public abstract class Health : NetworkBehaviour
     /// </summary>
     /// <param name="damage">Decreased health.</param>
     /// <returns>Is gameobject dead or not.</returns>
-    public virtual bool GetDamage(int damage)
+    public virtual bool HealthDamage(int damage)
     {
         int beforeHealth = currentHealth;
         if (isServer) currentHealth -= damage;
@@ -58,7 +58,7 @@ public abstract class Health : NetworkBehaviour
     /// Add health to currentHealth.
     /// </summary>
     /// <param name="health">Added health.</param>
-    public virtual void Heal(int health)
+    public virtual void HealthHeal(int health)
     {
         if (isServer) currentHealth += health;
         else if (isClient) CmdSetlHealth(currentHealth + health);

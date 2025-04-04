@@ -51,6 +51,8 @@ public class MainInfoUI : MonoBehaviour
     {
         HP.SetMaxValue(LocalPlayer.maxHealth);
         HP.SetValue(LocalPlayer.currentHealth);
+        MP.SetMaxValue(LocalPlayer.maxMana);
+        MP.SetValue(LocalPlayer.currentMana);
         Moeny_Text.text = LocalPlayer.ownMoney.ToString();
     }
     public void Show_LevelUp(CharacterSkillBase skillComponent)

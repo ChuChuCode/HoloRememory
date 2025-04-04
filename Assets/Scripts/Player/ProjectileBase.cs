@@ -35,7 +35,7 @@ public abstract class ProjectileBase : NetworkBehaviour
             if (health is CharacterBase )
             {
                 CharacterBase character = health as CharacterBase;
-                bool isdead = character.GetDamage(AttackDamage);
+                bool isdead = character.HealthDamage(AttackDamage);
                 if (isdead)
                 {
                     TriggerCharacterBaseDead(character);
@@ -44,7 +44,7 @@ public abstract class ProjectileBase : NetworkBehaviour
             else if (health is MinionBase)
             {
                 MinionBase minion = health as MinionBase;
-                bool isdead = minion.GetDamage(AttackDamage);
+                bool isdead = minion.HealthDamage(AttackDamage);
                 if (isdead)
                 {
                     TriggerMinionBaseDead(minion);
@@ -53,7 +53,7 @@ public abstract class ProjectileBase : NetworkBehaviour
             else if (health is TowerBase)
             {
                 TowerBase tower = health as TowerBase;
-                bool isdead = tower.GetDamage(AttackDamage);
+                bool isdead = tower.HealthDamage(AttackDamage);
                 if (isdead)
                 {
                     TriggeTowerBaseDead(tower);

@@ -339,7 +339,7 @@ public class Duck_AI : MinionBase
         if (health is CharacterBase)
         {
             CharacterBase character = health as CharacterBase;
-            bool isdead = character.GetDamage(attack);
+            bool isdead = character.HealthDamage(attack);
             if (isdead)
             {
                 LocalPlayer.AddKDA("kill");
@@ -350,7 +350,7 @@ public class Duck_AI : MinionBase
         else if (health is MinionBase)
         {
             MinionBase minion = health as MinionBase;
-            bool isdead = minion.GetDamage(attack);
+            bool isdead = minion.HealthDamage(attack);
             if (isdead)
             {
                 LocalPlayer.AddMoney(minion.coin);
@@ -363,7 +363,7 @@ public class Duck_AI : MinionBase
         else if (health is TowerBase)
         {
             TowerBase tower = health as TowerBase;
-            bool isdead = tower.GetDamage(attack);
+            bool isdead = tower.HealthDamage(attack);
             if (isdead)
             {
                 LocalPlayer.AddKDA("tower");
