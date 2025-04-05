@@ -213,6 +213,10 @@ public abstract class CharacterBase: Health
         StatusController.Instance.characterBase = this;
         Selectable.instance.LocalPlayer = this;
 
+        // Set Spell Initial
+        Spells[0].Set_Initial();
+        Spells[1].Set_Initial();
+
         // Health Initial
         InitialHealth();
         // Mana Initial

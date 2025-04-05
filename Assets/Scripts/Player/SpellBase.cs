@@ -27,6 +27,10 @@ public class SpellBase : ScriptableObject
     {
         
     }
+    public virtual void Set_Initial()
+    {
+        lastUseTime = - cooldownDuration;
+    }
 }
 
 }

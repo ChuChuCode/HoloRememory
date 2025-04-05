@@ -861,7 +861,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: -0.0009765625}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1407943004740707586
@@ -3937,6 +3937,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2f6151bb0214677887ebb33cf9e343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barType: 0
   slider: {fileID: 2131678241637216065}
   gradient:
     serializedVersion: 2
@@ -8105,6 +8106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2f6151bb0214677887ebb33cf9e343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barType: 0
   slider: {fileID: 1830254141701608101}
   gradient:
     serializedVersion: 2
@@ -12437,6 +12439,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2f6151bb0214677887ebb33cf9e343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barType: 1
   slider: {fileID: 7266285123183568712}
   gradient:
     serializedVersion: 2
@@ -13384,7 +13387,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3915550032268635854}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.9964209
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13820,6 +13823,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2f6151bb0214677887ebb33cf9e343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barType: 0
   slider: {fileID: 8112375617359470381}
   gradient:
     serializedVersion: 2

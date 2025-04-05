@@ -102,6 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc2f6151bb0214677887ebb33cf9e343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barType: 0
   slider: {fileID: 2037944061846957770}
   gradient:
     serializedVersion: 2
