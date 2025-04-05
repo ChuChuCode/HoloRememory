@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using HR.Network.Game;
 
 namespace HR.UI{
 public class Spell_Icon : MonoBehaviour
@@ -8,7 +9,12 @@ public class Spell_Icon : MonoBehaviour
     [SerializeField] Image skill_Image;
     [SerializeField] Image skill_Image_Gray;
     [SerializeField] TMP_Text coolDown_TIme;
-    public Button Level_Up_Button;
+    public enum Spell_Name
+    {
+        D,
+        F
+    }
+    [SerializeField] Spell_Name spell;
     public void Set_Skill_Icon(Sprite Skill_Image)
     {
         skill_Image.sprite = Skill_Image;
@@ -39,6 +45,18 @@ public class Spell_Icon : MonoBehaviour
         float NeedTime = CD_time - Usedtime;
         float DecimalTime = Mathf.Round( NeedTime *10f ) / 10f;
         return DecimalTime.ToString();
+    }
+    public void Use_Skill()
+    {
+        switch (spell)
+        {
+            case Spell_Name.D:
+                GameController.Instance.LocalPlayer.DKeyDown();
+                return;
+            case Spell_Name.F:
+                GameController.Instance.LocalPlayer.FKeyDown();
+                return;
+        }
     }
 }
 

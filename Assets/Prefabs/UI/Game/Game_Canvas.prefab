@@ -861,7 +861,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.0009765625}
+  m_AnchoredPosition: {x: 0, y: -0.000030517578}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1407943004740707586
@@ -1525,7 +1525,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1503485014023622777}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8417263131045405339}
+        m_TargetAssemblyTypeName: HR.UI.Spell_Icon, Assembly-CSharp
+        m_MethodName: Use_Skill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8417263131045405339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1541,7 +1553,7 @@ MonoBehaviour:
   skill_Image: {fileID: 3231709210176735809}
   skill_Image_Gray: {fileID: 2480498123260157182}
   coolDown_TIme: {fileID: 8529136343749960834}
-  Level_Up_Button: {fileID: 6378840231282286997}
+  spell: 1
 --- !u!1 &1123750433303931523
 GameObject:
   m_ObjectHideFlags: 0
@@ -9432,7 +9444,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8488881614786500411}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8178958724460964764}
+        m_TargetAssemblyTypeName: HR.UI.Spell_Icon, Assembly-CSharp
+        m_MethodName: Use_Skill
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8178958724460964764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9448,7 +9472,7 @@ MonoBehaviour:
   skill_Image: {fileID: 5366659610311778532}
   skill_Image_Gray: {fileID: 6036135056183140150}
   coolDown_TIme: {fileID: 8579635947039408846}
-  Level_Up_Button: {fileID: 7276719020265259662}
+  spell: 0
 --- !u!1 &6370732123828238655
 GameObject:
   m_ObjectHideFlags: 0
@@ -13387,7 +13411,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 3915550032268635854}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9964209
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
