@@ -19,6 +19,7 @@ public abstract class CharacterBase: Health
     [Header("Timer")]
     float HealthRegenTimer = 5f;
     float ManaRegenTimer = 5f;
+
     [Header("Mana / Energy")]
     [SyncVar] public int maxMana;
     [SyncVar(hook = nameof(Set_Mana))] public int currentMana = 1;
@@ -92,6 +93,10 @@ public abstract class CharacterBase: Health
     [SerializeField] protected GameObject Fixed_Cam;
     [Tooltip("Free Camera on Character")]
     public GameObject Free_CameParent;
+
+    [Header("Character Circle")]
+    [SerializeField] GameObject CirclePrefab;
+
     [Header("Move Target")]
     [Tooltip("Particle that show move target")]
     [SerializeField] protected ParticleSystem Target_Particle;
@@ -100,8 +105,10 @@ public abstract class CharacterBase: Health
     private bool isSkillCanceled = false;
     [SerializeField] protected LayerMask MouseTargetLayer;
     protected Ray ray;
+
     [Header("Dead Time")]
     float DeadTime = 3f;
+
     [Header("Recall")]
     float RecallTime = 8f;
     [SerializeField] protected VisualEffect RecallEffect;
@@ -301,7 +308,8 @@ public abstract class CharacterBase: Health
         InputComponent.instance.playerInput.Player.Camera_Change.started += _ => OnYKeyClick();
 
         // Camera Reset
-        InputComponent.instance.playerInput.Player.Camera_Reset.started += _ => OnSpaceKeyClick();
+        InputComponent.instance.playerInput.Player.Camera_Reset.started += _ => OnSpaceKeyDown();
+        InputComponent.instance.playerInput.Player.Camera_Reset.canceled += _ => OnSpaceKeyUp();
 
         // Option
         InputComponent.instance.playerInput.Player.Option.started += _ => OnEscKeyClick();
@@ -1012,10 +1020,15 @@ public abstract class CharacterBase: Health
     } 
     // Camera Reset
     /// <summary>This is invoked when SpaceKey Click Down.</summary>
-    public virtual void OnSpaceKeyClick()
+    public virtual void OnSpaceKeyDown()
     {
         if (!Free_CameParent.activeSelf) return;
         Free_CameParent.transform.position = gameObject.transform.position;
+        CirclePrefab.SetActive(true);
+    }
+    public virtual void OnSpaceKeyUp()
+    {
+        CirclePrefab.SetActive(false);
     }
     public virtual void OnEscKeyClick()
     {

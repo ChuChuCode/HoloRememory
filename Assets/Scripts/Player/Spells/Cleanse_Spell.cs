@@ -26,6 +26,8 @@ public class Cleanse_Spell : SpellBase
     public override void CharacterInfoChange(CharacterBase characterBase)
     {
         characterBase.ManaRegen(50);
+        // Range Effect
+        // Collider[] hitColliders = Physics.OverlapSphere(characterBase.mouseProject, radius, Layer_Enemy);
     }
 }
 

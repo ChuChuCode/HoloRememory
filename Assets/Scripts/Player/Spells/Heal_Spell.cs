@@ -27,6 +27,8 @@ public class Heal_Spell : SpellBase
     public override void CharacterInfoChange(CharacterBase characterBase)
     {
         characterBase.HealthHeal(80);
+        // Range Effect
+        // Collider[] hitColliders = Physics.OverlapSphere(characterBase.mouseProject, radius, Layer_Enemy);
     }
 }
 

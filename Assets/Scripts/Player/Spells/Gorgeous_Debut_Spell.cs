@@ -37,10 +37,6 @@ public class Gorgeous_Debut_Spell : SpellBase
     {
         Destroy(UI_Object.gameObject);
     }
-    public override void CharacterInfoChange(CharacterBase characterBase)
-    {
-        
-    }
 }
 
 }
