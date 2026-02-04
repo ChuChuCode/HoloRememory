@@ -2266,7 +2266,6 @@ MonoBehaviour:
   Spell_1_Position: {fileID: 1636372483}
   Spell_2_Position: {fileID: 1134490194}
   Spell_Component_Prefab: {fileID: 7854907966235791211, guid: a4baa71e05c09f349a433e1f4a80ed6d, type: 3}
-  Spell_Buttons: []
   Spell_1: {fileID: 1462957522}
   Spell_2: {fileID: 637245504}
   Team1_networkSelectPlayersList: []

@@ -126,7 +126,6 @@ public class CharacterSkillBase : NetworkBehaviour
             Character_Level = new_Level;
             if (!isOwned) return;
             // Show Level Up button
-            MainInfoUI.instance.Show_LevelUp(this);
             // Set Level UI
             MainInfoUI.instance.Set_Level(Character_Level);
         }

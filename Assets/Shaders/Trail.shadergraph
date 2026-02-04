@@ -992,8 +992,8 @@
     "m_ObjectId": "16a04d3eb4a146538f6e32878f104c53",
     "m_Title": "Dissolved Scroll",
     "m_Position": {
-        "x": 10.0,
-        "y": 10.0
+        "x": -2294.0,
+        "y": 136.5
     }
 }
 
@@ -1995,8 +1995,8 @@
     "m_ObjectId": "6d46293a087340ad97b602a15e2976f3",
     "m_Title": "Texture Scroll",
     "m_Position": {
-        "x": 10.0,
-        "y": 10.0
+        "x": -1229.0,
+        "y": 1066.5
     }
 }
 
@@ -3648,8 +3648,8 @@
     "m_ObjectId": "e5a346a4dc874856b87a1b130ef56e41",
     "m_Title": "Color Lerp",
     "m_Position": {
-        "x": -598.7548828125,
-        "y": -339.8218078613281
+        "x": -506.5,
+        "y": -340.0
     }
 }
 

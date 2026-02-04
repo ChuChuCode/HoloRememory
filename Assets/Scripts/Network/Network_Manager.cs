@@ -134,7 +134,8 @@ public class Network_Manager : NetworkManager
                 if (player.TeamID == 1)
                 {
                     // Start Point with 10 distance Position
-                    Vector3 SpawnPosition = new Vector3(Mathf.Cos(team1Index * 72 * Mathf.Deg2Rad),0,Mathf.Sin(team1Index * 72 * Mathf.Deg2Rad)) *3;
+                    // Vector3 SpawnPosition = new Vector3(Mathf.Cos(team1Index * 72 * Mathf.Deg2Rad),0,Mathf.Sin(team1Index * 72 * Mathf.Deg2Rad)) *3;
+                    Vector3 SpawnPosition = Vector3.zero;
                     SpawnPosition += GameController.Instance.Team1_transform.position;
                     // Face to Start Point
                     Quaternion rotation = Quaternion.LookRotation(GameController.Instance.Team1_transform.position - SpawnPosition);
@@ -165,9 +166,6 @@ public class Network_Manager : NetworkManager
                 gameplayInsance.CharacterID = player.CharacterID;
                 gameplayInsance.PlayerName = player.PlayerName;
                 // NetworkServer.Destroy(oldPlayer);
-
-                gameplayInsance.Spells[0] = SelectController.Instance.Search_Spell(player.Spell_1);
-                gameplayInsance.Spells[1] = SelectController.Instance.Search_Spell(player.Spell_2);
                 
                 // Ensure the client is ready before replacing the player
                 if (!NetworkClient.ready)

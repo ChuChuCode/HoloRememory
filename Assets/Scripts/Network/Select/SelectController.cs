@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using Steamworks;
 using System.Linq;
 using HR.UI;
-using HR.Object.Spell;
 using Mirror;
 
 namespace HR.Network.Select{
@@ -33,7 +32,6 @@ public class SelectController : MonoBehaviour
     [SerializeField] Transform Spell_1_Position;
     [SerializeField] Transform Spell_2_Position;
     [SerializeField] Spell_Button_Component Spell_Component_Prefab;
-    [SerializeField] List<SpellBase> Spell_Buttons = new List<SpellBase>();
     [SerializeField] Spell_Select Spell_1;
     [SerializeField] Spell_Select Spell_2;
     [Header("Manager")]
@@ -81,33 +79,6 @@ public class SelectController : MonoBehaviour
             temp_characterSelectComponent.transform.localScale = Vector3.one;
             SelectItemList.Add(temp_characterSelectComponent);
         }
-        // Initial Spell_Button_Component
-        var SpellObjects = Resources.LoadAll("Data/Spell");
-        foreach (var SpellObject in SpellObjects)
-        {
-            SpellBase spell_sprite = SpellObject as SpellBase;
-            // SpellBase add to List
-            Spell_Buttons.Add(spell_sprite);
-            /// Add to Spell 1
-            Spell_Button_Component temp_Spell = Instantiate(Spell_Component_Prefab);
-            // Set index
-            temp_Spell.SetIndex(1,spell_sprite.SpellIndex);
-            // Set Parent
-            temp_Spell.transform.SetParent(Spell_1_Position);
-            temp_Spell.transform.localScale = Vector3.one;
-            // Set Image
-            temp_Spell.SetSprite(spell_sprite.Spell_Sprite);
-
-            /// Add to Spell 2
-            Spell_Button_Component temp_Spell1 = Instantiate(Spell_Component_Prefab);
-            // Set index
-            temp_Spell1.SetIndex(2,spell_sprite.SpellIndex);
-            // Set Parent
-            temp_Spell1.transform.SetParent(Spell_2_Position);
-            temp_Spell1.transform.localScale = Vector3.one;
-            // Set Image
-            temp_Spell1.SetSprite(spell_sprite.Spell_Sprite);
-        }
         // Initial UI
         foreach (PlayerObject player in Manager.PlayersInfoList)
         {
@@ -124,8 +95,6 @@ public class SelectController : MonoBehaviour
             network_SelectPlayer.ConnectionID = player.ConnectionID;
             network_SelectPlayer.PlayerSteamID = player.PlayerSteamID;
             network_SelectPlayer.TeamID = player.TeamID;
-            network_SelectPlayer.Spell_1.sprite = Search_Spell(player.Spell_1).Spell_Sprite;
-            network_SelectPlayer.Spell_2.sprite = Search_Spell(player.Spell_2).Spell_Sprite;
             // Set Spell default
             if (player.isLocalPlayer)
             {
@@ -157,7 +126,8 @@ public class SelectController : MonoBehaviour
         }
         else
         {
-            map_name = "Game_Bridge_Scene";
+            // Set default map name on server
+            map_name = "Game_Test_Scene";
         }
     }
     // Search Character with Character ID
@@ -275,9 +245,6 @@ public class SelectController : MonoBehaviour
                 {
                     // Update Character Image
                     PlayerListItemScript.SetCharacterImage(Search_Character(player.CharacterID));
-                    // Update Spell Image
-                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1).Spell_Sprite;
-                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2).Spell_Sprite;
                     // if player is local player -> update Ready Button
                     if (player == LocalPlayerController)
                     {
@@ -291,9 +258,6 @@ public class SelectController : MonoBehaviour
                 {
                     // Update Character Image
                     PlayerListItemScript.SetCharacterImage(Search_Character(player.CharacterID));
-                    // Update Spell Image
-                    PlayerListItemScript.Spell_1.sprite = Search_Spell(player.Spell_1).Spell_Sprite;
-                    PlayerListItemScript.Spell_2.sprite = Search_Spell(player.Spell_2).Spell_Sprite;
                     // if player is local player -> update Ready Button
                     if (player == LocalPlayerController)
                     {
@@ -378,7 +342,8 @@ public class SelectController : MonoBehaviour
         // Set to PlayerPref
         PlayerPrefs.SetInt("Spell_1", LocalPlayerController.Spell_1) ;
         PlayerPrefs.SetInt("Spell_2", LocalPlayerController.Spell_2) ;
-        // Set UI Disable
+
+        // Set CharacterUI Disable
         foreach (CharacterSelectItem selectItem in SelectItemList)
         {
             selectItem.GetComponent<Button>().interactable = false;
@@ -402,11 +367,6 @@ public class SelectController : MonoBehaviour
         {
             Spell_2.Spell_Button_Click(spell_Index);
         }
-    }
-    public SpellBase Search_Spell(int spell_Index)
-    {
-        SpellBase spell = Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
-        return Spell_Buttons.Find(x => x.SpellIndex == spell_Index);
     }
     // Check All Set -> Can Ready
     public void Check_ReadyButton()

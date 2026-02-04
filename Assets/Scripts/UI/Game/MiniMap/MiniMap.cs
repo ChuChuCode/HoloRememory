@@ -42,13 +42,13 @@ public class MiniMap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,IPo
             {
                 // Free Camera Move
                 Pressed_Left = true;
-                GameController.Instance.LocalPlayer.Set_FreeCamera(position);
+                // GameController.Instance.LocalPlayer.Set_FreeCamera(position);
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
                 // Player Move
                 Pressed_Right = true;
-                GameController.Instance.LocalPlayer.Set_Destination(position,true);
+                // GameController.Instance.LocalPlayer.Set_Destination(position,true);
             }
         }
     }
@@ -92,12 +92,12 @@ public class MiniMap : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,IPo
             if (Pressed_Left)
             {
                 // Free Camera Move
-                GameController.Instance.LocalPlayer.Set_FreeCamera(position);
+                // GameController.Instance.LocalPlayer.Set_FreeCamera(position);
             }
             else if (Pressed_Right)
             {
                 // Player Move
-                GameController.Instance.LocalPlayer.Set_Destination(position,false);
+                // GameController.Instance.LocalPlayer.Set_Destination(position,false);
             }
         }
     }

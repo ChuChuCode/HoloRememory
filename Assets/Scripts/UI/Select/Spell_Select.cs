@@ -63,8 +63,6 @@ public class Spell_Select : MonoBehaviour
             {
                 SelectController.Instance.LocalPlayerController.CanSpell2Change(new_spell_Index);
             }
-            // Sprite update
-            Spell_Image.sprite = SelectController.Instance.Search_Spell(new_spell_Index).Spell_Sprite;
         }
         // Set Spell Index 
         spell_index = new_spell_Index;

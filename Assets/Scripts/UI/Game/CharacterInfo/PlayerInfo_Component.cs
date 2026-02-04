@@ -30,10 +30,6 @@ public class PlayerInfo_Component : MonoBehaviour
         Kill_Text.text = characterBase.kill.ToString();
         Death_Text.text = characterBase.death.ToString();
         Assist_Text.text = characterBase.assist.ToString();
-        for (int i = 0 ; i < Equipment_Images.Length ; i++)
-        {
-            Equipment_Images[i].sprite = characterBase.EquipmentSlots[i]?.EquipmentImage;
-        }
     }
 }
 
