@@ -528,11 +528,11 @@ public abstract class CharacterBase: Health
     [Command]
     void CmdSpawnBomb()
     {
-        // Calcuate Spawn Position, eq (0,0,0)~(1,0,1)) are all (0.5,0,0.5)
+        // Calcuate Spawn Position, eq (-0.25,0,-0.25)~(0.25,0,0.25)) are all (0,0,0)
         Vector3 spawnPos = new Vector3(
-            Mathf.Floor(transform.position.x) + 0.5f,
+            Mathf.Floor( (transform.position.x + 0.25f) * 2) / 2 ,
             0f,
-            Mathf.Floor(transform.position.z) + 0.5f
+            Mathf.Floor( (transform.position.z + 0.25f) * 2) / 2
         );
         BombBase bomb = Instantiate(Bomb_Prefab, spawnPos, Quaternion.identity);
         bomb.SetOwner(this);

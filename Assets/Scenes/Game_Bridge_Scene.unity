@@ -4146,6 +4146,14 @@ MonoBehaviour:
   Team2_transform: {fileID: 218656936}
   LocalPlayer: {fileID: 0}
   LocalPlayerController: {fileID: 0}
+  gridSizeX: 20
+  gridSizeY: 10
+  unitLength: 1
+  lineWidth: 0.05
+  lineMaterial: {fileID: 0}
+  gridColor: {r: 1, g: 1, b: 1, a: 1}
+  showInEditor: 1
+  gizmoColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!4 &1160502034
 Transform:
   m_ObjectHideFlags: 0
