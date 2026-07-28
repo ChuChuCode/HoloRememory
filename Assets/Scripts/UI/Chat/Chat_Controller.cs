@@ -3,7 +3,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using HR.Network.Lobby;
-using HR.Network.Select;
 using HR.Network.Game;
 using UnityEngine.UI;
 using Mirror;
@@ -16,7 +15,6 @@ public class Chat_Controller : NetworkBehaviour
     [SerializeField] Transform messageContent;
     [SerializeField] ScrollRect scrollRect;
     [SerializeField] MessageComponent Message_Prefab;
-    [SerializeField] bool isGlobal;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -50,10 +48,6 @@ public class Chat_Controller : NetworkBehaviour
         {
             userName = LobbyController.Instance.LocalPlayerController.PlayerName;
         }
-        else if (SceneManager.GetActiveScene().name == "Select_Scene")
-        {
-            userName = SelectController.Instance.LocalPlayerController.PlayerName;
-        }
         else
         {
             userName = GameController.Instance.LocalPlayerController.PlayerName;
@@ -71,42 +65,14 @@ public class Chat_Controller : NetworkBehaviour
     [ClientRpc]
     public void RpcAddMessage(string userName, string message)
     {
-        if (isGlobal)
-        {
-            // Client-side logic to add the message
-            MessageComponent newMessage = Instantiate(Message_Prefab);
-            newMessage.SetString(userName, message);
-            // Set Parent
-            newMessage.transform.SetParent(messageContent);
-            newMessage.transform.localScale = Vector3.one;
-            scrollRect.verticalNormalizedPosition = 0;
-        }
-        else
-        {
-            int localPlayerTeamID = Manager.LocalPlayerObject.TeamID;
-            foreach (PlayerObject player in Manager.PlayersInfoList)
-            {
-                if (player.TeamID == localPlayerTeamID)
-                {
-                    // // Client-side logic to add the message for team members
-                    // MessageComponent newMessage = Instantiate(Message_Prefab);
-                    // newMessage.SetString(userName, message);
-                    // // Set Parent
-                    // newMessage.transform.SetParent(messageContent);
-                    // newMessage.transform.localScale = Vector3.one;
-                    TargetRpcAddMessage(player.connectionToClient, userName, message);
-                }
-            }
-        }
-    }
-    [TargetRpc]
-    public void TargetRpcAddMessage(NetworkConnection conn, string userName, string message)
-    {
-        // Client-side logic to add the message for team members
+        // FFA has no teams to restrict chat to (every TeamID is a unique
+        // player slot, so the old team-only path would only ever reach the
+        // sender) - everyone just gets the message.
         MessageComponent newMessage = Instantiate(Message_Prefab);
         newMessage.SetString(userName, message);
         // Set Parent
         newMessage.transform.SetParent(messageContent);
         newMessage.transform.localScale = Vector3.one;
+        scrollRect.verticalNormalizedPosition = 0;
     }
 }

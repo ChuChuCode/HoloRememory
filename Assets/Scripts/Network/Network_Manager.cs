@@ -9,20 +9,19 @@ using HR.Network.Game;
 using HR.Object.Player;
 using HR.Network.Lobby;
 using HR.Network.Result;
+using HR.Map;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
 {
     [Header("Lobby")]
     [SerializeField] PlayerObject PlayerObject_Prefab;
+    public const int MaxPlayers = 8; // Number of selectable team colors (1..MaxPlayers) - teams can hold any number of players
     public List<PlayerObject> PlayersInfoList = new List<PlayerObject>();
     public PlayerObject LocalPlayerObject;
-    [Header("Select")]
-    [SerializeField] Network_SelectPlayer SelectPlayer;
     [Header("Character Component")]
     public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
     public List<CharacterBase> Player_List = new List<CharacterBase>();
-    public int LoseTeam = 0;
     int Player_num = 0;
     public override void Start()
     {
@@ -52,11 +51,34 @@ public class Network_Manager : NetworkManager
             // instantiating a "Player" prefab gives it the name "Player(clone)"
             // => appending the connectionId is WAY more useful for debugging!
             player.name = $"{player.name} [connId={conn.connectionId}]";
+            // Auto-spread new joiners across the 8 colors by default; teams
+            // can be uneven and players can freely re-pick afterward (see
+            // PlayerObject.CanTeamJoin), including matching someone else's
+            // color - asymmetric team sizes are allowed.
+            player.TeamID = NextAutoTeam();
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
 
             // Add when PlayerObject in OnStartClient
             // PlayersInfoList.Add(player);
         }
+    }
+    // Prefer a color nobody currently in the room is using, so a fresh
+    // joiner doesn't land on the same color as an existing player by luck
+    // of the count (players are free to re-pick, so a plain round robin by
+    // count can drift onto an already-occupied color).
+    int NextAutoTeam()
+    {
+        HashSet<int> usedTeams = new HashSet<int>();
+        foreach (PlayerObject player in PlayersInfoList)
+        {
+            usedTeams.Add(player.TeamID);
+        }
+        for (int team = 1; team <= MaxPlayers; team++)
+        {
+            if (!usedTeams.Contains(team)) return team;
+        }
+        // All colors already taken - fall back to round robin (best effort share).
+        return (PlayersInfoList.Count % MaxPlayers) + 1;
     }
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
@@ -97,31 +119,20 @@ public class Network_Manager : NetworkManager
             {
                 player.Ready = false;
                 player.CharacterID = -1;
-                player.kill = -1;
-                player.death = -1;
-                player.assist = -1;
-                player.minion = -1;
-                player.tower = -1;
             }
             // Set LocalPlayer ** need to change to client
             LobbyController.Instance.LocalPlayerController = LocalPlayerObject;
             // Update UI
             LobbyController.Instance.UpdatePlayerList();
-            LoseTeam = 0 ;
-        }
-        // Lobby to Select 
-        if (newSceneName.StartsWith("Select_Scene"))
-        {
-            foreach (PlayerObject player in PlayersInfoList)
-            {
-                // Reset all parameter
-                player.Ready = false;
-            }
         }
         /// Game Scene
         if (newSceneName.StartsWith("Game") )
         {
-            int team1Index = 0, team2Index = 0;
+            // Teams can be asymmetric (any number of players per color), so
+            // track how many of each team we've placed already and hand out
+            // that team's spawn points in order (wraps via modulo in
+            // GetSpawnPosition if a team has more players than spawn points).
+            Dictionary<int, int> teamSpawnIndex = new Dictionary<int, int>();
             foreach (PlayerObject player in PlayersInfoList)
             {
                 NetworkConnectionToClient conn = player.connectionToClient;
@@ -131,27 +142,12 @@ public class Network_Manager : NetworkManager
                 CharacterBase characterModel = characterModelComponent.CharacterModel;
                 CharacterBase gameplayInsance;
 
-                if (player.TeamID == 1)
-                {
-                    // Start Point with 10 distance Position
-                    // Vector3 SpawnPosition = new Vector3(Mathf.Cos(team1Index * 72 * Mathf.Deg2Rad),0,Mathf.Sin(team1Index * 72 * Mathf.Deg2Rad)) *3;
-                    Vector3 SpawnPosition = Vector3.zero;
-                    SpawnPosition += GameController.Instance.Team1_transform.position;
-                    // Face to Start Point
-                    Quaternion rotation = Quaternion.LookRotation(GameController.Instance.Team1_transform.position - SpawnPosition);
-                    gameplayInsance = Instantiate(characterModel,SpawnPosition,rotation);
-                    team1Index++;
-                }
-                else
-                {
-                    // Start Point with 10 distance Position
-                    Vector3 SpawnPosition = new Vector3(Mathf.Cos(team2Index * 72 * Mathf.Deg2Rad),0,Mathf.Sin(team2Index * 72 * Mathf.Deg2Rad)) *3;
-                    SpawnPosition += GameController.Instance.Team2_transform.position;
-                    // Face to Start Point
-                    Quaternion rotation = Quaternion.LookRotation(GameController.Instance.Team1_transform.position - SpawnPosition);
-                    gameplayInsance = Instantiate(characterModel,SpawnPosition,rotation);
-                    team2Index++;
-                }
+                teamSpawnIndex.TryGetValue(player.TeamID, out int spawnIndex);
+                teamSpawnIndex[player.TeamID] = spawnIndex + 1;
+                Vector3 SpawnPosition = GridManager.Instance.GetSpawnPosition(player.TeamID, spawnIndex);
+                // Face toward the arena center
+                Quaternion rotation = Quaternion.LookRotation(Vector3.zero - SpawnPosition);
+                gameplayInsance = Instantiate(characterModel,SpawnPosition,rotation);
                 // // Set Layer to all child
                 // Transform[] children = gameplayInsance.GetComponentsInChildren<Transform>(includeInactive: true);
                 // foreach(Transform child in children)
@@ -174,9 +170,22 @@ public class Network_Manager : NetworkManager
                 }
                 // NetworkServer.Spawn(gameplayInsance.gameObject);
                 NetworkServer.ReplacePlayerForConnection(conn,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
+                // OneLife/MultiLife force everyone to the same maxHealth (1
+                // hit kill, regardless of character). HealthBar leaves each
+                // character's own prefab maxHealth alone, so per-character
+                // tankier/frailer differences still apply.
+                GameModeConfig modeConfig = GameSettings.Instance != null ? GameSettings.Instance.CurrentConfig() : null;
+                if (modeConfig != null)
+                {
+                    if (modeConfig.overrideHealth) gameplayInsance.maxHealth = modeConfig.maxHealth;
+                    gameplayInsance.lives = modeConfig.lives;
+                }
+                // Now actually spawned/server-authoritative, so isServer reads
+                // correctly - sets currentHealth = maxHealth instead of
+                // relying on the SyncVar's hardcoded default of 1.
+                gameplayInsance.InitialHealth();
 
                 // Player_List.Add(gameplayInsance);
-                gameplayInsance.SetKDA(0,0,0,0,0);
                 // All Player Info *** need to change to client
                 // CharacterInfoPanel.Instance.RpcAdd_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
@@ -196,9 +205,6 @@ public class Network_Manager : NetworkManager
                     NetworkClient.Ready();
                 }
                 NetworkServer.ReplacePlayerForConnection(playerobject.connectionToClient,player.gameObject,ReplacePlayerOptions.KeepAuthority);
-
-                // Set CharacterBase Info to Result_Player
-                player.CanKDAChange(playerobject);
 
                 // Destroy CharacterBase
                 NetworkServer.Destroy(playerobject.gameObject);
@@ -225,6 +231,22 @@ public class Network_Manager : NetworkManager
     {
         print($"Change Scene to : {SceneName}");
         ServerChangeScene(SceneName);
+    }
+    // Called (server-only) whenever a player dies - FFA, so TeamID is really
+    // just each player's unique slot; this ends the game once at most one
+    // player is still alive.
+    public void CheckGameOver()
+    {
+        HashSet<int> alivePlayers = new HashSet<int>();
+        foreach (CharacterBase player in Player_List)
+        {
+            if (!player.isDead) alivePlayers.Add(player.TeamID);
+        }
+
+        if (alivePlayers.Count <= 1)
+        {
+            ChangeScene("Lobby_Scene");
+        }
     }
 }
 

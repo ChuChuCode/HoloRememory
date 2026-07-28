@@ -13,7 +13,6 @@ public class MainInfoUI : MonoBehaviour
     public TMP_Text Level_Text;
     public Image Level;
     [SerializeField] Bar HP;
-    [SerializeField] Bar MP;
     [Header("Money")]
     public TMP_Text Moeny_Text;
     void Awake()
@@ -31,8 +30,6 @@ public class MainInfoUI : MonoBehaviour
     {
         HP.SetMaxValue(LocalPlayer.maxHealth);
         HP.SetValue(LocalPlayer.currentHealth);
-        MP.SetMaxValue(LocalPlayer.maxMana);
-        MP.SetValue(LocalPlayer.currentMana);
         Moeny_Text.text = LocalPlayer.ownMoney.ToString();
     }
     public void Set_Level(int level)

@@ -7,27 +7,38 @@ using Steamworks;
 using UnityEngine.UI;
 using UnityEngine.SocialPlatforms;
 using Mirror;
+using HR.Network.Select;
 
 namespace HR.Network.Lobby{
 public class LobbyController : MonoBehaviour
 {
     public bool AllReady;
     public static LobbyController Instance;
-    [Header("Lobby Prefab")]
-    [SerializeField] GameObject LobbyPlayerPrefab;
-    [Header("Team")]
-    [SerializeField] Transform Team1_transform;
-    [SerializeField] Transform Team2_transform;
+    // Fixed 8 slots, pre-placed in the scene - never instantiated/destroyed,
+    // just filled or cleared to "empty". TeamID is auto-spread across the 8
+    // colors on connect, but players can freely re-pick any of the 8 colored
+    // slots via the buttons below (SlotChange) - teams can be uneven in size.
+    [Header("Player List (fixed 8 slots)")]
+    [SerializeField] LobbyPlayerSlot[] PlayerSlots = new LobbyPlayerSlot[8];
     // Other Data
     public ulong CurrentLobbyID;
-    public bool PlayerItemCreated = false;
     [Header("UI")]
     public TMP_Text LobbyNameText;
+    public TMP_Text RoomCountText;
+    public TMP_Text ModeText;
+    // Single shared button - host sees "Start", everyone else sees "Ready"/
+    // "Unready". See MainButtonClick/RefreshMainButton.
     public TMP_Text ReadyButtonText;
-    public Button StartButton;
-    public Button Team1_Join;
-    public Button Team2_Join;
-    public Button Viewer_Join;
+    public Button ReadyButton;
+    [Header("Slot Buttons (1-8, White/Red/Orange/Yellow/Green/Blue/Purple/Pink)")]
+    [SerializeField] Button[] SlotButtons = new Button[8];
+    [Header("Character Select (merged in from the old Select_Scene)")]
+    [SerializeField] CharacterSelectItem CharacterPrefab;
+    [SerializeField] Transform CharacterSelectPanel;
+    [SerializeField] List<CharacterSelectItem> SelectItemList = new List<CharacterSelectItem>();
+    [Header("Map")]
+    public GameObject MapSelectPanel;
+    public TMP_Text MapNameText;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -42,8 +53,7 @@ public class LobbyController : MonoBehaviour
             return manager = Network_Manager.singleton as Network_Manager;
         }
     }
-    [SerializeField] List<Network_LobbyPlayer> LobbyPlayerList = new List<Network_LobbyPlayer>();
-    public PlayerObject LocalPlayerController;
+    [HideInInspector] public PlayerObject LocalPlayerController;
     void Awake()
     {
         if (Instance == null)
@@ -53,11 +63,28 @@ public class LobbyController : MonoBehaviour
     }
     void Start()
     {
-        // If restart game -> PlayersInfoList has player -> re-get LocalGamePlayer object and Set Start Button
+        // Character select buttons - built once per Lobby_Scene load (ported
+        // from the old Select_Scene, which no longer exists as a separate step).
+        foreach (CharacterSelectComponent characterSelectComponent in Manager.characterSelectComponentsList)
+        {
+            CharacterSelectItem item = Instantiate(CharacterPrefab);
+            item.SetCharacterData(characterSelectComponent.ID, characterSelectComponent.CharacterName, characterSelectComponent.CharacterImage, characterSelectComponent.SelectAudio);
+            item.transform.SetParent(CharacterSelectPanel);
+            item.transform.localScale = Vector3.one;
+            SelectItemList.Add(item);
+        }
+        if (!NetworkServer.active)
+        {
+            if (MapSelectPanel != null) MapSelectPanel.SetActive(false);
+        }
+        UpdateRoomCount();
+        UpdateModeText();
+        UpdateMapText();
+        // If restart game -> PlayersInfoList has player -> re-get LocalGamePlayer object and refresh the button
         if (Manager.PlayersInfoList.Count > 0)
         {
             LocalPlayerController = GameObject.Find("LocalGamePlayer").GetComponent<PlayerObject>();
-            SetStartButton();
+            RefreshMainButton();
         }
     }
     public void UpdateLobbyName()
@@ -65,251 +92,174 @@ public class LobbyController : MonoBehaviour
         CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
         LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID),"name");
     }
-    public void SetStartButton()
+    public void UpdateRoomCount()
     {
-        // LocalPlayerController = GameObject.Find("LocalGamePlayer").GetComponent<PlayerObject>();
-        // Hide Start Button if is not Host
-        if (!NetworkServer.active)
-        {
-            StartButton.gameObject.SetActive(false);
-        }
+        if (RoomCountText == null) return;
+        RoomCountText.text = $"{Manager.PlayersInfoList.Count} / {Manager.maxConnections}";
     }
-    public void UpdatePlayerList()
+    // Room Mode display - refreshed on Start and whenever GameSettings.Mode
+    // syncs (GameSettings.OnModeChanged), since any client can change it.
+    public void UpdateModeText()
     {
-        // Create Host Player(Already exit in room) 
-        // LobbyPlayerList.OnStartAuthority
-        if(!PlayerItemCreated)
-        {
-            // Host
-            CreateHostPlayerItem();
-        }
-        // Create Owner Player
-        // LobbyPlayerList.OnStartClient
-        if (LobbyPlayerList.Count < Manager.PlayersInfoList.Count)
-        {
-            CreateClientPlayerItem();
-        }
-        // Check Anyone leave
-        // LobbyPlayerList.OnStopClient
-        if (LobbyPlayerList.Count > Manager.PlayersInfoList.Count)
-        {
-            RemovePlayerItem();
-        }
-        // Update things
-        // LobbyPlayerList.PlayerNameUdate
-        if (LobbyPlayerList.Count == Manager.PlayersInfoList.Count)
-        {
-            UpdatePlayerUI();
-        }
+        if (ModeText == null || GameSettings.Instance == null) return;
+        ModeText.text = GameSettings.Instance.Mode.ToString();
     }
-    public void CreateHostPlayerItem()
+    // Mode Button/Dropdown
+    public void SetMode(int mode)
     {
-        print("HOST create");
-        foreach(PlayerObject player in Manager.PlayersInfoList)
-        {
-            GameObject LobbyPlayer = Instantiate(LobbyPlayerPrefab);
-            Network_LobbyPlayer network_LobbyPlayer = LobbyPlayer.GetComponent<Network_LobbyPlayer>();
-
-            network_LobbyPlayer.PlayerName = player.PlayerName;
-            network_LobbyPlayer.ConnectionID = player.ConnectionID;
-            network_LobbyPlayer.PlayerSteamID = player.PlayerSteamID;
-            network_LobbyPlayer.isReady = player.Ready;
-            network_LobbyPlayer.SetPlayerValues();
-            // Set Team if #Team1_player < 5 -> add to Team1
-            int team1_count = Manager.PlayersInfoList.FindAll(b => b.TeamID == 1).Count;
-            if (team1_count < 5)
-            {
-                LobbyPlayer.transform.SetParent(Team1_transform);
-                player.CanTeamJoin(1);
-            }
-            else
-            {
-                LobbyPlayer.transform.SetParent(Team2_transform);
-                player.CanTeamJoin(2);
-            }
-            LobbyPlayer.transform.localScale = Vector3.one;
-            LobbyPlayerList.Add(network_LobbyPlayer);
-        }
-        PlayerItemCreated = true;
+        if (GameSettings.Instance == null) return;
+        GameSettings.Instance.CmdSetMode((GameMode)mode);
     }
-    public void CreateClientPlayerItem()
+    // Bound to the single shared button - host triggers Start, everyone
+    // else toggles their own Ready.
+    public void MainButtonClick()
     {
-        print("CLIENT ceate");
-        foreach(PlayerObject player in Manager.PlayersInfoList)
+        if (NetworkServer.active)
         {
-            if (!LobbyPlayerList.Any(b => b.ConnectionID == player.ConnectionID))
-            {
-                GameObject LobbyPlayer = Instantiate(LobbyPlayerPrefab);
-                Network_LobbyPlayer network_LobbyPlayer = LobbyPlayer.GetComponent<Network_LobbyPlayer>();
-
-                network_LobbyPlayer.PlayerName = player.PlayerName;
-                network_LobbyPlayer.ConnectionID = player.ConnectionID;
-                network_LobbyPlayer.PlayerSteamID = player.PlayerSteamID;
-                network_LobbyPlayer.isReady = player.Ready;
-                network_LobbyPlayer.SetPlayerValues();
-                // Set Team if #Team1_player < 5 -> add to Team1
-                int team1_count = Manager.PlayersInfoList.FindAll(b => b.TeamID == 1).Count;
-                if (team1_count < 5)
-                {
-                    LobbyPlayer.transform.SetParent(Team1_transform);
-                    player.CanTeamJoin(1);
-                }
-                else
-                {
-                    LobbyPlayer.transform.SetParent(Team2_transform);
-                    player.CanTeamJoin(2);
-                }
-                LobbyPlayer.transform.localScale = Vector3.one;
-
-                LobbyPlayerList.Add(network_LobbyPlayer);
-            }
-        }
-    }
-    public void UpdatePlayerUI()
-    {
-        foreach(PlayerObject player in Manager.PlayersInfoList)
-        {
-            foreach(Network_LobbyPlayer network_LobbyPlayer in LobbyPlayerList)
-            {
-                if (network_LobbyPlayer.ConnectionID == player.ConnectionID)
-                {
-                    network_LobbyPlayer.PlayerName = player.PlayerName;
-                    network_LobbyPlayer.isReady = player.Ready;
-                    network_LobbyPlayer.SetPlayerValues();
-                    // Set team
-                    if (player.TeamID == 1)
-                    {
-                        network_LobbyPlayer.transform.SetParent(Team1_transform);
-                    }
-                    else
-                    {
-                        network_LobbyPlayer.transform.SetParent(Team2_transform);
-                    }
-                    // if player is local player -> update Ready Button
-                    if (player == LocalPlayerController)
-                    {
-                        UpdateButton();
-                    }
-                }
-            }
-        }
-        CheckTeamButton();
-        CheckIfAllReady();
-    }
-    public void RemovePlayerItem()
-    {
-        List<Network_LobbyPlayer> playerListItemToRemove = new List<Network_LobbyPlayer>();
-
-        foreach(Network_LobbyPlayer playerlistItem in LobbyPlayerList)
-        {
-            if(!Manager.PlayersInfoList.Any(b => b.ConnectionID == playerlistItem.ConnectionID))
-            {
-                playerListItemToRemove.Add(playerlistItem);
-            }
-        }
-        if (playerListItemToRemove.Count > 0)
-        {
-            foreach(Network_LobbyPlayer playerlistItemToRemove in playerListItemToRemove)
-            {
-                GameObject ObjectToRemove = playerlistItemToRemove.gameObject;
-                LobbyPlayerList.Remove(playerlistItemToRemove);
-                Destroy(ObjectToRemove);
-                ObjectToRemove = null;
-            }
-        }
-    }
-    public void UpdateButton()
-    {
-        if (LocalPlayerController.Ready)
-        {
-            ReadyButtonText.text = "Unready";
+            StarGame();
         }
         else
         {
-            ReadyButtonText.text = "Ready";
+            ReadyPlayer();
         }
     }
+    // Host: "Start", enabled once every other player is Ready and the host
+    // has picked a character themselves.
+    // TEMP (testing): the "at least 2 teams" requirement is disabled below
+    // so a single color can start solo - re-add "&& HasAtLeastTwoTeams()"
+    // once done testing.
+    // Everyone else: "Ready"/"Unready", a plain toggle gated only on having
+    // picked a character - stays clickable even once Ready so it can be undone.
+    public void RefreshMainButton()
+    {
+        if (ReadyButton == null || LocalPlayerController == null) return;
+
+        bool hasCharacter = LocalPlayerController.CharacterID != -1;
+
+        if (NetworkServer.active)
+        {
+            if (ReadyButtonText != null) ReadyButtonText.text = "Start";
+            ReadyButton.interactable = hasCharacter && AllReady;
+        }
+        else
+        {
+            if (ReadyButtonText != null) ReadyButtonText.text = LocalPlayerController.Ready ? "Unready" : "Ready";
+            ReadyButton.interactable = hasCharacter;
+        }
+    }
+    // Fills the 8 fixed slots from the current roster - no more
+    // Instantiate/Destroy, just data updates. Sorted by ConnectionID (a
+    // SyncVar, so identical on every screen) rather than PlayersInfoList's
+    // raw order, since Mirror doesn't guarantee that order matches between
+    // the host and a client who joined mid-session - without this, slot 3
+    // could show a different player on different screens.
+    public void UpdatePlayerList()
+    {
+        List<PlayerObject> sortedPlayers = Manager.PlayersInfoList.OrderBy(p => p.ConnectionID).ToList();
+
+        for (int i = 0; i < PlayerSlots.Length; i++)
+        {
+            if (PlayerSlots[i] == null) continue;
+
+            if (i < sortedPlayers.Count)
+            {
+                PlayerObject player = sortedPlayers[i];
+                PlayerSlots[i].SetPlayer(player);
+            }
+            else
+            {
+                PlayerSlots[i].SetEmpty();
+            }
+        }
+        CheckSlotButtons();
+        CheckCharacterButtons();
+        CheckIfAllReady();
+        RefreshMainButton();
+        UpdateRoomCount();
+    }
+    // The host has no Ready toggle of their own (Start IS their
+    // confirmation), so they're excluded from this check - it only asks
+    // whether every OTHER player is Ready.
     public void CheckIfAllReady()
     {
-        AllReady = false;
+        AllReady = true;
 
         foreach(PlayerObject player in Manager.PlayersInfoList)
         {
-            if (player.Ready)
-            {
-                AllReady = true;
-            }
-            else
+            if (player.ConnectionID == 0) continue;
+            if (!player.Ready)
             {
                 AllReady = false;
                 break;
             }
         }
-        // Start Button Clickable
-        if (AllReady)
-        {
-            // Is Host
-            if (NetworkServer.active)
-            {
-                StartButton.interactable = true;
-            }
-            else
-            {
-                StartButton.interactable = false;
-            }
-        }
-        else
-        {
-            StartButton.interactable = false;
-        }
     }
-    public void CheckTeamButton()
+    // Teams are asymmetric - any number of players can share a color, so a
+    // slot button only disables when it's already your own pick, or you're
+    // Ready (locked in). It never disables just because someone else has it.
+    public void CheckSlotButtons()
     {
-        Team1_Join.interactable = true;
-        Team2_Join.interactable = true;
-        int team1_count = Manager.PlayersInfoList.FindAll(b => b.TeamID == 1).Count;
-        int team2_count = Manager.PlayersInfoList.FindAll(b => b.TeamID == 2).Count;
-        if (team1_count == 5)
+        for (int i = 0; i < SlotButtons.Length; i++)
         {
-            Team1_Join.interactable = false;
-        }
-        if (team2_count == 5)
-        {
-            Team2_Join.interactable = false;
-        }
-        if (LocalPlayerController == null) return;
-        /// Initial between OnStartClient and OnStartAuthority
-        /// OnStartClient go first then OnStartAuthority
-        /// but set LocalPlayerController on OnStartAuthority stage
-        if (LocalPlayerController.Ready) 
-        {
-            Team1_Join.interactable = false;
-            Team2_Join.interactable = false;
-            return;
-        }
-        if (LocalPlayerController.TeamID == 1)
-        {
-            Team1_Join.interactable = false;
-        }
-        else
-        {
-            Team2_Join.interactable = false;
+            if (SlotButtons[i] == null) continue;
+            int slot = i + 1;
+
+            bool isMine = LocalPlayerController != null && LocalPlayerController.TeamID == slot;
+            bool locked = LocalPlayerController != null && LocalPlayerController.Ready;
+
+            SlotButtons[i].interactable = !isMine && !locked;
         }
     }
-    // Ready Button
-    public void ReadyPlayer()
+    // Same "locked while Ready" pattern as CheckSlotButtons: a character
+    // button only disables for being your own current pick, or Ready.
+    public void CheckCharacterButtons()
+    {
+        bool locked = LocalPlayerController != null && LocalPlayerController.Ready;
+        foreach (CharacterSelectItem item in SelectItemList)
+        {
+            bool isMine = LocalPlayerController != null && LocalPlayerController.CharacterID == item.CharacterID;
+            Button btn = item.GetComponent<Button>();
+            if (btn != null) btn.interactable = !isMine && !locked;
+        }
+    }
+    // Map Button - host-only; synced to everyone via GameSettings.MapName.
+    public void change_map(string mapName)
+    {
+        if (!NetworkServer.active) return;
+        GameSettings.Instance.CmdSetMap(mapName);
+    }
+    public void UpdateMapText()
+    {
+        if (MapNameText == null || GameSettings.Instance == null) return;
+        MapNameText.text = GameSettings.Instance.MapName;
+    }
+    // Start requires at least 2 different colors actually in play - everyone
+    // picking the same one would "start" a match with no opponents.
+    bool HasAtLeastTwoTeams()
+    {
+        HashSet<int> teams = new HashSet<int>();
+        foreach (PlayerObject player in Manager.PlayersInfoList)
+        {
+            teams.Add(player.TeamID);
+        }
+        return teams.Count >= 2;
+    }
+    // Called from MainButtonClick when the local player isn't the host.
+    void ReadyPlayer()
     {
         LocalPlayerController.ChangeReady();
     }
-    // Start Button
-    public void StarGame(string SceneName)
-    {
-        LocalPlayerController.CanStartGame(SceneName);
-    }
-    // Change Team Button
-    public void TeamChange(int TeamID)
+    // Slot Button
+    public void SlotChange(int TeamID)
     {
         LocalPlayerController.CanTeamJoin(TeamID);
+    }
+    // Called from MainButtonClick when the local player is the host - goes
+    // straight to the picked map (change_map) since Select_Scene no longer
+    // exists as a separate step.
+    void StarGame()
+    {
+        LocalPlayerController.CanStartGame(GameSettings.Instance.MapName);
     }
     // Leave Button
     public void LeaveGame()

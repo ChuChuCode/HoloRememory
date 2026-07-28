@@ -8,7 +8,7 @@ public abstract class Health : NetworkBehaviour
     #region Patameter
     [SyncVar] public int maxHealth ;
     [SyncVar(hook = nameof(Set_Health))] public int currentHealth = 1;
-    [SyncVar] public bool isDead = false;
+    [SyncVar(hook = nameof(Set_Dead))] public bool isDead = false;
     public Transform Target;
     [SerializeField] protected Bar healthBar;
     #endregion
@@ -39,7 +39,18 @@ public abstract class Health : NetworkBehaviour
         int beforeHealth = currentHealth;
         if (isServer) currentHealth -= damage;
         else if (isClient) CmdSetlHealth(currentHealth - damage);
-        return beforeHealth > 0 && currentHealth <= 0 ;
+        bool justDied = beforeHealth > 0 && currentHealth <= 0;
+        if (justDied && isServer) OnHealthDepleted();
+        return justDied;
+    }
+    /// <summary>
+    /// Called (server-only) the moment currentHealth first reaches 0.
+    /// Default: permanently eliminated. Override to spend a life and
+    /// respawn instead (see CharacterBase's lives system).
+    /// </summary>
+    protected virtual void OnHealthDepleted()
+    {
+        isDead = true;
     }
     /// <summary>
     /// Add health to currentHealth.
@@ -73,6 +84,13 @@ public abstract class Health : NetworkBehaviour
         if (healthBar == null) return;
         healthBar.SetMaxValue(maxHealth);
         healthBar.SetValue(NewValue);
+    }
+    /// <summary>
+    /// Hook for isDead - fires on every peer once the server marks this dead.
+    /// </summary>
+    public virtual void Set_Dead(bool OldValue, bool NewValue)
+    {
+        if (NewValue) Death();
     }
     /// <summary>
     // Do things when Dead.

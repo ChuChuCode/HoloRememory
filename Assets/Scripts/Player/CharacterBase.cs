@@ -10,6 +10,7 @@ using Mirror;
 using HR.Network;
 using static UnityEngine.InputSystem.InputAction;
 using HR.Object.Skill;
+using HR.Map;
 
 namespace HR.Object.Player{
 // [RequireComponent(typeof(NavMeshAgent))]
@@ -18,12 +19,6 @@ namespace HR.Object.Player{
 [RequireComponent(typeof(Rigidbody))]
 public abstract class CharacterBase: Health
 {
-    [Header("Timer")]
-    float ManaRegenTimer = 5f;
-    [Header("Mana / Energy")]
-    [SyncVar] public int maxMana;
-    [SyncVar(hook = nameof(Set_Mana))] public int currentMana = 1;
-
     [Header("Animator")]
     [SerializeField] protected Animator animator;
     [SerializeField] protected NetworkAnimator networkAnimator;
@@ -60,32 +55,33 @@ public abstract class CharacterBase: Health
     [Tooltip("Particle that show move target")]
     [SerializeField] protected ParticleSystem Target_Particle;
     public Vector3 mouseProject;
-    [SerializeField] protected LayerMask MouseTargetLayer;
-    [Header("Dead Time")]
-    float DeadTime = 3f;
-    
+
+    [Header("Lives (set from the active GameModeConfig at spawn)")]
+    [SyncVar] public int lives = 1;
+    [SerializeField] float respawnDelay = 3f;
+    [SyncVar(hook = nameof(OnWaitingToRespawnChanged))] bool isWaitingToRespawn;
+
     [Header("Status")]
     public int attack;
     public int defense;
     public float attackSpeed;
     public float moveSpeed;
+    [SerializeField] float maxMoveSpeed = 10f;
     // [SerializeField] protected int DefaultAttack;
     // [SerializeField] protected int DefaultDefense;
     // [SerializeField] protected float DefaultAttackSpeed;
     // [SerializeField] protected float DefaultMoveSpeed;
     // [SerializeField] protected float AgentWalkSpeed; // 3.5f
     public int bombAmount;
+    public int bombPower = 1;
     [SerializeField] protected BombBase Bomb_Prefab;
+    bool isHoldingBomb;
+    float holdStartTime;
+    [SerializeField] float autoBombHoldThreshold = 0.15f; // a quick tap released before this never auto-places, no matter how far it moved
+    [SerializeField] float bombPlaceCooldown = 0.05f;
+    float nextBombPlaceTime;
     [SerializeField] private Vector2 moveVector;
     [SerializeField] Rigidbody rd;
-    
-    [Header("KDA")]
-    [SyncVar(hook = nameof(KDAChange))] public int kill = -1;
-    [SyncVar(hook = nameof(KDAChange))] public int death = -1;
-    [SyncVar(hook = nameof(KDAChange))] public int assist = -1;
-    [Header("Number of Minions and Towers Destroyed")]
-    [SyncVar(hook = nameof(KDAChange))] public int minion = -1;
-    [SyncVar(hook = nameof(KDAChange))] public int tower = -1;
 
     [Header("Character Info")]
     AnimatorStateInfo stateInfo;
@@ -134,20 +130,10 @@ public abstract class CharacterBase: Health
     }
     protected virtual void Start()
     {
-        // Set Layer
-        int PlayerLayer = LayerMask.NameToLayer("Team" + TeamID.ToString());
-        SetLayer(PlayerLayer);
-
-        // Remove layer to mouse raycast only Enemy and Land
-        MouseTargetLayer &= ~(1 <<gameObject.layer);
-        if (LayerMask.LayerToName(gameObject.layer) == "Team1")
-        {
-            MouseTargetLayer &= ~(1 << LayerMask.NameToLayer("Team1Building"));
-        }
-        else
-        {
-            MouseTargetLayer &= ~(1 << LayerMask.NameToLayer("Team2Building"));
-        }    
+        // FFA has no friend/foe distinction, so there's no need to sort
+        // players onto separate Team1/Team2 layers for mouse-targeting
+        // exclusion anymore (that whole system was MOBA-era and unused
+        // elsewhere in the codebase besides this block).
 
         if (!isLocalPlayer) return;
 
@@ -195,7 +181,8 @@ public abstract class CharacterBase: Health
         InputComponent.instance.playerInput.Player.Tab.started += _ => OnTabKeyDown();
         InputComponent.instance.playerInput.Player.Tab.canceled += _ => OnTabKeyUp();
 
-        InputComponent.instance.playerInput.Player.Bomb.performed += _ => NormalAttack();
+        InputComponent.instance.playerInput.Player.Bomb.started += _ => StartHoldingBomb();
+        InputComponent.instance.playerInput.Player.Bomb.canceled += _ => isHoldingBomb = false;
 
         // Animation keys
         // InputComponent.instance.playerInput.Player.Animation1.started += _ => OnAnimationKeyDown(1);
@@ -209,6 +196,7 @@ public abstract class CharacterBase: Health
     protected virtual void Update()
     {
         if (!isLocalPlayer) return;
+        if (isDead) return;
 
         // Skill Reset
         if (MainInfoUI.instance != null)
@@ -216,26 +204,20 @@ public abstract class CharacterBase: Health
             SkillUpdate(false);
         }
 
-        // Dead already and wait to respawn
-        if (isDead) 
+        // Holding the bomb button: once held past autoBombHoldThreshold (so a
+        // quick tap - even one that covers real distance at high speed -
+        // never triggers this), keep dropping a bomb in whatever cell you're
+        // standing in the moment it's free of one. This covers both moving
+        // to a fresh cell AND standing still waiting for your own bomb to
+        // clear (bombAmount refunds on explosion, but that alone doesn't
+        // change what cell you're in, so cell-change alone can't catch it).
+        if (isHoldingBomb && Time.time - holdStartTime >= autoBombHoldThreshold && Time.time >= nextBombPlaceTime)
         {
-            return;
-        }
-        // Dead now 
-        if (currentHealth <= 0 && !isDead)
-        {
-            // Screen to black/white
-            DeadScreen.instance.isDead(true);
-            // agent.isStopped = true;
-            // animator.SetBool("isDead",true);
-
-            isDead = true;
-            //****** Unregister control -> need to change to only skill
-            InputComponent.instance.playerInput.Player.Disable();
-            
-            // Dead Time Start
-            Death();
-            return;
+            Vector2Int currentCell = GridManager.Instance.WorldToGrid(transform.position);
+            if (bombAmount > 0 && !GridManager.Instance.IsOccupied(currentCell))
+            {
+                PlaceBomb();
+            }
         }
 
         // Check Free Camera Reset -> Camera_Reset
@@ -247,9 +229,24 @@ public abstract class CharacterBase: Health
         // Auto Regeneration
         // AutoRegen();
     }
+    void StartHoldingBomb()
+    {
+        isHoldingBomb = true;
+        holdStartTime = Time.time;
+        // Always honor an actual button press immediately, even if it's
+        // within the cooldown window from a previous one - the cooldown is
+        // only meant to stop the auto-place check above from double-firing,
+        // not to throttle deliberate rapid taps at different spots.
+        PlaceBomb();
+    }
+    void PlaceBomb()
+    {
+        NormalAttack();
+        nextBombPlaceTime = Time.time + bombPlaceCooldown;
+    }
     protected virtual void SkillUpdate(bool isRespawn)
     {
-        if (isRespawn) 
+        if (isRespawn)
         {
             // Change all cool down to 0
         }
@@ -258,63 +255,76 @@ public abstract class CharacterBase: Health
             // Update cool down per Update
         }
     }
+    // Spend a life instead of permanently dying, if any remain (MultiLife
+    // mode). OneLife/HealthBar modes are both configured with lives = 1, so
+    // this always falls straight through to permanent elimination for them.
+    // isWaitingToRespawn (separate from isDead) drives the same hide/disable
+    // reaction on every peer without touching CheckGameOver's "who's still
+    // alive" count - a player mid-respawn-wait still has lives left.
+    protected override void OnHealthDepleted()
+    {
+        lives -= 1;
+        if (lives > 0)
+        {
+            isWaitingToRespawn = true;
+            StartCoroutine(RespawnAfterDelay());
+            return;
+        }
+        base.OnHealthDepleted(); // sets isDead = true -> Death() via the hook
+    }
+    IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
+
+        InitialHealth();
+        transform.position = GridManager.Instance.GetRandomSpawnPosition(TeamID);
+        isWaitingToRespawn = false;
+    }
+    void OnWaitingToRespawnChanged(bool oldValue, bool newValue)
+    {
+        SetPresence(!newValue);
+
+        if (!isLocalPlayer) return;
+
+        DeadScreen.instance.isDead(newValue);
+        if (newValue) InputComponent.instance.playerInput.Player.Disable();
+        else InputComponent.instance.playerInput.Player.Enable();
+    }
+    void SetPresence(bool active)
+    {
+        rd.isKinematic = !active;
+        foreach (Collider col in GetComponentsInChildren<Collider>())
+        {
+            col.enabled = active;
+        }
+        foreach (Renderer rend in GetComponentsInChildren<Renderer>())
+        {
+            rend.enabled = active;
+        }
+    }
+    // Elimination is permanent for the round - fires on every peer (server +
+    // all clients) via the isDead SyncVar hook, so a dead character stops
+    // blocking movement/bombs for everyone, not just their own client.
     protected override void Death()
     {
-        float dead_start_time = Time.time;
         Target = null;
-        StartCoroutine(nameof(DeadCountDown),dead_start_time);
-    }
-    IEnumerator DeadCountDown(float dead_start_time)
-    {
-        while (Time.time - dead_start_time < DeadTime)
+        SetPresence(false);
+
+        if (isServer)
         {
-            // Update UI wait time
-            yield return null;
+            Manager.CheckGameOver();
         }
 
-        // Health Initial
-        InitialHealth();
-        // Mana Initial
-        InitialMana();
-        // Respawn
-        // if (gameObject.layer == LayerMask.NameToLayer("Team1"))
-        // {
-        //     agent.Warp(GameController.Instance.Team1_transform.position);
-        // }
-        // else if (gameObject.layer == LayerMask.NameToLayer("Team2"))
-        // {
-        //     agent.Warp(GameController.Instance.Team2_transform.position);
-        // }
+        if (!isLocalPlayer) return;
 
-        // Reset Skill Cooldown
-        SkillUpdate(true);
-
-        // Screen Control
-        DeadScreen.instance.isDead(false);
-
-        // Animation Control
-        // agent.isStopped = false;
-        // animator.Play("Idle");
-        // animator.SetBool("isDead",false);
-
-        // Register control
-        InputComponent.instance.playerInput.Player.Enable();
-
-        // Reset isDead
-        isDead = false;
-
-        yield return null;
+        DeadScreen.instance.isDead(true);
+        InputComponent.instance.playerInput.Player.Disable();
     }
     protected virtual void OnDestroy() 
     {
         // Reset all bindings
         InputComponent.instance.Reset();
         // Destroy(Free_CameParent);    
-    }
-    public override void InitialHealth()
-    {
-        if (!isLocalPlayer) return;
-        CmdSetlHealth(maxHealth);
     }
     [Command]
     public override void CmdSetlHealth(int NewHealth)
@@ -325,54 +335,7 @@ public abstract class CharacterBase: Health
     {
         base.Set_Health(OldValue, NewValue);
         if (!isLocalPlayer) return;
-        MainInfoUI.instance.updateInfo();
-    }
-    /// <summary>
-    /// Set currentMana to maxMana.
-    /// </summary>
-    public virtual void InitialMana()
-    {
-        if (isServer) currentMana = maxMana;
-        else if (isClient) CmdSetlMana(maxMana);
-    }
-    /// <summary>
-    /// Decrease health to currentMana.
-    /// </summary>
-    /// <param name="Cost">Decreased mana.</param>
-    /// <returns>Is gameobject has enough mana or not.</returns>
-    public virtual bool ManaReduced(int Cost)
-    {
-        if (currentMana < Cost) return false;
-        if (isServer) currentMana -= Cost;
-        else if (isClient) CmdSetlMana(currentMana - Cost);
-        return true;
-    }
-    /// <summary>
-    /// Add mana to currentMana.
-    /// </summary>
-    /// <param name="mana">Added mana.</param>
-    public virtual void ManaRegen(int mana)
-    {
-        if (isServer) currentMana += mana;
-        else if (isClient) CmdSetlMana(currentMana + mana);
-        if (currentMana > maxMana)
-        {
-            currentMana = maxMana;
-        }
-    }
-    /// <summary>
-    /// Change currentMana from Client to Server.(Only set thing on Authority Object)
-    /// </summary>
-    /// <param name="NewMana">Changed currentMana.</param>
-    [Command]
-    public virtual void CmdSetlMana(int NewMana)
-    {
-        currentMana = NewMana;
-    }
-    public virtual void Set_Mana(int OldValue,int NewValue)
-    {
-        if (!isLocalPlayer) return;
-        MainInfoUI.instance.updateInfo();
+        if (MainInfoUI.instance != null) MainInfoUI.instance.updateInfo();
     }
     // Camera Change
     /// <summary>This is invoked when YKey Click Down.</summary>
@@ -447,23 +410,6 @@ public abstract class CharacterBase: Health
     //     }
     // }
     /// <summary>This method calculate the project point from camera to scene object in Land Layer.</summary>
-    /// <summary>Regeneration Check.</summary>
-    protected void AutoRegen()
-    {
-        if (currentMana != maxMana)
-        {
-            ManaRegenTimer -= Time.deltaTime;
-            if (ManaRegenTimer <= 0)
-            {
-                ManaRegenTimer = 5f;
-                ManaRegen(5);
-            }
-        }
-        else
-        {
-            ManaRegenTimer = 5f;
-        }
-    }
     // protected void Camera_Reset()
     // {
     //     // Camera Reset
@@ -525,18 +471,37 @@ public abstract class CharacterBase: Health
     {
         bombAmount += count;
     }
+    public void AddBombPower(int power)
+    {
+        bombPower += power;
+    }
+    public void AddMoveSpeed(float amount)
+    {
+        moveSpeed = Mathf.Min(moveSpeed + amount, maxMoveSpeed);
+    }
     [Command]
     void CmdSpawnBomb()
     {
-        // Calcuate Spawn Position, eq (-0.25,0,-0.25)~(0.25,0,0.25)) are all (0,0,0)
-        Vector3 spawnPos = new Vector3(
-            Mathf.Floor( (transform.position.x + 0.25f) * 2) / 2 ,
-            0f,
-            Mathf.Floor( (transform.position.z + 0.25f) * 2) / 2
-        );
+        // Snap to the same cell-center convention GridManager/GridSpawnerEditor use,
+        // instead of a separate ad-hoc formula that could land between cells.
+        Vector2Int coord = GridManager.Instance.WorldToGrid(transform.position);
+        Vector3 spawnPos = GridManager.Instance.GridToWorld(coord);
+        if (GridManager.Instance.IsOccupied(coord))
+        {
+            // Client already optimistically spent a bomb in NormalAttack(); give it back.
+            TargetRefundBomb(connectionToClient);
+            return;
+        }
+
         BombBase bomb = Instantiate(Bomb_Prefab, spawnPos, Quaternion.identity);
         bomb.SetOwner(this);
+        bomb.SetPower(bombPower);
         NetworkServer.Spawn(bomb.gameObject);
+    }
+    [TargetRpc]
+    void TargetRefundBomb(NetworkConnection conn)
+    {
+        bombAmount += 1;
     }
     // Update Status to Server
     [Command]
@@ -544,63 +509,6 @@ public abstract class CharacterBase: Health
     {
         this.attack = attack;
         this.defense = defense;
-    }
-    // Hook -> change UI
-    void KDAChange(int oldValue, int newValue)
-    {
-        // CharacterInfoPanel.Instance.UpdateUI();
-        if (!isOwned) return;
-        // LocalPlayerInfo.Instance.Update_KDA(this);
-    }
-    /// <summary>
-    /// Set Kill, Death, Assist, Minion, Tower
-    /// </summary>
-    /// <param name="kill"></param>
-    /// <param name="death"></param>
-    /// <param name="assist"></param>
-    /// <param name="minion"></param>
-    /// <param name="tower"></param>
-    [ServerCallback]
-    public void SetKDA(int kill, int death, int assist, int minion, int tower)
-    {
-        this.kill = kill;
-        this.death = death;
-        this.assist = assist;
-        this.minion = minion;
-        this.tower = tower;
-    }
-    [ServerCallback]
-    public void AddKDA(string KDAMT)
-    {
-        switch (KDAMT)
-        {
-            case "kill":
-                kill += 1;
-                break;
-            case "death":
-                death += 1;
-                break;
-            case "assist":
-                assist += 1;
-                break;
-            case "minion":
-                minion += 1;
-                break;
-            case "tower":
-                tower += 1;
-                break;
-            default:
-                break;
-        }
-    }
-    public void SetLayer(int PlayerLayer)
-    {
-        // Set Layer to all child
-        Transform[] children = gameObject.GetComponentsInChildren<Transform>(includeInactive: true);
-        foreach(Transform child in children)
-        {
-            child.gameObject.layer = PlayerLayer;
-        }
     }
     // protected void HandleMoveAnmation()
     // {

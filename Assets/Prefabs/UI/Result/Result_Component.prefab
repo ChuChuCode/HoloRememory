@@ -1649,7 +1649,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 90}
+  m_SizeDelta: {x: 439.46, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &868243746438432354
 CanvasRenderer:
@@ -1701,11 +1701,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29ec339802857df4f895132c5ff9d33e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterBase: {fileID: 0}
+  playerObject: {fileID: 0}
   CharacterImage: {fileID: 6464130027963355534}
-  Kill_Text: {fileID: 7004642785012206448}
-  Death_Text: {fileID: 7231790607052728744}
-  Assist_Text: {fileID: 1453002532241860105}
   Equipment_Images:
   - {fileID: 1421176703785167292}
   - {fileID: 1889708633036431304}

@@ -140,7 +140,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4519503603712705176}
@@ -269,13 +269,11 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 6
+  maxHealth: 60
   currentHealth: 1
   isDead: 0
   Target: {fileID: 0}
   healthBar: {fileID: 0}
-  maxMana: 0
-  currentMana: 1
   animator: {fileID: 0}
   networkAnimator: {fileID: 0}
   CharacterImage: {fileID: 0}
@@ -291,19 +289,19 @@ MonoBehaviour:
   MouseTargetLayer:
     serializedVersion: 2
     m_Bits: 0
+  lives: 1
+  respawnDelay: 3
   attack: 0
   defense: 0
   attackSpeed: 0
-  moveSpeed: 10
+  moveSpeed: 4
+  maxMoveSpeed: 10
   bombAmount: 2
+  bombPower: 1
   Bomb_Prefab: {fileID: 6654197106431911713, guid: 1e56e5ddd30ae4412b9ac246464f5376, type: 3}
+  bombPlaceCooldown: 0.02
   moveVector: {x: 0, y: 0}
   rd: {fileID: 0}
-  kill: -1
-  death: -1
-  assist: -1
-  minion: -1
-  tower: -1
   AnimationMethod: {fileID: 0}
   R_UI: {fileID: 0}
 --- !u!114 &1172984831065902691

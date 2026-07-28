@@ -2,7 +2,6 @@ using Mirror;
 using Steamworks;
 using UnityEngine.SceneManagement;
 using HR.Network.Lobby;
-using HR.Network.Select;
 using HR.Network.Result;
 using UnityEngine;
 using HR.Object.Player;
@@ -18,13 +17,6 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public int TeamID = 0;
     [SyncVar(hook = nameof(CharacterSelect))] public int CharacterID = -1;
-    [SyncVar(hook = nameof(PlayerSpellUpdate))] public int Spell_1 = -1;
-    [SyncVar(hook = nameof(PlayerSpellUpdate))] public int Spell_2 = -1;
-    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int kill = -1;
-    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int death = -1;
-    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int assist = -1;
-    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int minion = -1;
-    [SyncVar(hook = nameof(PlayerKDAUpdate))] public int tower = -1;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -56,12 +48,9 @@ public class PlayerObject : NetworkBehaviour
         LobbyController.Instance.LocalPlayerController = this;
         // Set Network_Manager
         manager.LocalPlayerObject = this;
-        // Set Start UI
-        LobbyController.Instance.SetStartButton();
+        // Set Start/Ready button
+        LobbyController.Instance.RefreshMainButton();
         LobbyController.Instance.UpdateLobbyName();
-        // Set Spell index
-        CanSpell1Change( PlayerPrefs.GetInt("Spell_1", 1) );
-        CanSpell2Change( PlayerPrefs.GetInt("Spell_2", 2) );
     }
     public override void OnStopClient()
     {
@@ -93,13 +82,9 @@ public class PlayerObject : NetworkBehaviour
     /// Ready Change
     void PlayerReadyUpdate(bool OldValue,bool NewValue)
     {
-        if (SceneManager.GetActiveScene().name == "Lobby_Scene") 
+        if (SceneManager.GetActiveScene().name == "Lobby_Scene")
         {
             LobbyController.Instance.UpdatePlayerList();
-        }
-        if (SceneManager.GetActiveScene().name == "Select_Scene")
-        {
-            if (isServer) SelectController.Instance.CheckIfAllReady();
         }
     }
     /// Name Change
@@ -127,7 +112,10 @@ public class PlayerObject : NetworkBehaviour
     {
         manager.ChangeScene(SceneName);
     }
-    /// TeamID change
+    /// Team change - auto-assigned on connect (Network_Manager.NextAutoTeam)
+    /// for an even initial spread, but freely re-pickable afterward. Teams
+    /// are allowed to be uneven in size (asymmetric) - any of the 8 colors
+    /// can have any number of players, including zero or several.
     public void CanTeamJoin(int TeamID)
     {
         if (isOwned)
@@ -160,55 +148,15 @@ public class PlayerObject : NetworkBehaviour
     }
     void CharacterSelect(int OldValue,int NewValue)
     {
-        if (SceneManager.GetActiveScene().name == "Select_Scene")
+        if (SceneManager.GetActiveScene().name == "Lobby_Scene")
         {
-            SelectController.Instance.UpdatePlayerUI();
+            LobbyController.Instance.UpdatePlayerList();
         }
     }
     [Command]
     public void CmdAddMessage(string userName, string message)
     {
         Chat_Controller.Instance.RpcAddMessage(userName, message);
-    }
-    /// Spell 1 change
-    public void CanSpell1Change(int SpellID)
-    {
-        if (isOwned)
-        {
-            CmdSetSpell1Change(SpellID);
-        }
-    }
-    /// <summary>
-    /// Spell 1 to Selected Spell ID (on Server)
-    /// </summary>
-    /// <param name="SpellID">Selected Spell ID</param>
-    [Command]
-    void CmdSetSpell1Change(int SpellID)
-    {
-        Spell_1 = SpellID;
-    }
-    /// Spell 2 change
-    public void CanSpell2Change(int SpellID)
-    {
-        if (isOwned)
-        {
-            CmdSetSpell2Change(SpellID);
-        }
-    }
-    [Command]
-    void CmdSetSpell2Change(int SpellID)
-    {
-        Spell_2 = SpellID;
-    }
-    /// <summary>
-    /// When Server Changed Spell 1 will call this method on client
-    /// </summary>
-    void PlayerSpellUpdate(int OldValue,int NewValue)
-    {
-        if (SceneManager.GetActiveScene().name == "Select_Scene") 
-        {
-            SelectController.Instance.UpdatePlayerList();
-        }
     }
     public void LeaveGame()
     {
@@ -223,27 +171,6 @@ public class PlayerObject : NetworkBehaviour
             Manager.StopClient();
         }
         Destroy(Manager.gameObject);
-    }
-    public void CanKDAChange(CharacterBase characterBase)
-    {
-        CmdSetKDA(characterBase);
-    }
-    [ServerCallback]
-    void CmdSetKDA(CharacterBase characterBase)
-    {
-        this.kill = characterBase.kill;
-        this.death = characterBase.death;
-        this.assist = characterBase.assist;
-        this.minion = characterBase.minion;
-        this.tower = characterBase.tower;
-    }
-    void PlayerKDAUpdate(int OldValue,int NewValue)
-    {
-        if (SceneManager.GetActiveScene().name == "Result_Scene")
-        {
-            ResultController.Instance.UpdateUI();
-            ResultController.Instance.Show_Result(manager.LoseTeam, TeamID);
-        } 
     }
 }
 

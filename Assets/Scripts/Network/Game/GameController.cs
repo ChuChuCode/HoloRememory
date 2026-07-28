@@ -7,9 +7,6 @@ namespace HR.Network.Game{
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
-    [Header("Spawn Point")]
-    public Transform Team1_transform;
-    public Transform Team2_transform;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -25,7 +22,7 @@ public class GameController : MonoBehaviour
         }
     }
     public CharacterBase LocalPlayer;
-    public PlayerObject LocalPlayerController;
+    [HideInInspector] public PlayerObject LocalPlayerController;
     void Awake()
     {
         if (Instance == null)
@@ -44,10 +41,8 @@ public class GameController : MonoBehaviour
             }
         }
     }
-    [Header("網格尺寸")]
-    public int gridSizeX = 20; // 橫向格數
-    public int gridSizeY = 10; // 縱向格數
-    public float unitLength = 1f;
+    [Header("網格尺寸 (跟 GridSpawnerEditor 共用同一份設定)")]
+    [SerializeField] GridSpawnerEditor gridSpawner;
 
     [Header("線條外觀")]
     public float lineWidth = 0.05f;
@@ -55,26 +50,41 @@ public class GameController : MonoBehaviour
     public Color gridColor = Color.white;
     void CreateGrid()
     {
-        // 計算總長度與總寬度
-        float width = gridSizeX * unitLength;
-        float height = gridSizeY * unitLength;
-        
-        // 計算中心偏移，使 (0,0) 位於網格中心
-        float offsetX = width / 2f;
-        float offsetY = height / 2f;
+        if (gridSpawner == null) return;
 
-        // 繪製橫線 (平行於 X 軸，數量由 Y 決定)
-        for (int i = 0; i <= gridSizeY; i++)
+        foreach ((string name, Vector3 start, Vector3 end) in GridLines())
         {
-            float yPos = (i * unitLength) - offsetY;
-            CreateLine($"Row_{i}", new Vector3(-offsetX, 0, yPos), new Vector3(offsetX, 0, yPos));
+            CreateLine(name, start, end);
+        }
+    }
+
+    // Same width/height/cellSize and centering formula as GridSpawnerEditor's
+    // GenerateGrid(), so the debug lines land exactly on the real tile edges.
+    System.Collections.Generic.IEnumerable<(string, Vector3, Vector3)> GridLines()
+    {
+        int width = gridSpawner.width;
+        int height = gridSpawner.height;
+        float cellSize = gridSpawner.cellSize;
+
+        float offsetX = (width / 2) * cellSize;
+        float offsetZ = (height / 2) * cellSize;
+        float xMin = -offsetX - cellSize / 2f;
+        float zMin = -offsetZ - cellSize / 2f;
+        float xMax = xMin + width * cellSize;
+        float zMax = zMin + height * cellSize;
+
+        // 橫線 (平行於 X 軸，數量由 height 決定)
+        for (int i = 0; i <= height; i++)
+        {
+            float zPos = zMin + i * cellSize;
+            yield return ($"Row_{i}", new Vector3(xMin, 0, zPos), new Vector3(xMax, 0, zPos));
         }
 
-        // 繪製直線 (平行於 Z 軸，數量由 X 決定)
-        for (int i = 0; i <= gridSizeX; i++)
+        // 直線 (平行於 Z 軸，數量由 width 決定)
+        for (int i = 0; i <= width; i++)
         {
-            float xPos = (i * unitLength) - offsetX;
-            CreateLine($"Col_{i}", new Vector3(xPos, 0, -offsetY), new Vector3(xPos, 0, offsetY));
+            float xPos = xMin + i * cellSize;
+            yield return ($"Col_{i}", new Vector3(xPos, 0, zMin), new Vector3(xPos, 0, zMax));
         }
     }
 
@@ -105,63 +115,16 @@ public class GameController : MonoBehaviour
     public Color gizmoColor = Color.yellow;
     private void OnDrawGizmos()
     {
-        if (!showInEditor) return;
+        if (!showInEditor || gridSpawner == null) return;
 
         Gizmos.color = gizmoColor;
         // 將 Gizmos 矩陣設為物件的 Transform，支援旋轉與位移
         Gizmos.matrix = transform.localToWorldMatrix;
 
-        float width = gridSizeX * unitLength;
-        float height = gridSizeY * unitLength;
-        float offsetX = width / 2f;
-        float offsetY = height / 2f;
-
-        // 繪製橫線
-        for (int i = 0; i <= gridSizeY; i++)
+        foreach ((string _, Vector3 start, Vector3 end) in GridLines())
         {
-            float yPos = (i * unitLength) - offsetY;
-            Vector3 start = new Vector3(-offsetX, 0, yPos);
-            Vector3 end = new Vector3(offsetX, 0, yPos);
             Gizmos.DrawLine(start, end);
         }
-
-        // 繪製直線
-        for (int i = 0; i <= gridSizeX; i++)
-        {
-            float xPos = (i * unitLength) - offsetX;
-            Vector3 start = new Vector3(xPos, 0, -offsetY);
-            Vector3 end = new Vector3(xPos, 0, offsetY);
-            Gizmos.DrawLine(start, end);
-        }
-    }
-    public void End_Game(int win_team)
-    {
-        if (win_team == 1)
-        {
-            if (LocalPlayer.gameObject.layer == LayerMask.NameToLayer("Team1"))
-            {
-                // Show Victory
-            }
-            else
-            {
-                // Show Defeat
-
-            }
-        }
-        else
-        {
-            if (LocalPlayer.gameObject.layer == LayerMask.NameToLayer("Team2"))
-            {
-                // Show Victory
-            }
-            else
-            {
-                // Show Defeat
-
-            }
-        }
-        // PlayerInput Disable
-        
     }
 }
 
