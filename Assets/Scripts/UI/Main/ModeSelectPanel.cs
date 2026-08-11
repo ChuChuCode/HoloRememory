@@ -16,12 +16,27 @@ public class ModeSelectPanel : MonoBehaviour
     [SerializeField] GameObject Setting_UI;
     [SerializeField] GameObject Credit_UI;
 
+    // Set by PlayerObject.LeaveGame() right before Mirror auto-reloads
+    // Main_Scene (the offlineScene) - survives the scene load since it's
+    // static, so Main_Scene can skip straight to Game UI instead of Title.
+    public static bool ReturnToGameUI = false;
+
     void Start()
     {
         if (Setting_UI != null) Setting_UI.SetActive(false);
         if (Credit_UI != null) Credit_UI.SetActive(false);
     }
-    // Called from Title's button.
+    // "Mode Select UI" starts inactive, so THIS Start() never runs until
+    // Open() is first called - checking the flag here would never fire.
+    // Called instead by PressAnyKey.Start() (lives on Title, always active).
+    public void CheckReturnToGameUI()
+    {
+        if (!ReturnToGameUI) return;
+        ReturnToGameUI = false;
+        if (Title_UI != null) Title_UI.SetActive(false);
+        Multiplayer();
+    }
+    // Called from Title's "press any key" listener (PressAnyKey.cs, on Title).
     public void Open()
     {
         gameObject.SetActive(true);
