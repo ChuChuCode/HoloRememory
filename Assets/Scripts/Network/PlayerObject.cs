@@ -5,6 +5,7 @@ using HR.Network.Lobby;
 using HR.Network.Result;
 using UnityEngine;
 using HR.Object.Player;
+using HR.UI;
 
 namespace HR.Network{
 public class PlayerObject : NetworkBehaviour
@@ -160,6 +161,9 @@ public class PlayerObject : NetworkBehaviour
     }
     public void LeaveGame()
     {
+        // Mirror auto-reloads Main_Scene (offlineScene) below - tell it to
+        // land on Game UI instead of defaulting back to Title.
+        ModeSelectPanel.ReturnToGameUI = true;
         // isServer
         if (NetworkServer.active)
         {

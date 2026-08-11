@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: One Life
   m_EditorClassIdentifier: 
   mode: 0
+  DisplayName: One Life
   overrideHealth: 1
   maxHealth: 1
   lives: 1

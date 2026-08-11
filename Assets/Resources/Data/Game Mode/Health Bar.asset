@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Health Bar
   m_EditorClassIdentifier: 
   mode: 2
+  DisplayName: Health Mode
   overrideHealth: 0
   maxHealth: 1
   lives: 1

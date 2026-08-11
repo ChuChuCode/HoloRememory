@@ -5,6 +5,9 @@ namespace HR.Network{
 public class GameModeConfig : ScriptableObject
 {
     public GameMode mode;
+    // Shown on the mode select button - separate from the enum name so it
+    // can read however you want (e.g. localized) without touching code.
+    public string DisplayName;
 
     [Tooltip("On: force everyone to maxHealth (OneLife/MultiLife = 1, instant death). " +
              "Off: each character keeps its own prefab maxHealth (HealthBar mode - tankier/frailer characters still differ).")]

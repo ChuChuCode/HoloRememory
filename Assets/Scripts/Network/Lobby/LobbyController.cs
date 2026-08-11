@@ -24,7 +24,9 @@ public class LobbyController : MonoBehaviour
     public ulong CurrentLobbyID;
     [Header("UI")]
     public TMP_Text LobbyNameText;
-    public TMP_Text RoomCountText;
+    // Sits above ModeText in the layout - fixed at 3:00 for now (see
+    // GameSettings.TimeLimit), not adjustable yet.
+    public TMP_Text TimeLimitText;
     public TMP_Text ModeText;
     // Single shared button - host sees "Start", everyone else sees "Ready"/
     // "Unready". See MainButtonClick/RefreshMainButton.
@@ -36,9 +38,23 @@ public class LobbyController : MonoBehaviour
     [SerializeField] CharacterSelectItem CharacterPrefab;
     [SerializeField] Transform CharacterSelectPanel;
     [SerializeField] List<CharacterSelectItem> SelectItemList = new List<CharacterSelectItem>();
+    // Any host-only controls (mode arrows, map select buttons, etc.) - drop
+    // in as many GameObjects as needed, all hidden together for non-hosts.
+    [Header("Host-Only UI")]
+    [SerializeField] List<GameObject> HostOnlyUI = new List<GameObject>();
     [Header("Map")]
-    public GameObject MapSelectPanel;
-    public TMP_Text MapNameText;
+    // Big preview above the carousel - always the currently selected map's
+    // image, no text label of its own.
+    [SerializeField] Image MapPreviewImage;
+    // 3-card carousel below - center card is always the currently selected
+    // map (same image as MapPreviewImage); left/right show what
+    // NextMap()/PreviousMap() would switch to. Each card has its own text.
+    [SerializeField] Image MapCardLeftImage;
+    [SerializeField] TMP_Text MapCardLeftText;
+    [SerializeField] Image MapCardCenterImage;
+    [SerializeField] TMP_Text MapCardCenterText;
+    [SerializeField] Image MapCardRightImage;
+    [SerializeField] TMP_Text MapCardRightText;
     [Header("Manager")]
     private Network_Manager manager;
 
@@ -73,11 +89,15 @@ public class LobbyController : MonoBehaviour
             item.transform.localScale = Vector3.one;
             SelectItemList.Add(item);
         }
+        // Host-only controls - hidden for everyone else.
         if (!NetworkServer.active)
         {
-            if (MapSelectPanel != null) MapSelectPanel.SetActive(false);
+            foreach (GameObject ui in HostOnlyUI)
+            {
+                if (ui != null) ui.SetActive(false);
+            }
         }
-        UpdateRoomCount();
+        UpdateTimeLimitText();
         UpdateModeText();
         UpdateMapText();
         // If restart game -> PlayersInfoList has player -> re-get LocalGamePlayer object and refresh the button
@@ -92,23 +112,49 @@ public class LobbyController : MonoBehaviour
         CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
         LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID),"name");
     }
-    public void UpdateRoomCount()
+    // TODO: fixed display for now, no arrows yet - see GameSettings.TimeLimit.
+    public void UpdateTimeLimitText()
     {
-        if (RoomCountText == null) return;
-        RoomCountText.text = $"{Manager.PlayersInfoList.Count} / {Manager.maxConnections}";
+        if (TimeLimitText == null || GameSettings.Instance == null) return;
+        int min = (int)GameSettings.Instance.TimeLimit / 60;
+        int sec = (int)GameSettings.Instance.TimeLimit % 60;
+        TimeLimitText.text = string.Format("{0:00}:{1:00}", min, sec);
     }
     // Room Mode display - refreshed on Start and whenever GameSettings.Mode
     // syncs (GameSettings.OnModeChanged), since any client can change it.
     public void UpdateModeText()
     {
         if (ModeText == null || GameSettings.Instance == null) return;
-        ModeText.text = GameSettings.Instance.Mode.ToString();
+        GameModeConfig config = GameSettings.Instance.CurrentConfig();
+        ModeText.text = config != null ? config.DisplayName : GameSettings.Instance.Mode.ToString();
     }
-    // Mode Button/Dropdown
-    public void SetMode(int mode)
+    // Left/Right Arrow Buttons - cycles through GameSettings.Configs in
+    // order. The arrows should be in HostOnlyUI (see Start()), so only the
+    // host ever has a way to trigger these.
+    public void NextMode()
+    {
+        ChangeMode(1);
+    }
+    public void PreviousMode()
+    {
+        ChangeMode(-1);
+    }
+    void ChangeMode(int direction)
     {
         if (GameSettings.Instance == null) return;
-        GameSettings.Instance.CmdSetMode((GameMode)mode);
+        GameModeConfig[] configs = GameSettings.Instance.Configs;
+        if (configs == null || configs.Length == 0) return;
+
+        int currentIndex = System.Array.FindIndex(configs, c => c.mode == GameSettings.Instance.Mode);
+        if (currentIndex == -1) currentIndex = 0;
+
+        int nextIndex = (currentIndex + direction + configs.Length) % configs.Length;
+        SetMode(configs[nextIndex].mode);
+    }
+    public void SetMode(GameMode mode)
+    {
+        if (GameSettings.Instance == null) return;
+        GameSettings.Instance.CmdSetMode(mode);
     }
     // Bound to the single shared button - host triggers Start, everyone
     // else toggles their own Ready.
@@ -175,7 +221,6 @@ public class LobbyController : MonoBehaviour
         CheckCharacterButtons();
         CheckIfAllReady();
         RefreshMainButton();
-        UpdateRoomCount();
     }
     // The host has no Ready toggle of their own (Start IS their
     // confirmation), so they're excluded from this check - it only asks
@@ -222,6 +267,29 @@ public class LobbyController : MonoBehaviour
             if (btn != null) btn.interactable = !isMine && !locked;
         }
     }
+    // Left/Right Arrow Buttons - same cycling pattern as NextMode/PreviousMode,
+    // sourced from Network_Manager.mapConfigList (auto-loaded from
+    // Resources/Data/Map). Should be in HostOnlyUI too.
+    public void NextMap()
+    {
+        ChangeMap(1);
+    }
+    public void PreviousMap()
+    {
+        ChangeMap(-1);
+    }
+    void ChangeMap(int direction)
+    {
+        if (GameSettings.Instance == null) return;
+        List<MapConfig> maps = Manager.mapConfigList;
+        if (maps == null || maps.Count == 0) return;
+
+        int currentIndex = maps.FindIndex(c => c.SceneName == GameSettings.Instance.MapName);
+        if (currentIndex == -1) currentIndex = 0;
+
+        int nextIndex = (currentIndex + direction + maps.Count) % maps.Count;
+        change_map(maps[nextIndex].SceneName);
+    }
     // Map Button - host-only; synced to everyone via GameSettings.MapName.
     public void change_map(string mapName)
     {
@@ -230,8 +298,34 @@ public class LobbyController : MonoBehaviour
     }
     public void UpdateMapText()
     {
-        if (MapNameText == null || GameSettings.Instance == null) return;
-        MapNameText.text = GameSettings.Instance.MapName;
+        if (GameSettings.Instance == null) return;
+        List<MapConfig> maps = Manager.mapConfigList;
+        MapConfig current = maps != null ? maps.Find(c => c.SceneName == GameSettings.Instance.MapName) : null;
+        RefreshMapCarousel(maps, current);
+    }
+    // Called on Start and whenever GameSettings.MapName syncs (host or
+    // anyone else's screen alike), so every client's carousel stays centered
+    // on the room's actual current pick, even though only the host can
+    // scroll it (arrows are host-only, see HostOnlyUI).
+    void RefreshMapCarousel(List<MapConfig> maps, MapConfig current)
+    {
+        if (maps == null || maps.Count == 0 || current == null) return;
+
+        int centerIndex = maps.IndexOf(current);
+        int count = maps.Count;
+        MapConfig left = maps[((centerIndex - 1) % count + count) % count];
+        MapConfig right = maps[(centerIndex + 1) % count];
+
+        if (MapPreviewImage != null) MapPreviewImage.sprite = current.Thumbnail;
+
+        SetMapCard(MapCardLeftImage, MapCardLeftText, left);
+        SetMapCard(MapCardCenterImage, MapCardCenterText, current);
+        SetMapCard(MapCardRightImage, MapCardRightText, right);
+    }
+    void SetMapCard(Image image, TMP_Text text, MapConfig config)
+    {
+        if (image != null) image.sprite = config.Thumbnail;
+        if (text != null) text.text = config.DisplayName;
     }
     // Start requires at least 2 different colors actually in play - everyone
     // picking the same one would "start" a match with no opponents.

@@ -14,7 +14,14 @@ public class GameSettings : NetworkBehaviour
     // what the host picked, not just the host's own screen.
     [SyncVar(hook = nameof(OnMapChanged))] public string MapName = "Game_Test_Scene";
 
+    // TODO: fixed at 3:00 for now, not host-adjustable yet - same default on
+    // every machine so it doesn't need syncing until it becomes a real setting.
+    public float TimeLimit = 180f;
+
     [SerializeField] GameModeConfig[] configs;
+    // Read-only - lets LobbyController generate mode buttons the same way
+    // it generates character buttons from characterSelectComponentsList.
+    public GameModeConfig[] Configs => configs;
 
     void Awake()
     {
@@ -41,6 +48,13 @@ public class GameSettings : NetworkBehaviour
         {
             LobbyController.Instance.UpdateModeText();
         }
+        // Keep the room browser (anyone not yet joined) showing the current
+        // mode too - only the host actually owns the Steam Lobby Data.
+        if (NetworkServer.active && SteamLobby.Instance != null)
+        {
+            GameModeConfig config = CurrentConfig();
+            SteamLobby.Instance.UpdateLobbyMode(config != null ? config.DisplayName : newMode.ToString());
+        }
     }
 
     void OnMapChanged(string oldMap, string newMap)
@@ -48,6 +62,10 @@ public class GameSettings : NetworkBehaviour
         if (SceneManager.GetActiveScene().name == "Lobby_Scene" && LobbyController.Instance != null)
         {
             LobbyController.Instance.UpdateMapText();
+        }
+        if (NetworkServer.active && SteamLobby.Instance != null)
+        {
+            SteamLobby.Instance.UpdateLobbyMap(newMap);
         }
     }
 

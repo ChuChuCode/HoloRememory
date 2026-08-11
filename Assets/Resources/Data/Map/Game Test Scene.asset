@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 012b0cba9d5f6477798bf8a1af3647ce, type: 3}
-  m_Name: MultiLife
-  m_EditorClassIdentifier:
-  mode: 1
-  overrideHealth: 1
-  maxHealth: 1
-  lives: 3
+  m_Script: {fileID: 11500000, guid: 4b30dc86b39340eab6b53cf0fe69a103, type: 3}
+  m_Name: Game Test Scene
+  m_EditorClassIdentifier: 
+  SceneName: Game_Test_Scene
+  DisplayName: Test Arena
+  Thumbnail: {fileID: 21300000, guid: 8243143553c961d46a436acaec514b90, type: 3}

@@ -23,6 +23,10 @@ public class SteamLobby : MonoBehaviour
     [Header("variables")]
     public ulong CurrentLobbyID;
     const string HostAddressKey = "HostAddress";
+    // Published as Steam Lobby Data so the room *browser* (not yet joined,
+    // so no Mirror/GameSettings sync) can still show map/mode per room.
+    public const string MapKey = "Map";
+    public const string ModeKey = "Mode";
     [SerializeField] Button HostButton;
     private Network_Manager manager;
 
@@ -64,6 +68,15 @@ public class SteamLobby : MonoBehaviour
         // SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly,networkManager.maxConnections);
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic,Manager.maxConnections);
     }
+    // Quick Match Button - reuses the same list request as the room
+    // browser, but instead of displaying results it auto-joins the first
+    // non-full lobby found, or hosts a new one if none qualify.
+    bool isQuickMatching = false;
+    public void QuickMatch()
+    {
+        isQuickMatching = true;
+        GetLobbyList();
+    }
     void OnLobbyCreated(LobbyCreated_t callback)
     {
         print("Lobby Create");
@@ -80,10 +93,32 @@ public class SteamLobby : MonoBehaviour
         );
 
         SteamMatchmaking.SetLobbyData(
-            new CSteamID(callback.m_ulSteamIDLobby), 
-            "name", 
+            new CSteamID(callback.m_ulSteamIDLobby),
+            "name",
             SteamFriends.GetPersonaName().ToString()+ "'s LOBBY"
         );
+
+        // Seed Map/Mode immediately so the room browser has something to
+        // show even before the host touches either setting.
+        CurrentLobbyID = callback.m_ulSteamIDLobby;
+        if (GameSettings.Instance != null)
+        {
+            UpdateLobbyMap(GameSettings.Instance.MapName);
+            GameModeConfig config = GameSettings.Instance.CurrentConfig();
+            UpdateLobbyMode(config != null ? config.DisplayName : GameSettings.Instance.Mode.ToString());
+        }
+    }
+    // Called by GameSettings whenever the host changes map/mode, so the
+    // room browser (anyone not yet joined) reflects the current pick too.
+    public void UpdateLobbyMap(string mapName)
+    {
+        if (!NetworkServer.active || CurrentLobbyID == 0) return;
+        SteamMatchmaking.SetLobbyData(new CSteamID(CurrentLobbyID), MapKey, mapName);
+    }
+    public void UpdateLobbyMode(string modeName)
+    {
+        if (!NetworkServer.active || CurrentLobbyID == 0) return;
+        SteamMatchmaking.SetLobbyData(new CSteamID(CurrentLobbyID), ModeKey, modeName);
     }
     void OnGameLobbyJoinRequested(GameLobbyJoinRequested_t callback)
     {
@@ -120,6 +155,23 @@ public class SteamLobby : MonoBehaviour
     }
     void OnGetLobbyList(LobbyMatchList_t callback)
     {
+        if (isQuickMatching)
+        {
+            isQuickMatching = false;
+            for (int i = 0; i < callback.m_nLobbiesMatching; i++)
+            {
+                CSteamID lobbyID = SteamMatchmaking.GetLobbyByIndex(i);
+                if (SteamMatchmaking.GetNumLobbyMembers(lobbyID) < SteamMatchmaking.GetLobbyMemberLimit(lobbyID))
+                {
+                    JoinLobby(lobbyID);
+                    return;
+                }
+            }
+            // No open room found - host a fresh one instead.
+            HostLobby();
+            return;
+        }
+
         // Will call twice when Leave Game Back to Lobby
         if (LobbyListManager.instance.listOfLobbies.Count > 0) LobbyListManager.instance.DestroyLobbies();
         for(int i = 0 ; i < callback.m_nLobbiesMatching ; i++)

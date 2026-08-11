@@ -34,9 +34,14 @@ public class LobbyListManager : MonoBehaviour
         {
             if (lobbyIDs[i].m_SteamID == result.m_ulSteamIDLobby)
             {
+                CSteamID id = (CSteamID)lobbyIDs[i].m_SteamID;
                 LobbyRoomItem lobbyRoomTemp = Instantiate(lobbyroomPrefab);
-                lobbyRoomTemp.lobbyID = (CSteamID)lobbyIDs[i].m_SteamID;
-                lobbyRoomTemp.lobbyName = SteamMatchmaking.GetLobbyData((CSteamID)lobbyIDs[i].m_SteamID,"name");
+                lobbyRoomTemp.lobbyID = id;
+                lobbyRoomTemp.lobbyName = SteamMatchmaking.GetLobbyData(id, "name");
+                lobbyRoomTemp.mapName = SteamMatchmaking.GetLobbyData(id, SteamLobby.MapKey);
+                lobbyRoomTemp.mode = SteamMatchmaking.GetLobbyData(id, SteamLobby.ModeKey);
+                lobbyRoomTemp.currentPlayers = SteamMatchmaking.GetNumLobbyMembers(id);
+                lobbyRoomTemp.maxPlayers = SteamMatchmaking.GetLobbyMemberLimit(id);
                 lobbyRoomTemp.SetLobbyData();
                 lobbyRoomTemp.transform.SetParent(ListContent);
                 lobbyRoomTemp.transform.localScale = Vector3.one;
