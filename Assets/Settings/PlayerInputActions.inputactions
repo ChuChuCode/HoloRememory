@@ -41,6 +41,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Skill",
+                    "type": "Button",
+                    "id": "7ce42c1f-f4a7-4cb1-8018-836a75f2f623",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -68,11 +77,33 @@
                 },
                 {
                     "name": "",
+                    "id": "427618c3-ba75-40f3-bf3d-17a54bb213a0",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and Mouse",
+                    "action": "Skill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c19bbedc-ad94-46f6-ae9e-77037f7e4637",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Skill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4728e900-d45a-4a5e-9f56-b95d74a8be5a",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";KeyBoard and Mouse",
+                    "groups": "KeyBoard and Mouse",
                     "action": "Option",
                     "isComposite": false,
                     "isPartOfComposite": false
@@ -94,7 +125,7 @@
                     "path": "<Keyboard>/tab",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";KeyBoard and Mouse",
+                    "groups": "KeyBoard and Mouse",
                     "action": "Tab",
                     "isComposite": false,
                     "isPartOfComposite": false

@@ -3,6 +3,7 @@ using UnityEngine;
 using Mirror;
 using HR.Object.Player;
 using HR.Map;
+using HR.Network;
 
 namespace HR.Object.Skill{
 public class ExplosionSegment : NetworkBehaviour
@@ -13,26 +14,47 @@ public class ExplosionSegment : NetworkBehaviour
 
     HashSet<CharacterBase> hitTargets = new();
     Collider col;
+    Vector2Int cell;
+    bool isHitting;
 
     public override void OnStartServer()
     {
         col = GetComponent<Collider>();
+        cell = GridManager.Instance.WorldToGrid(transform.position);
+        isHitting = true;
         Invoke(nameof(StopHitting), hitWindow);
         Invoke(nameof(DestroySelf), lifeTime);
+    }
+
+    // Grid-based, not the physics collider - a character only takes damage
+    // when their own logical cell (the same center-of-mass check used
+    // everywhere else: Jump, Bomb Push, movement) actually matches this
+    // blast tile, instead of dying just from a collider edge brushing it.
+    [ServerCallback]
+    void Update()
+    {
+        if (!isHitting) return;
+        Network_Manager manager = Network_Manager.singleton as Network_Manager;
+        if (manager == null) return;
+
+        foreach (CharacterBase character in manager.Player_List)
+        {
+            if (character.isDead || hitTargets.Contains(character)) continue;
+            if (GridManager.Instance.WorldToGrid(character.transform.position) != cell) continue;
+            hitTargets.Add(character);
+            character.HealthDamage(damage);
+        }
     }
 
     [ServerCallback]
     void OnTriggerEnter(Collider other)
     {
-        CharacterBase character = other.GetComponentInParent<CharacterBase>();
-        if (character != null && hitTargets.Add(character))
-        {
-            character.HealthDamage(damage);
-        }
-
         // Unlike walls/destructibles, items never block the grid (no
         // GridCell), so the blast already passes straight through them -
         // this just also destroys the item caught in it, on top of that.
+        // Still physics-based (unlike player damage above) since a loose
+        // item's exact position isn't grid-snapped the way a character's
+        // hit detection needs to be.
         Item item = other.GetComponentInParent<Item>();
         if (item != null)
         {
@@ -43,6 +65,7 @@ public class ExplosionSegment : NetworkBehaviour
     [Server]
     void StopHitting()
     {
+        isHitting = false;
         col.enabled = false;
     }
 

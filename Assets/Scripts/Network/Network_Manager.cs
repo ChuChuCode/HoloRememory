@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine.SceneManagement;
@@ -21,8 +22,13 @@ public class Network_Manager : NetworkManager
     public PlayerObject LocalPlayerObject;
     [Header("Character Component")]
     public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
+    [Header("Map Component")]
+    public List<MapConfig> mapConfigList = new List<MapConfig>();
     public List<CharacterBase> Player_List = new List<CharacterBase>();
     int Player_num = 0;
+    // Guards against CheckGameOver() (last team standing) and the match
+    // timer (time's up) both trying to end the match at once.
+    bool matchEnding = false;
     public override void Start()
     {
         // Initial CharacterSelectComponent
@@ -30,6 +36,12 @@ public class Network_Manager : NetworkManager
         foreach (var playerobject in playerObjects)
         {
             characterSelectComponentsList.Add(playerobject as CharacterSelectComponent);
+        }
+        // Initial MapConfig
+        var mapObjects = Resources.LoadAll("Data/Map");
+        foreach (var mapObject in mapObjects)
+        {
+            mapConfigList.Add(mapObject as MapConfig);
         }
         base.Start();
     }
@@ -86,8 +98,36 @@ public class Network_Manager : NetworkManager
     }
     public override void OnServerDisconnect(NetworkConnectionToClient conn)
     {
+        // Find the mid-match character for this connection (if any) before
+        // the base call destroys it (ReplacePlayerForConnection made this
+        // the connection's actual player object when the match started, so
+        // Mirror's own disconnect handling already tears it down - nothing
+        // currently removes the now-dead reference from Player_List though,
+        // which would crash the next CheckGameOver() call).
+        CharacterBase disconnectedCharacter = Player_List.Find(p => p != null && p.ConnectionID == conn.connectionId);
+        
+        // TODO(disconnect self-destruct): notify everyone before the object
+        // is torn down below - this is the hook a future disconnect
+        // "self-destruct" animation plays from (see
+        // CharacterBase.OnDisconnect), not wired to anything yet. Once that
+        // exists, the NetworkServer.Destroy() below needs to be deferred
+        // until the animation finishes instead of firing immediately via
+        // base.OnServerDisconnect().
+        disconnectedCharacter?.RpcOnDisconnect();
+
         base.OnServerDisconnect(conn);
         Player_num--;
+
+        if (disconnectedCharacter != null)
+        {
+            Player_List.Remove(disconnectedCharacter);
+            // A remaining player leaving mid-match should end the match
+            // once at most one player is left, same as if they'd been
+            // eliminated. If the HOST leaves instead, StopHost() (already
+            // wired to the leave button) tears down the whole server for
+            // everyone before this would even run.
+            CheckGameOver();
+        }
     }
     public override void OnStopServer()
     {
@@ -128,11 +168,11 @@ public class Network_Manager : NetworkManager
         /// Game Scene
         if (newSceneName.StartsWith("Game") )
         {
-            // Teams can be asymmetric (any number of players per color), so
-            // track how many of each team we've placed already and hand out
-            // that team's spawn points in order (wraps via modulo in
-            // GetSpawnPosition if a team has more players than spawn points).
-            Dictionary<int, int> teamSpawnIndex = new Dictionary<int, int>();
+            matchEnding = false;
+            // Spawn points are no longer scoped by team/color (a color isn't
+            // a strict side of the map anymore) - everyone draws from the
+            // same random pool, tracked here so nobody doubles up.
+            HashSet<Vector2Int> usedSpawnCoords = new HashSet<Vector2Int>();
             foreach (PlayerObject player in PlayersInfoList)
             {
                 NetworkConnectionToClient conn = player.connectionToClient;
@@ -142,9 +182,7 @@ public class Network_Manager : NetworkManager
                 CharacterBase characterModel = characterModelComponent.CharacterModel;
                 CharacterBase gameplayInsance;
 
-                teamSpawnIndex.TryGetValue(player.TeamID, out int spawnIndex);
-                teamSpawnIndex[player.TeamID] = spawnIndex + 1;
-                Vector3 SpawnPosition = GridManager.Instance.GetSpawnPosition(player.TeamID, spawnIndex);
+                Vector3 SpawnPosition = GridManager.Instance.GetRandomUnusedSpawnPosition(usedSpawnCoords);
                 // Face toward the arena center
                 Quaternion rotation = Quaternion.LookRotation(Vector3.zero - SpawnPosition);
                 gameplayInsance = Instantiate(characterModel,SpawnPosition,rotation);
@@ -245,8 +283,22 @@ public class Network_Manager : NetworkManager
 
         if (alivePlayers.Count <= 1)
         {
-            ChangeScene("Lobby_Scene");
+            EndMatch();
         }
+    }
+    // Called by CheckGameOver() (last one standing) or LocalPlayerInfo (time
+    // ran out - a draw). Either way, pause 5s before returning to the lobby
+    // so the ending actually registers, even without a win/loss screen yet.
+    public void EndMatch()
+    {
+        if (matchEnding) return;
+        matchEnding = true;
+        StartCoroutine(EndMatchAfterDelay());
+    }
+    IEnumerator EndMatchAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);
+        ChangeScene("Lobby_Scene");
     }
 }
 

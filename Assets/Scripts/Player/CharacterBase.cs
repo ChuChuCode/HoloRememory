@@ -14,7 +14,7 @@ using HR.Map;
 
 namespace HR.Object.Player{
 // [RequireComponent(typeof(NavMeshAgent))]
-// [RequireComponent(typeof(CharacterSkillBase))]
+[RequireComponent(typeof(CharacterSkillBase))]
 [RequireComponent(typeof(Outline))]
 [RequireComponent(typeof(Rigidbody))]
 public abstract class CharacterBase: Health
@@ -33,6 +33,7 @@ public abstract class CharacterBase: Health
     // public NavMeshAgent agent;
     [Header("Skillbase")]
     protected CharacterSkillBase skillComponent;
+    public CharacterSkillBase SkillComponent => skillComponent;
 
     [Header("Network Parameter")]
     [SyncVar] public int ConnectionID;
@@ -82,6 +83,11 @@ public abstract class CharacterBase: Health
     float nextBombPlaceTime;
     [SerializeField] private Vector2 moveVector;
     [SerializeField] Rigidbody rd;
+    // Last non-zero move direction, snapped to a grid cardinal axis - lets
+    // skills (e.g. Korone's Jump) know which way to act without a separate
+    // facing/rotation system.
+    Vector2Int facingDir = Vector2Int.down;
+    public Vector2Int FacingDir => facingDir;
 
     [Header("Character Info")]
     AnimatorStateInfo stateInfo;
@@ -111,11 +117,11 @@ public abstract class CharacterBase: Health
         {
             Debug.LogError("CharacterBase must have a Outline Component.");
         }
-        // //  CharacterSkillBase Check
-        // if (!TryGetComponent<CharacterSkillBase>(out skillComponent))
-        // {
-        //     Debug.LogError("CharacterBase must have a CharacterSkillBase Component.",skillComponent);
-        // }
+        // CharacterSkillBase Check
+        if (!TryGetComponent<CharacterSkillBase>(out skillComponent))
+        {
+            Debug.LogError("CharacterBase must have a CharacterSkillBase Component.");
+        }
         networkAnimator = GetComponent<NetworkAnimator>();
         Manager.Player_List.Add(this);
         DontDestroyOnLoad(gameObject);
@@ -184,6 +190,10 @@ public abstract class CharacterBase: Health
         InputComponent.instance.playerInput.Player.Bomb.started += _ => StartHoldingBomb();
         InputComponent.instance.playerInput.Player.Bomb.canceled += _ => isHoldingBomb = false;
 
+        // Skill - gated entirely by skillComponent's own energy check, not
+        // by anything here.
+        InputComponent.instance.playerInput.Player.Skill.started += _ => skillComponent.TryActivate();
+
         // Animation keys
         // InputComponent.instance.playerInput.Player.Animation1.started += _ => OnAnimationKeyDown(1);
         // InputComponent.instance.playerInput.Player.Animation2.started += _ => OnAnimationKeyDown(2);
@@ -197,6 +207,10 @@ public abstract class CharacterBase: Health
     {
         if (!isLocalPlayer) return;
         if (isDead) return;
+        // Otherwise this polled loop (unlike the disabled Input actions)
+        // would keep running during the respawn wait - e.g. still
+        // auto-placing bombs if the button was held when this life was lost.
+        if (isWaitingToRespawn) return;
 
         // Skill Reset
         if (MainInfoUI.instance != null)
@@ -278,6 +292,7 @@ public abstract class CharacterBase: Health
 
         InitialHealth();
         transform.position = GridManager.Instance.GetRandomSpawnPosition(TeamID);
+        skillComponent?.ResetOnRespawn();
         isWaitingToRespawn = false;
     }
     void OnWaitingToRespawnChanged(bool oldValue, bool newValue)
@@ -320,7 +335,33 @@ public abstract class CharacterBase: Health
         DeadScreen.instance.isDead(true);
         InputComponent.instance.playerInput.Player.Disable();
     }
-    protected virtual void OnDestroy() 
+    // Called on every client the instant this character's owner
+    // disconnects mid-match - kept separate from Death()/OnHealthDepleted
+    // since a disconnect isn't triggered by taking damage. Empty for now;
+    // Network_Manager calls this (server-side) before the disconnecting
+    // connection's object actually gets torn down.
+    //
+    // TODO(disconnect self-destruct): waiting on real animation/timing
+    // before building this out. Planned behavior:
+    //   1. Character should NOT vanish immediately - stay visible/in place.
+    //   2. Some UI should update to show this player as "disconnected"
+    //      (exact UI element still undecided - no in-match player-roster
+    //      HUD exists yet to hang this off of).
+    //   3. Play a "self-destruct" animation on the character.
+    //   4. Only after the animation finishes should the object actually be
+    //      removed - this needs Network_Manager.OnServerDisconnect to stop
+    //      relying on Mirror's default base.OnServerDisconnect() (which
+    //      destroys the connection's object immediately) and instead defer
+    //      the NetworkServer.Destroy() call until the animation completes.
+    [ClientRpc]
+    public void RpcOnDisconnect()
+    {
+        OnDisconnect();
+    }
+    protected virtual void OnDisconnect()
+    {
+    }
+    protected virtual void OnDestroy()
     {
         // Reset all bindings
         InputComponent.instance.Reset();
@@ -364,25 +405,25 @@ public abstract class CharacterBase: Health
     // }
     public virtual void OnEscKeyClick()
     {
+        // OptionPanel (old MOBA UI) isn't placed anywhere in the current
+        // scene and isn't null-safe enough to partially activate -
+        // LeaveGamePanel is the minimal replacement actually used here.
+        if (LeaveGamePanel.Instance == null) return;
+
         // Show/Hide UI
-        if (OptionPanel.Instance.gameObject.activeSelf)
-        {
-            OptionPanel.Instance.gameObject.SetActive(false);
-        }
-        else
-        {
-            OptionPanel.Instance.gameObject.SetActive(true);
-        }
+        LeaveGamePanel.Instance.SetVisible(!LeaveGamePanel.Instance.IsVisible);
     }
     public virtual void OnTabKeyDown()
     {
-        // Show UI
+        // CharacterInfoPanel (old MOBA UI) isn't placed anywhere in the
+        // current scene yet - guard so this doesn't throw once Tab's own
+        // input binding actually fires.
+        if (CharacterInfoPanel.Instance == null) return;
         CharacterInfoPanel.Instance.gameObject.SetActive(true);
-        // Update Info
     }
     public virtual void OnTabKeyUp()
     {
-        // Close UI
+        if (CharacterInfoPanel.Instance == null) return;
         CharacterInfoPanel.Instance.gameObject.SetActive(false);
     }
     // public virtual void OnAnimationKeyDown(int AnimationID)
@@ -424,6 +465,12 @@ public abstract class CharacterBase: Health
     protected void CharacterMove(CallbackContext callback)
     {
         moveVector = callback.ReadValue<Vector2>();
+        if (moveVector != Vector2.zero)
+        {
+            facingDir = Mathf.Abs(moveVector.x) > Mathf.Abs(moveVector.y)
+                ? new Vector2Int(moveVector.x > 0 ? 1 : -1, 0)
+                : new Vector2Int(0, moveVector.y > 0 ? 1 : -1);
+        }
     }
     protected void OnMovementCancelled(CallbackContext callback)
     {
@@ -431,6 +478,13 @@ public abstract class CharacterBase: Health
     }
     void FixedUpdate()
     {
+        // Same guards as Update() - without these, this keeps running for
+        // dead/respawn-waiting characters (whose Rigidbody just got set
+        // isKinematic = true by SetPresence), and Unity rejects setting
+        // velocity on a kinematic body.
+        if (!isLocalPlayer) return;
+        if (isDead) return;
+        if (isWaitingToRespawn) return;
         rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * moveSpeed;
     }
     protected virtual void NormalAttack()

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8635532145094928103}
   - component: {fileID: 4487859158644408081}
   - component: {fileID: 6654197106431911713}
+  - component: {fileID: 972116100371306824}
   m_Layer: 0
   m_Name: Bomb
   m_TagString: Untagged
@@ -98,6 +99,39 @@ MonoBehaviour:
   ExplosionPrefab: {fileID: 6449865742343254389, guid: 2d2b25f16f0b542abb5b955136f9677d, type: 3}
   SpawnPoint: {fileID: 48010088384569283}
   bombCollider: {fileID: 4487859158644408081}
+--- !u!114 &972116100371306824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640600132361902462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 972116100371306823}
+  syncPosition: 1
+  syncRotation: 0
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1001 &513456084853291048
 PrefabInstance:
   m_ObjectHideFlags: 0

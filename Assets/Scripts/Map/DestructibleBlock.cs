@@ -1,5 +1,6 @@
 using Mirror;
 using UnityEngine;
+using HR.Object.Player;
 
 namespace HR.Map{
 [RequireComponent(typeof(GridCell))]
@@ -7,10 +8,14 @@ public class DestructibleBlock : NetworkBehaviour
 {
     [SerializeField] GameObject[] itemPrefabs;
     [Range(0f, 1f)] [SerializeField] float dropChance = 0.3f;
+    [Tooltip("Skill Energy awarded to whoever destroyed this block - the v1 energy source per the roadmap (\"Destroy Block = +5\") until item pickups/survival time/kills are added.")]
+    [SerializeField] float skillEnergyReward = 5f;
 
     [Server]
-    public void Break()
+    public void Break(CharacterBase destroyer)
     {
+        destroyer?.SkillComponent?.AddSkillEnergy(skillEnergyReward);
+
         if (itemPrefabs != null && itemPrefabs.Length > 0 && Random.value < dropChance)
         {
             // Destructible blocks can be scaled tall (obstacleLayers), so
