@@ -43,18 +43,6 @@ PluginImporter:
       settings:
         CPU: AnyCPU
   - first:
-      : OSXIntel
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      : OSXIntel64
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
       : PSM
     second:
       enabled: 0
