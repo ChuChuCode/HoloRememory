@@ -70,13 +70,6 @@ public abstract class CharacterSkillBase : NetworkBehaviour
     // gets spent), false to no-op the attempt for free.
     protected abstract bool Activate();
 
-    // Called when this character respawns - skill state (just energy, no
-    // cooldown to worry about) resets to empty like everything else does.
-    [Server]
-    public virtual void ResetOnRespawn()
-    {
-        skillEnergy = 0f;
-    }
 }
 
 }
