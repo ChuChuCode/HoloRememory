@@ -47,11 +47,6 @@ public abstract class CharacterBase: Health
     [Header("Button Pressed Zone")]
     [Space(20)]
 
-    // [Header("Camera")]
-    // [Tooltip("Fix Camera on Character")]
-    // [SerializeField] protected GameObject Fixed_Cam;
-    // [Tooltip("Free Camera on Character")]
-    // public GameObject Free_CameParent;
     [Header("Move Target")]
     [Tooltip("Particle that show move target")]
     [SerializeField] protected ParticleSystem Target_Particle;
@@ -63,16 +58,8 @@ public abstract class CharacterBase: Health
     [SyncVar(hook = nameof(OnWaitingToRespawnChanged))] bool isWaitingToRespawn;
 
     [Header("Status")]
-    public int attack;
-    public int defense;
-    public float attackSpeed;
     public float moveSpeed;
     [SerializeField] float maxMoveSpeed = 10f;
-    // [SerializeField] protected int DefaultAttack;
-    // [SerializeField] protected int DefaultDefense;
-    // [SerializeField] protected float DefaultAttackSpeed;
-    // [SerializeField] protected float DefaultMoveSpeed;
-    // [SerializeField] protected float AgentWalkSpeed; // 3.5f
     public int bombAmount;
     public int bombPower = 1;
     [SerializeField] protected BombBase Bomb_Prefab;
@@ -89,8 +76,6 @@ public abstract class CharacterBase: Health
     Vector2Int facingDir = Vector2Int.down;
     public Vector2Int FacingDir => facingDir;
 
-    [Header("Character Info")]
-    AnimatorStateInfo stateInfo;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -162,20 +147,6 @@ public abstract class CharacterBase: Health
         // Mana Initial
         // InitialMana();
 
-        // Initial Info
-        // attack = DefaultAttack;
-        // defense = DefaultDefense;
-        // Update_Status(DefaultAttack,DefaultDefense);
-        // attackSpeed = DefaultAttackSpeed;
-        // moveSpeed = DefaultMoveSpeed;
-
-        // Set Animation Speed and Agent Walk Speed
-        // agent.speed = AgentWalkSpeed * moveSpeed;
-        // animator.SetFloat("AttackSpeed",attackSpeed);
-        // animator.SetFloat("MoveSpeed",moveSpeed);
-
-        // Fixed_Cam.SetActive(true);
-
         // Move
         InputComponent.instance.playerInput.Player.Move.performed += CharacterMove;
         InputComponent.instance.playerInput.Player.Move.canceled += OnMovementCancelled;
@@ -193,15 +164,6 @@ public abstract class CharacterBase: Health
         // Skill - gated entirely by skillComponent's own energy check, not
         // by anything here.
         InputComponent.instance.playerInput.Player.Skill.started += _ => skillComponent.TryActivate();
-
-        // Animation keys
-        // InputComponent.instance.playerInput.Player.Animation1.started += _ => OnAnimationKeyDown(1);
-        // InputComponent.instance.playerInput.Player.Animation2.started += _ => OnAnimationKeyDown(2);
-        // InputComponent.instance.playerInput.Player.Animation3.started += _ => OnAnimationKeyDown(3);
-        // InputComponent.instance.playerInput.Player.Animation4.started += _ => OnAnimationKeyDown(4);
-        // InputComponent.instance.playerInput.Player.Animation5.started += _ => OnAnimationKeyDown(5);
-        // InputComponent.instance.playerInput.Player.Animation6.started += _ => OnAnimationKeyDown(6);
-
     }
     protected virtual void Update()
     {
@@ -211,12 +173,6 @@ public abstract class CharacterBase: Health
         // would keep running during the respawn wait - e.g. still
         // auto-placing bombs if the button was held when this life was lost.
         if (isWaitingToRespawn) return;
-
-        // Skill Reset
-        if (MainInfoUI.instance != null)
-        {
-            SkillUpdate(false);
-        }
 
         // Holding the bomb button: once held past autoBombHoldThreshold (so a
         // quick tap - even one that covers real distance at high speed -
@@ -234,10 +190,6 @@ public abstract class CharacterBase: Health
             }
         }
 
-        // Check Free Camera Reset -> Camera_Reset
-        // Camera_Reset();
-        // Animation
-        // HandleMoveAnmation();
         // Passive skill
         Passive();
         // Auto Regeneration
@@ -257,17 +209,6 @@ public abstract class CharacterBase: Health
     {
         NormalAttack();
         nextBombPlaceTime = Time.time + bombPlaceCooldown;
-    }
-    protected virtual void SkillUpdate(bool isRespawn)
-    {
-        if (isRespawn)
-        {
-            // Change all cool down to 0
-        }
-        else
-        {
-            // Update cool down per Update
-        }
     }
     // Spend a life instead of permanently dying, if any remain (MultiLife
     // mode). OneLife/HealthBar modes are both configured with lives = 1, so
@@ -291,8 +232,7 @@ public abstract class CharacterBase: Health
         yield return new WaitForSeconds(respawnDelay);
 
         InitialHealth();
-        transform.position = GridManager.Instance.GetRandomSpawnPosition(TeamID);
-        skillComponent?.ResetOnRespawn();
+        transform.position = GridManager.Instance.GetRandomSpawnPosition();
         isWaitingToRespawn = false;
     }
     void OnWaitingToRespawnChanged(bool oldValue, bool newValue)
@@ -378,31 +318,6 @@ public abstract class CharacterBase: Health
         if (!isLocalPlayer) return;
         if (MainInfoUI.instance != null) MainInfoUI.instance.updateInfo();
     }
-    // Camera Change
-    /// <summary>This is invoked when YKey Click Down.</summary>
-    // public virtual void OnYKeyClick()
-    // {
-    //     // Fixed cam active -> Fixed cam deactive and free cam active
-    //     if (Fixed_Cam.activeSelf)
-    //     {
-    //         Fixed_Cam.SetActive(false);
-    //         Free_CameParent.SetActive(true);
-    //         // set position to gameobject
-    //         Free_CameParent.transform.position = gameObject.transform.position;
-    //     }
-    //     else
-    //     {
-    //         Fixed_Cam.SetActive(true);
-    //         Free_CameParent.SetActive(false);
-    //     }
-    // } 
-    // Camera Reset
-    /// <summary>This is invoked when SpaceKey Click Down.</summary>
-    // public virtual void OnSpaceKeyClick()
-    // {
-    //     if (!Free_CameParent.activeSelf) return;
-    //     Free_CameParent.transform.position = gameObject.transform.position;
-    // }
     public virtual void OnEscKeyClick()
     {
         // OptionPanel (old MOBA UI) isn't placed anywhere in the current
@@ -426,16 +341,6 @@ public abstract class CharacterBase: Health
         if (CharacterInfoPanel.Instance == null) return;
         CharacterInfoPanel.Instance.gameObject.SetActive(false);
     }
-    // public virtual void OnAnimationKeyDown(int AnimationID)
-    // {
-    //     Target = null;
-    //     agent.destination = transform.position;
-    //     agent.isStopped = true;
-    //     animator.SetBool("isAttack",false);
-    //     animator.SetBool("isMove",false);
-    //     animator.SetFloat("AnimationID",AnimationID);
-    //     networkAnimator.SetTrigger("Animation");
-    // }
     // Passive Skill
     /// <summary>This method relate to Passive Skill.</summary>
     protected abstract void Passive();
@@ -448,18 +353,6 @@ public abstract class CharacterBase: Health
     //     if (Physics.Raycast(ray, out hit))
     //     {
     //         mouseProject = hit.point;
-    //     }
-    // }
-    /// <summary>This method calculate the project point from camera to scene object in Land Layer.</summary>
-    // protected void Camera_Reset()
-    // {
-    //     // Camera Reset
-    //     if ( InputComponent.instance.playerInput.Player.Camera_Reset.IsPressed())
-    //     {
-    //         if (Free_CameParent.activeSelf)
-    //         {
-    //             Free_CameParent.transform.position = gameObject.transform.position;
-    //         }
     //     }
     // }
     protected void CharacterMove(CallbackContext callback)
@@ -486,6 +379,17 @@ public abstract class CharacterBase: Health
         if (isDead) return;
         if (isWaitingToRespawn) return;
         rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * moveSpeed;
+
+        // Face the direction actually being moved in - keeps whatever
+        // direction it was last facing while standing still, same as
+        // facingDir (used by Jump/Bomb Push) already does. Direct transform
+        // assignment, not physics, so the Rigidbody's frozen rotation
+        // constraints don't fight it; replicated to other clients via the
+        // same NetworkTransform that already syncs rotation.
+        if (moveVector != Vector2.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(new Vector3(moveVector.x, 0, moveVector.y));
+        }
     }
     protected virtual void NormalAttack()
     {
@@ -557,39 +461,6 @@ public abstract class CharacterBase: Health
     {
         bombAmount += 1;
     }
-    // Update Status to Server
-    [Command]
-    public void Update_Status(int attack,int defense)
-    {
-        this.attack = attack;
-        this.defense = defense;
-    }
-    // protected void HandleMoveAnmation()
-    // {
-    //     // If stand Animation => stop move and rotate
-    //     stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-    //     if(stateInfo.IsTag("stand"))
-    //     {
-    //         agent.isStopped = true;
-    //         animator.SetBool("isMove",false);
-    //         return;
-    //     }
-    //     else
-    //     {
-    //         agent.isStopped = false;
-    //     }
-    //     bool isRun = agent.velocity.magnitude > 0;
-    //     // Run when idle
-    //     if (isRun)
-    //     {
-    //         animator.SetBool("isMove",true);
-    //     }
-    //     // idle when run
-    //     else
-    //     {
-    //         animator.SetBool("isMove",false);
-    //     }
-    // }
 }
 
 }
