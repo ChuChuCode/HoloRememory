@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5180280222945091873}
   - component: {fileID: 7447025445578688606}
   - component: {fileID: 3056681672664529164}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Rui
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 58730014f23d432ca0796c82310af5f7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: -481990197644878190}
   - component: {fileID: 1172984831065902691}
   - component: {fileID: 1172984831065902700}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Rui
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -351,7 +351,7 @@ GameObject:
   - component: {fileID: 200000012}
   - component: {fileID: 200000013}
   - component: {fileID: 200000014}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GridHighlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
