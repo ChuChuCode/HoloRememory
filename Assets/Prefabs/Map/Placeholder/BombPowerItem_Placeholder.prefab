@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5006609364848061904}
   - component: {fileID: 6784562179723091566}
   - component: {fileID: 3166675455680505103}
+  - component: {fileID: 3612186475328982735}
   m_Layer: 0
   m_Name: BombPowerItem_Placeholder
   m_TagString: Untagged
@@ -168,3 +169,36 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   amount: 1
+--- !u!114 &3612186475328982735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3369964951013762530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 3612186475328982734}
+  syncPosition: 1
+  syncRotation: 0
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  timelineOffset: 1
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01

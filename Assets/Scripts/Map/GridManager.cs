@@ -83,42 +83,44 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
+    // Random walkable floor coordinate, sampled from the rectangular area
+    // spanned by every registered cell - plain floor tiles are never
+    // registered at all, so this is the closest available stand-in for
+    // "the playable map area". Retries until it lands on something that
+    // isn't Wall/Destructible/Bomb, giving up after a bounded number of
+    // attempts (e.g. an unusually cramped or oddly-shaped map).
+    public bool TryGetRandomClearCoord(out Vector2Int coord)
+    {
+        coord = default;
+        if (cells.Count == 0) return false;
+
+        int minX = int.MaxValue, maxX = int.MinValue, minZ = int.MaxValue, maxZ = int.MinValue;
+        foreach (Vector2Int key in cells.Keys)
+        {
+            minX = Mathf.Min(minX, key.x);
+            maxX = Mathf.Max(maxX, key.x);
+            minZ = Mathf.Min(minZ, key.y);
+            maxZ = Mathf.Max(maxZ, key.y);
+        }
+
+        for (int attempt = 0; attempt < 30; attempt++)
+        {
+            Vector2Int candidate = new Vector2Int(Random.Range(minX, maxX + 1), Random.Range(minZ, maxZ + 1));
+            if (!IsOccupied(candidate))
+            {
+                coord = candidate;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public IEnumerable<Vector2Int> GetAllSpawnCoords()
     {
         foreach (KeyValuePair<Vector2Int, GridCell> entry in cells)
         {
             if (entry.Value.type == CellType.Spawn) yield return entry.Key;
         }
-    }
-
-    List<GridCell> GetTeamSpawnCells(int teamId)
-    {
-        List<GridCell> spawnCells = new();
-        foreach (GridCell cell in cells.Values)
-        {
-            if (cell.type == CellType.Spawn && cell.teamId == teamId)
-            {
-                spawnCells.Add(cell);
-            }
-        }
-        return spawnCells;
-    }
-
-    // playerIndex is which player of that team this is (0, 1, 2, ...);
-    // wraps around if there are fewer spawn cells than players. Used only
-    // for the initial spawn, where round-robin avoids two players landing
-    // on the same point.
-    public Vector3 GetSpawnPosition(int teamId, int playerIndex)
-    {
-        List<GridCell> spawnCells = GetTeamSpawnCells(teamId);
-        if (spawnCells.Count == 0)
-        {
-            Debug.LogWarning($"No spawn point registered for team {teamId}.");
-            return Vector3.zero;
-        }
-
-        spawnCells.Sort((a, b) => a.spawnIndex.CompareTo(b.spawnIndex));
-        return spawnCells[playerIndex % spawnCells.Count].transform.position;
     }
 
     // Initial match spawn - random from the WHOLE map's spawn point pool
@@ -152,22 +154,34 @@ public class GridManager : MonoBehaviour
         return new Vector3(snapped.x, chosen.transform.position.y, snapped.z);
     }
 
-    // Used for mid-match respawns (MultiLife mode) - random, so camping one
-    // spawn point can't guarantee a kill, and skips any spawn point that's
-    // currently blocked (e.g. a bomb sitting on it) when possible.
-    public Vector3 GetRandomSpawnPosition(int teamId)
+    // Used for mid-match respawns (MultiLife mode) - truly random from the
+    // same whole-map pool as the initial spawn (no team scoping - camping
+    // one point can't guarantee a kill). Only avoids Wall/Destructible/Bomb
+    // (via IsOccupied) when possible; landing near/on another player is
+    // fine, that just means an immediate fight.
+    public Vector3 GetRandomSpawnPosition()
     {
-        List<GridCell> spawnCells = GetTeamSpawnCells(teamId);
-        if (spawnCells.Count == 0)
+        List<GridCell> allSpawnCells = new();
+        foreach (GridCell cell in cells.Values)
         {
-            Debug.LogWarning($"No spawn point registered for team {teamId}.");
+            if (cell.type == CellType.Spawn) allSpawnCells.Add(cell);
+        }
+        if (allSpawnCells.Count == 0)
+        {
+            Debug.LogWarning("No spawn points registered on this map.");
             return Vector3.zero;
         }
 
-        List<GridCell> clear = spawnCells.FindAll(cell => !IsOccupied(WorldToGrid(cell.transform.position)));
-        List<GridCell> candidates = clear.Count > 0 ? clear : spawnCells;
+        List<GridCell> clear = allSpawnCells.FindAll(cell => !IsOccupied(WorldToGrid(cell.transform.position)));
+        List<GridCell> candidates = clear.Count > 0 ? clear : allSpawnCells;
 
-        return candidates[Random.Range(0, candidates.Count)].transform.position;
+        GridCell chosen = candidates[Random.Range(0, candidates.Count)];
+        Vector2Int coord = WorldToGrid(chosen.transform.position);
+        // Snap X/Z to the exact cell center - hand-placed spawn markers can
+        // be slightly off. Keep the marker's own Y so any intentional
+        // height isn't flattened to 0.
+        Vector3 snapped = GridToWorld(coord);
+        return new Vector3(snapped.x, chosen.transform.position.y, snapped.z);
     }
 }
 }
