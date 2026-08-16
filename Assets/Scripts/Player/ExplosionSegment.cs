@@ -58,6 +58,7 @@ public class ExplosionSegment : NetworkBehaviour
         Item item = other.GetComponentInParent<Item>();
         if (item != null)
         {
+            Debug.Log($"[ItemDebug] {item.name} caught in blast at {item.transform.position}, t={Time.time}"); // TEMP diagnostic, remove once the vanish-on-land bug is found
             NetworkServer.Destroy(item.gameObject);
         }
     }

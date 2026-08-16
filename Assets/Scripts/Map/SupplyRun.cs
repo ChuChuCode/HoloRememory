@@ -20,6 +20,10 @@ public class SupplyRun : NetworkBehaviour
     [SerializeField] int maxItems = 5;
     [SerializeField] float dropHeight = 8f;
     [SerializeField] float fallDuration = 0.8f;
+    [Header("Mount")]
+    [SerializeField] GameObject[] mountPrefabs;
+    [Tooltip("Rolled per drop, independent of which regular item would've been picked - a mount absorbs a whole hit, so it needs to be much rarer than a normal power-up.")]
+    [Range(0f, 1f)] [SerializeField] float mountDropChance = 0.05f;
 
     Vector3 idlePosition;
 
@@ -88,11 +92,20 @@ public class SupplyRun : NetworkBehaviour
             Vector3 groundPos = GridManager.Instance.GridToWorld(coord) + Vector3.up * 0.25f;
             Vector3 skyPos = groundPos + Vector3.up * dropHeight;
 
-            GameObject prefab = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
+            GameObject prefab = PickPrefab();
             GameObject item = Instantiate(prefab, skyPos, Quaternion.identity);
             NetworkServer.Spawn(item);
             StartCoroutine(FallToGround(item.transform, skyPos, groundPos));
         }
+    }
+
+    GameObject PickPrefab()
+    {
+        if (mountPrefabs != null && mountPrefabs.Length > 0 && Random.value < mountDropChance)
+        {
+            return mountPrefabs[Random.Range(0, mountPrefabs.Length)];
+        }
+        return itemPrefabs[Random.Range(0, itemPrefabs.Length)];
     }
 
     // Runs on the SupplyRun object, not the item itself, since the item
@@ -109,7 +122,11 @@ public class SupplyRun : NetworkBehaviour
             item.position = Vector3.Lerp(start, end, elapsed / fallDuration);
             yield return null;
         }
-        if (item != null) item.position = end;
+        if (item != null)
+        {
+            item.position = end;
+            Debug.Log($"[ItemDebug] {item.name} finished falling, landed at {end}, t={Time.time}"); // TEMP diagnostic, remove once the vanish-on-land bug is found
+        }
     }
 }
 }

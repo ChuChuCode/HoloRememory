@@ -76,6 +76,45 @@ public abstract class CharacterBase: Health
     Vector2Int facingDir = Vector2Int.down;
     public Vector2Int FacingDir => facingDir;
 
+    [Header("Debuff")]
+    [SerializeField] float debuffDuration = 10f;
+    [Tooltip("The character's own visible body mesh - flashed while a debuff is active so everyone (not just the affected player) can see it. Not the GridHighlight or Outline - just the colored body.")]
+    [SerializeField] Renderer bodyRenderer;
+    [SerializeField] Color debuffFlashColor = Color.white;
+    [SerializeField] float debuffFlashInterval = 0.15f;
+    bool forcedAutoBomb;
+    bool controlsReversed;
+    Coroutine forceAutoBombRoutine;
+    Coroutine reverseControlsRoutine;
+    Coroutine debuffFlashRoutine;
+    Color bodyOriginalColor;
+    bool bodyColorCaptured;
+    bool isSkillLocked;
+
+    // A mount absorbs the next bomb hit instead of costing a life - see
+    // HealthDamage/Dismount. currentMount is the server's own authoritative
+    // copy (used for the CanPickupItems gate and to decide what Dismount
+    // does); mountSpeedModifier is a client-local mirror of just the one
+    // value FixedUpdate actually needs, pushed over by TargetApplyMount
+    // since movement is client-authoritative.
+    [Header("Mount")]
+    [SerializeField] float mountStaggerDuration = 0.5f;
+    [Tooltip("Placeholder stand-in for a real mount model/sit animation - a plain shape tinted per-mount via MountData.VisualColor. Shared across all characters.")]
+    [SerializeField] GameObject mountVisualPrefab;
+    [Tooltip("Peak height of the placeholder hop played on mounting/getting knocked off - same arc shape as Korone's Jump, just standing in for a real animation.")]
+    [SerializeField] float mountHopHeight = 0.4f;
+    [Tooltip("How much higher the character sits once mounted - placeholder for actually raising the model onto a mount, since there's no sit animation yet.")]
+    [SerializeField] float mountRideHeight = 0.3f;
+    MountData currentMount;
+    float mountSpeedModifier;
+    bool isBombImmune;
+    GameObject mountVisualInstance;
+    // Client-local mirror of "is currently mounted" - the elevated ride
+    // height has nothing solid under it, so gravity has to stay off for the
+    // whole ride, not just the brief hop/stagger window (see SetSkillLock).
+    bool isMountedLocally;
+    public bool CanPickupItems => currentMount == null || currentMount.CanPickupItems;
+
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -181,7 +220,10 @@ public abstract class CharacterBase: Health
         // to a fresh cell AND standing still waiting for your own bomb to
         // clear (bombAmount refunds on explosion, but that alone doesn't
         // change what cell you're in, so cell-change alone can't catch it).
-        if (isHoldingBomb && Time.time - holdStartTime >= autoBombHoldThreshold && Time.time >= nextBombPlaceTime)
+        // forcedAutoBomb (the Chaos debuff) skips the hold threshold - it
+        // should start spamming immediately, not wait for a real hold.
+        bool wantsAutoPlace = forcedAutoBomb || (isHoldingBomb && Time.time - holdStartTime >= autoBombHoldThreshold);
+        if (wantsAutoPlace && Time.time >= nextBombPlaceTime)
         {
             Vector2Int currentCell = GridManager.Instance.WorldToGrid(transform.position);
             if (bombAmount > 0 && !GridManager.Instance.IsOccupied(currentCell))
@@ -210,6 +252,21 @@ public abstract class CharacterBase: Health
         NormalAttack();
         nextBombPlaceTime = Time.time + bombPlaceCooldown;
     }
+    // A mount absorbs the hit instead of it reaching health/lives at all -
+    // ExplosionSegment is the only damage source in this game, and it always
+    // goes through here. isBombImmune additionally covers the brief window
+    // right after mounting/dismounting, so getting knocked off doesn't
+    // immediately chain into a second, un-absorbed hit from the same blast.
+    public override bool HealthDamage(int damage)
+    {
+        if (isBombImmune) return false;
+        if (currentMount != null)
+        {
+            Dismount();
+            return false;
+        }
+        return base.HealthDamage(damage);
+    }
     // Spend a life instead of permanently dying, if any remain (MultiLife
     // mode). OneLife/HealthBar modes are both configured with lives = 1, so
     // this always falls straight through to permanent elimination for them.
@@ -218,6 +275,13 @@ public abstract class CharacterBase: Health
     // alive" count - a player mid-respawn-wait still has lives left.
     protected override void OnHealthDepleted()
     {
+        // Debuffs run on a plain timer on the owning client with no death
+        // check of their own - without this, dying mid-debuff would still
+        // leave forcedAutoBomb/controlsReversed active into the next life
+        // (or forever, for a permanent death) until their original duration
+        // happened to run out.
+        TargetClearDebuffs(connectionToClient);
+        RpcStopDebuffFlash();
         lives -= 1;
         if (lives > 0)
         {
@@ -358,6 +422,7 @@ public abstract class CharacterBase: Health
     protected void CharacterMove(CallbackContext callback)
     {
         moveVector = callback.ReadValue<Vector2>();
+        if (controlsReversed) moveVector = -moveVector;
         if (moveVector != Vector2.zero)
         {
             facingDir = Mathf.Abs(moveVector.x) > Mathf.Abs(moveVector.y)
@@ -378,7 +443,9 @@ public abstract class CharacterBase: Health
         if (!isLocalPlayer) return;
         if (isDead) return;
         if (isWaitingToRespawn) return;
-        rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * moveSpeed;
+        if (isSkillLocked) return;
+        float effectiveSpeed = Mathf.Max(0f, moveSpeed + mountSpeedModifier);
+        rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * effectiveSpeed;
 
         // Face the direction actually being moved in - keeps whatever
         // direction it was last facing while standing still, same as
@@ -425,17 +492,320 @@ public abstract class CharacterBase: Health
         ownMoney += money;
         MainInfoUI.instance.updateInfo();
     }
+    // bombAmount/bombPower/moveSpeed aren't SyncVars (see the comment on
+    // bombAmount's declaration) - these are only ever called server-side
+    // (Item.Apply, via OnTriggerEnter's [ServerCallback]), so without this
+    // TargetRpc a non-host client's own copy would never actually change.
+    // For bombPower this was a silent gap (the server's own copy is what
+    // CmdSpawnBomb reads, so the blast itself was already correct) - but for
+    // bombAmount specifically it was gameplay-breaking: NormalAttack's
+    // bombAmount==0 check runs client-side, so a remote player picking up a
+    // BombCount item would still be unable to place the extra bomb at all.
+    [Server]
     public void AddBombCount(int count)
     {
         bombAmount += count;
+        TargetSyncBombAmount(connectionToClient, bombAmount);
     }
+    [Server]
     public void AddBombPower(int power)
     {
         bombPower += power;
+        TargetSyncBombPower(connectionToClient, bombPower);
     }
+    [Server]
     public void AddMoveSpeed(float amount)
     {
         moveSpeed = Mathf.Min(moveSpeed + amount, maxMoveSpeed);
+        TargetSyncMoveSpeed(connectionToClient, moveSpeed);
+    }
+    [TargetRpc]
+    void TargetSyncBombAmount(NetworkConnection target, int amount)
+    {
+        bombAmount = amount;
+    }
+    [TargetRpc]
+    void TargetSyncBombPower(NetworkConnection target, int power)
+    {
+        bombPower = power;
+    }
+    [TargetRpc]
+    void TargetSyncMoveSpeed(NetworkConnection target, float speed)
+    {
+        moveSpeed = speed;
+    }
+    // Chaos item debuff - server picks one of two equally likely effects and
+    // pushes it to the owning client only (both movement input and the
+    // auto-place loop only ever run on isLocalPlayer, so nothing needs to
+    // reach anyone else).
+    [Server]
+    public void ApplyRandomDebuff()
+    {
+        if (Random.value < 0.5f) TargetForceAutoBomb(connectionToClient, debuffDuration);
+        else TargetReverseControls(connectionToClient, debuffDuration);
+        // Everyone should see this, not just the affected player - the
+        // actual gameplay effect above is TargetRpc'd only to them, but the
+        // flash itself is just a visual tell.
+        RpcStartDebuffFlash(debuffDuration);
+    }
+    [ClientRpc]
+    void RpcStartDebuffFlash(float duration)
+    {
+        if (debuffFlashRoutine != null) StopCoroutine(debuffFlashRoutine);
+        debuffFlashRoutine = StartCoroutine(DebuffFlashRoutine(duration));
+    }
+    [ClientRpc]
+    void RpcStopDebuffFlash()
+    {
+        if (debuffFlashRoutine != null)
+        {
+            StopCoroutine(debuffFlashRoutine);
+            debuffFlashRoutine = null;
+        }
+        RestoreBodyColor();
+    }
+    IEnumerator DebuffFlashRoutine(float duration)
+    {
+        if (bodyRenderer == null) yield break;
+        if (!bodyColorCaptured)
+        {
+            bodyOriginalColor = bodyRenderer.sharedMaterial.GetColor("_BaseColor");
+            bodyColorCaptured = true;
+        }
+        MaterialPropertyBlock block = new MaterialPropertyBlock();
+        bool flashOn = false;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            flashOn = !flashOn;
+            block.SetColor("_BaseColor", flashOn ? debuffFlashColor : bodyOriginalColor);
+            bodyRenderer.SetPropertyBlock(block);
+            yield return new WaitForSeconds(debuffFlashInterval);
+            elapsed += debuffFlashInterval;
+        }
+        RestoreBodyColor();
+        debuffFlashRoutine = null;
+    }
+    void RestoreBodyColor()
+    {
+        if (bodyRenderer == null || !bodyColorCaptured) return;
+        MaterialPropertyBlock block = new MaterialPropertyBlock();
+        block.SetColor("_BaseColor", bodyOriginalColor);
+        bodyRenderer.SetPropertyBlock(block);
+    }
+    [TargetRpc]
+    void TargetForceAutoBomb(NetworkConnection target, float duration)
+    {
+        if (forceAutoBombRoutine != null) StopCoroutine(forceAutoBombRoutine);
+        forceAutoBombRoutine = StartCoroutine(ForceAutoBombRoutine(duration));
+    }
+    IEnumerator ForceAutoBombRoutine(float duration)
+    {
+        forcedAutoBomb = true;
+        yield return new WaitForSeconds(duration);
+        forcedAutoBomb = false;
+        forceAutoBombRoutine = null;
+    }
+    [TargetRpc]
+    void TargetReverseControls(NetworkConnection target, float duration)
+    {
+        if (reverseControlsRoutine != null) StopCoroutine(reverseControlsRoutine);
+        reverseControlsRoutine = StartCoroutine(ReverseControlsRoutine(duration));
+    }
+    IEnumerator ReverseControlsRoutine(float duration)
+    {
+        controlsReversed = true;
+        yield return new WaitForSeconds(duration);
+        controlsReversed = false;
+        reverseControlsRoutine = null;
+    }
+    // Called the instant health hits 0 (see OnHealthDepleted) - stops
+    // whichever debuff coroutine is running on the owning client and resets
+    // both flags immediately, instead of letting them expire on their own.
+    [TargetRpc]
+    void TargetClearDebuffs(NetworkConnection target)
+    {
+        if (forceAutoBombRoutine != null)
+        {
+            StopCoroutine(forceAutoBombRoutine);
+            forceAutoBombRoutine = null;
+        }
+        if (reverseControlsRoutine != null)
+        {
+            StopCoroutine(reverseControlsRoutine);
+            reverseControlsRoutine = null;
+        }
+        forcedAutoBomb = false;
+        controlsReversed = false;
+    }
+    // Mount item pickup - grants one absorbed hit (see HealthDamage) instead
+    // of a straight stat buff. Replaces whatever mount is already active, if
+    // any (matches picking up a second mount before the first was knocked
+    // off - no need to be dismounted first).
+    [Server]
+    public void Mount(MountData mount)
+    {
+        currentMount = mount;
+        TargetApplyMount(connectionToClient, mount.MoveSpeedModifier, mountStaggerDuration, true);
+        RpcShowMountVisual(mount.VisualColor);
+        RestartBombImmune(mountStaggerDuration);
+    }
+    [Server]
+    void Dismount()
+    {
+        currentMount = null;
+        TargetApplyMount(connectionToClient, 0f, mountStaggerDuration, false);
+        RpcHideMountVisual();
+        RestartBombImmune(mountStaggerDuration);
+    }
+    Coroutine bombImmuneRoutine;
+    // Swapping mounts calls this again before the previous window ends -
+    // without stopping that older one first, it would still turn
+    // isBombImmune back off early once its own (now stale) duration
+    // elapses, cutting the new window short.
+    [Server]
+    void RestartBombImmune(float duration)
+    {
+        if (bombImmuneRoutine != null) StopCoroutine(bombImmuneRoutine);
+        bombImmuneRoutine = StartCoroutine(BombImmuneRoutine(duration));
+    }
+    // Placeholder only - a plain tinted shape parented under the character,
+    // sent to every client (not just the owner) since riding a mount is
+    // something everyone should see. TODO(mount visuals): once a real model
+    // exists per mount, along with a sit animation, replace this instantiate
+    // with swapping the character's own animator state instead.
+    [ClientRpc]
+    void RpcShowMountVisual(Color color)
+    {
+        if (mountVisualPrefab == null)
+        {
+            Debug.LogError($"{name}: mountVisualPrefab isn't assigned - mount pickups won't show anything.", this);
+            return;
+        }
+        if (mountVisualInstance == null)
+        {
+            mountVisualInstance = Instantiate(mountVisualPrefab, transform);
+            // The character's own root rises by mountRideHeight while mounted
+            // (see HopRoutine) - since this is parented under that same
+            // transform, it would rise right along with it and end up
+            // hovering in the air instead of sitting near the ground. Shift
+            // it back down by the same amount so it stays put underfoot.
+            mountVisualInstance.transform.localPosition -= new Vector3(0, mountRideHeight, 0);
+            // GridHighlight is a direct child of this same root (every
+            // character prefab has one) - same rising-with-the-parent issue,
+            // so it needs the same counter-offset. Only ever done once per
+            // mount (guarded by mountVisualInstance == null, same as above) -
+            // swapping mounts while already riding one calls this again, and
+            // applying the offset a second time would push it down further
+            // each time instead of leaving it where it already correctly is.
+            OffsetGridHighlight(-mountRideHeight);
+        }
+        Renderer rend = mountVisualInstance.GetComponentInChildren<Renderer>();
+        if (rend != null)
+        {
+            MaterialPropertyBlock block = new MaterialPropertyBlock();
+            block.SetColor("_BaseColor", color);
+            rend.SetPropertyBlock(block);
+        }
+    }
+    [ClientRpc]
+    void RpcHideMountVisual()
+    {
+        if (mountVisualInstance != null) Destroy(mountVisualInstance);
+        OffsetGridHighlight(mountRideHeight);
+    }
+    Transform gridHighlight;
+    void OffsetGridHighlight(float deltaY)
+    {
+        if (gridHighlight == null) gridHighlight = transform.Find("GridHighlight");
+        if (gridHighlight == null) return;
+        gridHighlight.localPosition += new Vector3(0, deltaY, 0);
+    }
+    // Movement is client-authoritative, so both the speed modifier and the
+    // stagger's movement lock have to be applied here on the owning client,
+    // not just server-side - isBombImmune is the only part of this that can
+    // stay server-only, since ExplosionSegment's damage check already runs
+    // there.
+    [TargetRpc]
+    void TargetApplyMount(NetworkConnection target, float speedModifier, float staggerDuration, bool mounting)
+    {
+        mountSpeedModifier = speedModifier;
+        bool wasMountedAlready = isMountedLocally;
+        isMountedLocally = mounting;
+
+        // HopRoutine's end height is relative to wherever it starts, not an
+        // absolute ground height - picking up a second mount while already
+        // riding one (swap, no need to dismount first - see Mount()) would
+        // otherwise stack another +mountRideHeight on top of the current
+        // (already elevated) position each time, climbing higher forever.
+        // Already at ride height in that case, so just skip the hop - the
+        // color/stat swap (RpcShowMountVisual/mountSpeedModifier) is enough.
+        if (mounting && wasMountedAlready) return;
+
+        // Mounting ends the hop mountRideHeight HIGHER than it started
+        // (character now sits on top of the mount); dismounting is the
+        // reverse, back down to normal ground height.
+        StartCoroutine(MountStaggerLockRoutine(staggerDuration, mounting ? mountRideHeight : -mountRideHeight));
+    }
+    // Same lock skills use (Korone's Jump, Watame's Bomb Push) - covers both
+    // just-mounted and just-knocked-off, since both are "briefly can't act".
+    // Plays a small hop for the same duration as a placeholder for a real
+    // "climb on"/"fall off" animation - timed with RpcShowMountVisual/
+    // RpcHideMountVisual, which fire in the same frame Mount()/Dismount() do.
+    IEnumerator MountStaggerLockRoutine(float duration, float endYOffset)
+    {
+        SetSkillLock(true);
+        yield return StartCoroutine(HopRoutine(duration, endYOffset));
+        SetSkillLock(false);
+    }
+    // Runs on the owning client - direct transform writes, same as Korone's
+    // Jump, replicate out to every other client via this character's own
+    // client-authoritative NetworkTransform. endYOffset is where the hop
+    // settles relative to where it started - 0 for Korone/Watame's skills
+    // (return to the same spot), +/-mountRideHeight for mounting/dismounting
+    // (settle higher/lower - the mount visual, parented under this same
+    // transform, rises and falls right along with it).
+    IEnumerator HopRoutine(float duration, float endYOffset = 0f)
+    {
+        Vector3 basePos = transform.position;
+        Vector3 targetPos = basePos + new Vector3(0, endYOffset, 0);
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            Vector3 flat = Vector3.Lerp(basePos, targetPos, t);
+            float arc = mountHopHeight * Mathf.Sin(t * Mathf.PI); // 0 at both ends, peaks at the midpoint
+            transform.position = new Vector3(flat.x, flat.y + arc, flat.z);
+            yield return null;
+        }
+        transform.position = targetPos;
+    }
+    IEnumerator BombImmuneRoutine(float duration)
+    {
+        isBombImmune = true;
+        yield return new WaitForSeconds(duration);
+        isBombImmune = false;
+        bombImmuneRoutine = null;
+    }
+    // Called by skills that move this character's own transform (Korone's
+    // Jump) or otherwise need it to hold still for a moment (Watame's Bomb
+    // Push) - without this, FixedUpdate's normal WASD handling would fight
+    // whatever the skill is doing to the Rigidbody/transform.
+    public void SetSkillLock(bool locked)
+    {
+        isSkillLocked = locked;
+        // FixedUpdate skips its usual "velocity.y = 0 every tick" reset
+        // while locked, so gravity would otherwise accumulate downward
+        // velocity unopposed for the whole locked window - once the floor's
+        // collider catches it, that fights (and was winning against) any
+        // manual transform lift a hop tries to do, like mounting settling
+        // higher than ground level. Unlocking only turns gravity back on if
+        // NOT still mounted - the elevated ride height has nothing solid
+        // under it, so gravity has to stay off for the whole ride, not just
+        // this brief hop, or it drifts back down afterward.
+        rd.useGravity = locked ? false : !isMountedLocally;
+        if (locked) rd.velocity = Vector3.zero;
     }
     [Command]
     void CmdSpawnBomb()

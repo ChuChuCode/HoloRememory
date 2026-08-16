@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using Mirror;
 using HR.Object.Skill;
 using HR.Map;
 
@@ -37,8 +39,25 @@ public class WatameSkill : CharacterSkillBase
         }
 
         float durationPerCell = Data != null ? Data.DurationPerCell : 0.1f;
-        bomb.MoveToCell(destination, distanceTraveled * durationPerCell);
+        float pushDuration = distanceTraveled * durationPerCell;
+        bomb.MoveToCell(destination, pushDuration);
+        // Activate() runs on the server, but movement is client-authoritative
+        // - only the owning client's own FixedUpdate actually needs to stop,
+        // so this has to reach her the same way the push itself is felt.
+        TargetLockDuringPush(connectionToClient, pushDuration);
         return true; // bumping the bomb counts as "used" even if it didn't move (e.g. wall right behind it)
+    }
+
+    [TargetRpc]
+    void TargetLockDuringPush(NetworkConnection target, float duration)
+    {
+        StartCoroutine(LockDuringPushRoutine(duration));
+    }
+    IEnumerator LockDuringPushRoutine(float duration)
+    {
+        owner.SetSkillLock(true);
+        yield return new WaitForSeconds(duration);
+        owner.SetSkillLock(false);
     }
 }
 }

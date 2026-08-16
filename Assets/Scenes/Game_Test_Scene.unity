@@ -13575,10 +13575,19 @@ MonoBehaviour:
   - {fileID: 3318261918036378431, guid: fb6ce70fc313e44afbce1570c2aff275, type: 3}
   - {fileID: 3369964951013762530, guid: 21398639794304c0c9429b594c432e90, type: 3}
   - {fileID: 8419279180934278036, guid: a345e684d98994d0f928e029993e5e15, type: 3}
+  - {fileID: 3889511876017203, guid: ae381622b2f64d1ead822522379a12d3, type: 3}
   minItems: 3
   maxItems: 5
   dropHeight: 8
   fallDuration: 0.8
+  mountPrefabs:
+  - {fileID: 2636663731674502, guid: 79d810be850d4a09bbc0a0844690dea7, type: 3}
+  - {fileID: 4190101984194023, guid: 8c9e456235894fcabee13bedfa9d8a7d, type: 3}
+  - {fileID: 7207963795910788, guid: c9b88ad5b2cb4d43a41fc55f2f24c15b, type: 3}
+  - {fileID: 7533070992342434, guid: 31470c0b0a6b4327830c48c753139702, type: 3}
+  - {fileID: 2841889118945106, guid: 43265e8e3c664758b28466609ff3fb8b, type: 3}
+  - {fileID: 3982528850742885, guid: e1be1ddc09494529bcffc551619cc666, type: 3}
+  mountDropChance: 0.05
 --- !u!1001 &908347587
 PrefabInstance:
   m_ObjectHideFlags: 0

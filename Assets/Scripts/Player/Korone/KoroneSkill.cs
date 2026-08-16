@@ -49,6 +49,11 @@ public class KoroneSkill : CharacterSkillBase
 
     IEnumerator JumpRoutine(Vector3 destination)
     {
+        // Without this, normal WASD movement (still processed every
+        // FixedUpdate on this same owning client) would fight the manual
+        // position writes below - locked for the whole arc, released once
+        // she's actually landed.
+        owner.SetSkillLock(true);
         float duration = JumpData != null ? JumpData.JumpDuration : 0.3f;
         float arcHeight = JumpData != null ? JumpData.ArcHeight : 1f;
         Vector3 start = owner.transform.position;
@@ -63,6 +68,7 @@ public class KoroneSkill : CharacterSkillBase
             yield return null;
         }
         owner.transform.position = destination; // guarantee an exact landing despite frame-time drift
+        owner.SetSkillLock(false);
     }
 }
 }

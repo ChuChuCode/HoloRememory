@@ -2568,6 +2568,13 @@ MonoBehaviour:
   - {fileID: 100000001, guid: d5f0c3baa2f24483aece42e12c8216be, type: 3}
   - {fileID: 9093653501188938057, guid: 27b0fb16b90e42ac96ae07e0eacb749e, type: 3}
   - {fileID: 9093653501188938057, guid: 707f5534cfad4b7fba26f1128117cf68, type: 3}
+  - {fileID: 3889511876017203, guid: ae381622b2f64d1ead822522379a12d3, type: 3}
+  - {fileID: 2636663731674502, guid: 79d810be850d4a09bbc0a0844690dea7, type: 3}
+  - {fileID: 4190101984194023, guid: 8c9e456235894fcabee13bedfa9d8a7d, type: 3}
+  - {fileID: 7207963795910788, guid: c9b88ad5b2cb4d43a41fc55f2f24c15b, type: 3}
+  - {fileID: 7533070992342434, guid: 31470c0b0a6b4327830c48c753139702, type: 3}
+  - {fileID: 2841889118945106, guid: 43265e8e3c664758b28466609ff3fb8b, type: 3}
+  - {fileID: 3982528850742885, guid: e1be1ddc09494529bcffc551619cc666, type: 3}
   exceptionsDisconnect: 1
   snapshotSettings:
     bufferTimeMultiplier: 2
@@ -3022,7 +3029,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  Mode: 1
+  Mode: 0
   MapName: Game_Test_Scene
   TimeLimit: 180
   configs:

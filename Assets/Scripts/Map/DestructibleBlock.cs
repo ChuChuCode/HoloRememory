@@ -8,6 +8,10 @@ public class DestructibleBlock : NetworkBehaviour
 {
     [SerializeField] GameObject[] itemPrefabs;
     [Range(0f, 1f)] [SerializeField] float dropChance = 0.3f;
+    [Header("Mount")]
+    [SerializeField] GameObject[] mountPrefabs;
+    [Tooltip("Rolled separately from (and before) the normal item drop above - a mount absorbs a whole hit, so it needs to be much rarer than a regular power-up.")]
+    [Range(0f, 1f)] [SerializeField] float mountDropChance = 0.05f;
     [Tooltip("Skill Energy awarded to whoever destroyed this block - the v1 energy source per the roadmap (\"Destroy Block = +5\") until item pickups/survival time/kills are added.")]
     [SerializeField] float skillEnergyReward = 5f;
 
@@ -16,20 +20,13 @@ public class DestructibleBlock : NetworkBehaviour
     {
         destroyer?.SkillComponent?.AddSkillEnergy(skillEnergyReward);
 
-        if (itemPrefabs != null && itemPrefabs.Length > 0 && Random.value < dropChance)
+        if (mountPrefabs != null && mountPrefabs.Length > 0 && Random.value < mountDropChance)
         {
-            // Destructible blocks can be scaled tall (obstacleLayers), so
-            // transform.position may sit well above ground level - drop the
-            // item at true floor height (matches where GridManager spawns
-            // explosion segments), or its collider never overlaps a blast.
-            // +0.25 so the placeholder sphere (0.25 radius) sits on top of
-            // the floor instead of clipping half into it.
-            Vector2Int coord = GridManager.Instance.WorldToGrid(transform.position);
-            Vector3 dropPosition = GridManager.Instance.GridToWorld(coord) + Vector3.up * 0.25f;
-
-            GameObject prefab = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
-            GameObject item = Instantiate(prefab, dropPosition, Quaternion.identity);
-            NetworkServer.Spawn(item);
+            DropItem(mountPrefabs[Random.Range(0, mountPrefabs.Length)]);
+        }
+        else if (itemPrefabs != null && itemPrefabs.Length > 0 && Random.value < dropChance)
+        {
+            DropItem(itemPrefabs[Random.Range(0, itemPrefabs.Length)]);
         }
 
         // Don't rely solely on NetworkServer.Destroy's scene-object handling
@@ -46,6 +43,21 @@ public class DestructibleBlock : NetworkBehaviour
         }
 
         NetworkServer.Destroy(gameObject);
+    }
+
+    void DropItem(GameObject prefab)
+    {
+        // Destructible blocks can be scaled tall (obstacleLayers), so
+        // transform.position may sit well above ground level - drop the
+        // item at true floor height (matches where GridManager spawns
+        // explosion segments), or its collider never overlaps a blast.
+        // +0.25 so the placeholder sphere (0.25 radius) sits on top of
+        // the floor instead of clipping half into it.
+        Vector2Int coord = GridManager.Instance.WorldToGrid(transform.position);
+        Vector3 dropPosition = GridManager.Instance.GridToWorld(coord) + Vector3.up * 0.25f;
+
+        GameObject item = Instantiate(prefab, dropPosition, Quaternion.identity);
+        NetworkServer.Spawn(item);
     }
 }
 }
