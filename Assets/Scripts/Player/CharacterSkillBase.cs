@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Mirror;
 using HR.UI;
@@ -60,6 +61,16 @@ public abstract class CharacterSkillBase : NetworkBehaviour
     void CmdActivate()
     {
         if (!IsSkillReady) return;
+        StartCoroutine(ActivateAfterWindUp());
+    }
+    // WindUpTime is 0 for every P0 skill, so this resolves immediately today.
+    // Reserved so a future wind-up animation just has to set WindUpTime and
+    // (TODO) trigger the animation here, without touching CmdActivate itself.
+    IEnumerator ActivateAfterWindUp()
+    {
+        float windUpTime = data != null ? data.WindUpTime : 0f;
+        if (windUpTime > 0f) yield return new WaitForSeconds(windUpTime);
+
         // Energy is only spent if the skill actually happened - e.g. Korone's
         // Jump can be aimed at a blocked cell, and a wasted attempt like that
         // shouldn't burn the whole energy bar for nothing.
