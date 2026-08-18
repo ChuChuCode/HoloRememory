@@ -25,11 +25,26 @@ public class GameSettings : NetworkBehaviour
 
     void Awake()
     {
+        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
+        Debug.Log($"[LobbyDebug] GameSettings.Awake fired, gameObject.activeSelf={gameObject.activeSelf}, time={Time.realtimeSinceStartup:F2}");
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+    }
+    // TEMP diagnostics - remove once the Lobby map/mode display bug is found.
+    void OnEnable()
+    {
+        Debug.Log($"[LobbyDebug] GameSettings.OnEnable, time={Time.realtimeSinceStartup:F2}");
+    }
+    void OnDisable()
+    {
+        Debug.Log($"[LobbyDebug] GameSettings.OnDisable, time={Time.realtimeSinceStartup:F2}");
+    }
+    void OnDestroy()
+    {
+        Debug.Log($"[LobbyDebug] GameSettings.OnDestroy, time={Time.realtimeSinceStartup:F2}");
     }
 
     public GameModeConfig CurrentConfig()

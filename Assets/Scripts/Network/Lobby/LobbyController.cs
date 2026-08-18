@@ -79,6 +79,8 @@ public class LobbyController : MonoBehaviour
     }
     void Start()
     {
+        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
+        Debug.Log($"[LobbyDebug] LobbyController.Start: GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "NULL")}, characters={Manager.characterSelectComponentsList.Count}, maps={Manager.mapConfigList.Count}, time={Time.realtimeSinceStartup:F2}");
         // Character select buttons - built once per Lobby_Scene load (ported
         // from the old Select_Scene, which no longer exists as a separate step).
         foreach (CharacterSelectComponent characterSelectComponent in Manager.characterSelectComponentsList)
@@ -100,6 +102,12 @@ public class LobbyController : MonoBehaviour
         UpdateTimeLimitText();
         UpdateModeText();
         UpdateMapText();
+        // Safety net: both calls above silently no-op if GameSettings.Instance
+        // (a scene-placed NetworkBehaviour singleton) isn't set yet at this
+        // exact moment - a same-frame ordering race between different
+        // objects' Start() calls that a real build can hit even when the
+        // Editor never does. Once more, next frame, catches it either way.
+        StartCoroutine(RefreshModeAndMapNextFrame());
         // If restart game -> PlayersInfoList has player -> re-get LocalGamePlayer object and refresh the button
         if (Manager.PlayersInfoList.Count > 0)
         {
@@ -124,8 +132,11 @@ public class LobbyController : MonoBehaviour
     // syncs (GameSettings.OnModeChanged), since any client can change it.
     public void UpdateModeText()
     {
+        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
+        Debug.Log($"[LobbyDebug] UpdateModeText: ModeText={(ModeText != null ? "ok" : "NULL")}, GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "NULL")}");
         if (ModeText == null || GameSettings.Instance == null) return;
         GameModeConfig config = GameSettings.Instance.CurrentConfig();
+        Debug.Log($"[LobbyDebug] UpdateModeText: Mode={GameSettings.Instance.Mode}, config={(config != null ? config.DisplayName : "NULL (no matching GameModeConfig)")}");
         ModeText.text = config != null ? config.DisplayName : GameSettings.Instance.Mode.ToString();
     }
     // Left/Right Arrow Buttons - cycles through GameSettings.Configs in
@@ -298,10 +309,33 @@ public class LobbyController : MonoBehaviour
     }
     public void UpdateMapText()
     {
+        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
+        Debug.Log($"[LobbyDebug] UpdateMapText: GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "NULL")}");
         if (GameSettings.Instance == null) return;
         List<MapConfig> maps = Manager.mapConfigList;
         MapConfig current = maps != null ? maps.Find(c => c.SceneName == GameSettings.Instance.MapName) : null;
+        Debug.Log($"[LobbyDebug] UpdateMapText: mapConfigList.Count={(maps != null ? maps.Count : -1)}, GameSettings.MapName='{GameSettings.Instance.MapName}', matchedCurrent={(current != null ? current.DisplayName : "NULL (no MapConfig.SceneName matches MapName)")}");
         RefreshMapCarousel(maps, current);
+    }
+    // GameSettings is a scene-placed NetworkIdentity - the log confirmed its
+    // Instance is still null a full frame after LobbyController.Start(),
+    // meaning it isn't simply a same-frame ordering race (that's what the
+    // single "yield return null" used to assume) - something about the
+    // host/server startup sequence sets it up later than that. Polling here
+    // is correct either way regardless of the exact Mirror-internal reason.
+    IEnumerator RefreshModeAndMapNextFrame()
+    {
+        float elapsed = 0f;
+        const float timeout = 5f;
+        while (GameSettings.Instance == null && elapsed < timeout)
+        {
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
+        Debug.Log($"[LobbyDebug] RefreshModeAndMapNextFrame: waited {elapsed:F2}s, GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "STILL NULL - gave up")}, maps={Manager.mapConfigList.Count}, MapName={(GameSettings.Instance != null ? GameSettings.Instance.MapName : "n/a")}, time={Time.realtimeSinceStartup:F2}");
+        UpdateModeText();
+        UpdateMapText();
     }
     // Called on Start and whenever GameSettings.MapName syncs (host or
     // anyone else's screen alike), so every client's carousel stays centered
