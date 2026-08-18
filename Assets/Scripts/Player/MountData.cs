@@ -14,5 +14,7 @@ public class MountData : ScriptableObject
     public bool CanPickupItems = true;
     [Tooltip("Placeholder mount visual (see CharacterBase.RpcShowMountVisual) is tinted this color so the 6 mounts are at least tellable apart until real models/animations exist.")]
     public Color VisualColor = Color.white;
+    [Tooltip("Placeholder shape for this specific mount (each of the 6 gets its own - chick/turtle/UFO/tank should at least look different from each other, not just be recolored). Replace with a real model/prefab later.")]
+    public GameObject VisualPrefab;
 }
 }

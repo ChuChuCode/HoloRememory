@@ -20,6 +20,10 @@ public class SupplyRun : NetworkBehaviour
     [SerializeField] int maxItems = 5;
     [SerializeField] float dropHeight = 8f;
     [SerializeField] float fallDuration = 0.8f;
+    [Header("Debuff")]
+    [SerializeField] GameObject[] debuffPrefabs;
+    [Tooltip("Rolled per drop, independent of which regular item would've been picked - a debuff is a lot more annoying than a regular power-up is helpful, so it needs to be rarer.")]
+    [Range(0f, 1f)] [SerializeField] float debuffDropChance = 0.08f;
     [Header("Mount")]
     [SerializeField] GameObject[] mountPrefabs;
     [Tooltip("Rolled per drop, independent of which regular item would've been picked - a mount absorbs a whole hit, so it needs to be much rarer than a normal power-up.")]
@@ -104,6 +108,10 @@ public class SupplyRun : NetworkBehaviour
         if (mountPrefabs != null && mountPrefabs.Length > 0 && Random.value < mountDropChance)
         {
             return mountPrefabs[Random.Range(0, mountPrefabs.Length)];
+        }
+        if (debuffPrefabs != null && debuffPrefabs.Length > 0 && Random.value < debuffDropChance)
+        {
+            return debuffPrefabs[Random.Range(0, debuffPrefabs.Length)];
         }
         return itemPrefabs[Random.Range(0, itemPrefabs.Length)];
     }

@@ -8,6 +8,10 @@ public class DestructibleBlock : NetworkBehaviour
 {
     [SerializeField] GameObject[] itemPrefabs;
     [Range(0f, 1f)] [SerializeField] float dropChance = 0.3f;
+    [Header("Debuff")]
+    [SerializeField] GameObject[] debuffPrefabs;
+    [Tooltip("Rolled separately from (and before) the normal item drop above - a debuff is a lot more annoying than a regular power-up is helpful, so it needs to be rarer.")]
+    [Range(0f, 1f)] [SerializeField] float debuffDropChance = 0.08f;
     [Header("Mount")]
     [SerializeField] GameObject[] mountPrefabs;
     [Tooltip("Rolled separately from (and before) the normal item drop above - a mount absorbs a whole hit, so it needs to be much rarer than a regular power-up.")]
@@ -23,6 +27,10 @@ public class DestructibleBlock : NetworkBehaviour
         if (mountPrefabs != null && mountPrefabs.Length > 0 && Random.value < mountDropChance)
         {
             DropItem(mountPrefabs[Random.Range(0, mountPrefabs.Length)]);
+        }
+        else if (debuffPrefabs != null && debuffPrefabs.Length > 0 && Random.value < debuffDropChance)
+        {
+            DropItem(debuffPrefabs[Random.Range(0, debuffPrefabs.Length)]);
         }
         else if (itemPrefabs != null && itemPrefabs.Length > 0 && Random.value < dropChance)
         {

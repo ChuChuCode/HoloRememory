@@ -16,3 +16,4 @@ MonoBehaviour:
   MoveSpeedModifier: 2
   CanPickupItems: 0
   VisualColor: {r: 0.25, g: 0.8, b: 0.85, a: 1}
+  VisualPrefab: {fileID: 6195431427312497, guid: 4434106c729a4b938e9560bb7af04f45, type: 3}
