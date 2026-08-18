@@ -11,7 +11,11 @@ public class BombBase : NetworkBehaviour
     [SerializeField] protected CharacterBase Owned;
     [SerializeField] protected Rigidbody Rd;
     [SerializeField] protected int AttackDamage;
-    [SerializeField] protected float BombTime;
+    // SyncVar for the same reason as BombPower below - Rui's Hawk Eye reads
+    // this (via FuseProgress) on the caster's own client, which isn't
+    // necessarily the server, and needs the REAL fuse time (SetFuseTime can
+    // shorten it, e.g. Botan's SSRB) rather than whatever the prefab default is.
+    [SyncVar] [SerializeField] protected float BombTime;
     // SyncVar so a remote (non-host) client's own copy correctly reflects
     // the actual placing player's Fire Power - needed for Rui's Hawk Eye to
     // compute the right blast range for bombs it doesn't own. Nothing
@@ -39,11 +43,25 @@ public class BombBase : NetworkBehaviour
     // GetComponent lookup every time.
     protected GridCell gridCell;
 
+    // Set on every peer (not just the server) - Rui's Hawk Eye runs entirely
+    // on the caster's own client and needs this to compute FuseProgress()
+    // for bombs it doesn't own.
+    float spawnTime;
+
     protected virtual void Start()
     {
+        spawnTime = Time.time;
         if (!isServer) return;
         Timer = BombTime;
         Invoke("SpawnExplosion", BombTime);
+    }
+
+    // 0 = just placed, 1 = about to explode - used by Rui's Hawk Eye to
+    // color-code the highlight per bomb instead of a single flat color.
+    public float FuseProgress()
+    {
+        if (BombTime <= 0f) return 1f;
+        return Mathf.Clamp01((Time.time - spawnTime) / BombTime);
     }
 
     // void Update()
@@ -168,11 +186,12 @@ public class BombBase : NetworkBehaviour
         SideExoplosion(origin, Vector2Int.right);
 
         NetworkServer.Destroy(gameObject);
-        // Add Bomb Count to CharacterBase
 
+        // Frees up the slot this bomb was using - NOT a capacity increase
+        // (that's AddBombCount, only from picking up a BombCount item).
         if (Owned != null && countsTowardBombLimit)
         {
-            Owned.AddBombCount(1);
+            Owned.RefundBomb();
         }
     }
     // Dry-run version of SpawnExplosion's walk, for anything that needs to

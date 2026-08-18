@@ -11,6 +11,7 @@ using HR.Network;
 using static UnityEngine.InputSystem.InputAction;
 using HR.Object.Skill;
 using HR.Map;
+using HR.Network.Select;
 
 namespace HR.Object.Player{
 // [RequireComponent(typeof(NavMeshAgent))]
@@ -41,7 +42,7 @@ public abstract class CharacterBase: Health
     [SyncVar] public ulong PlayerSteamID;
     [SyncVar] public int TeamID;
     [SyncVar] public int CharacterID;
-    [SyncVar] public string PlayerName;
+    [SyncVar(hook = nameof(OnPlayerNameChanged))] public string PlayerName;
 
     [Space(20)]
     [Header("Button Pressed Zone")]
@@ -53,14 +54,18 @@ public abstract class CharacterBase: Health
     public Vector3 mouseProject;
 
     [Header("Lives (set from the active GameModeConfig at spawn)")]
-    [SyncVar] public int lives = 1;
+    [SyncVar(hook = nameof(OnLivesChanged))] public int lives = 1;
     [SerializeField] float respawnDelay = 3f;
     [SyncVar(hook = nameof(OnWaitingToRespawnChanged))] bool isWaitingToRespawn;
 
     [Header("Status")]
     public float moveSpeed;
     [SerializeField] float maxMoveSpeed = 10f;
+    // Current is spent on placement, refunded when that specific bomb
+    // explodes (see RefundBomb) - Max only grows from a BombCount item
+    // pickup (see AddBombCount) and is the "how many total" HUD denominator.
     public int bombAmount;
+    public int maxBombAmount = 1;
     public int bombPower = 1;
     [SerializeField] protected BombBase Bomb_Prefab;
     bool isHoldingBomb;
@@ -99,14 +104,16 @@ public abstract class CharacterBase: Health
     // since movement is client-authoritative.
     [Header("Mount")]
     [SerializeField] float mountStaggerDuration = 0.5f;
-    [Tooltip("Placeholder stand-in for a real mount model/sit animation - a plain shape tinted per-mount via MountData.VisualColor. Shared across all characters.")]
-    [SerializeField] GameObject mountVisualPrefab;
     [Tooltip("Peak height of the placeholder hop played on mounting/getting knocked off - same arc shape as Korone's Jump, just standing in for a real animation.")]
     [SerializeField] float mountHopHeight = 0.4f;
     [Tooltip("How much higher the character sits once mounted - placeholder for actually raising the model onto a mount, since there's no sit animation yet.")]
     [SerializeField] float mountRideHeight = 0.3f;
     MountData currentMount;
     float mountSpeedModifier;
+    // What FixedUpdate actually drives movement with - moveSpeed alone
+    // doesn't reflect a mount's speed bonus/penalty, so anything displaying
+    // "current speed" (LocalPlayerHUD) should read this, not moveSpeed.
+    public float EffectiveMoveSpeed => Mathf.Max(0f, moveSpeed + mountSpeedModifier);
     bool isBombImmune;
     GameObject mountVisualInstance;
     // Client-local mirror of "is currently mounted" - the elevated ride
@@ -126,6 +133,19 @@ public abstract class CharacterBase: Health
                 return manager;
             }
             return manager = Network_Manager.singleton as Network_Manager;
+        }
+    }
+    // Single source of truth for this character's portrait is the
+    // CharacterSelectComponent asset (same one the Lobby/Result screens
+    // already read from), looked up by CharacterID - not a separate copy on
+    // this prefab, which would just be one more place for the art to get
+    // out of sync (or forgotten) when a character's portrait changes.
+    public Sprite Portrait
+    {
+        get
+        {
+            CharacterSelectComponent component = Manager.characterSelectComponentsList.Find(c => c.ID == CharacterID);
+            return component != null ? component.CharacterImage : null;
         }
     }
     protected override void Awake()
@@ -149,6 +169,11 @@ public abstract class CharacterBase: Health
         networkAnimator = GetComponent<NetworkAnimator>();
         Manager.Player_List.Add(this);
         DontDestroyOnLoad(gameObject);
+        // A new slot just appeared in Player_List - PlayerName/lives haven't
+        // synced yet at this exact moment, but their own hooks will refresh
+        // this again the instant they do (see OnPlayerNameChanged/
+        // OnLivesChanged), so showing briefly-blank here is self-correcting.
+        GameHUDManager.Instance?.RefreshAll();
     }
     protected virtual void OnEnable() 
     {
@@ -166,6 +191,11 @@ public abstract class CharacterBase: Health
         // elsewhere in the codebase besides this block).
 
         if (!isLocalPlayer) return;
+
+        // Bomb/power/speed don't have hooks of their own (see the comment on
+        // AddBombCount) - push the starting values once up front, same
+        // reasoning as SkillEnergyUI's own "resting state" push.
+        LocalPlayerHUD.Instance?.Refresh(this);
 
         // Set Skill UI and Spells
         // MainInfoUI.instance.Character_Image.sprite = CharacterImage;
@@ -299,6 +329,18 @@ public abstract class CharacterBase: Health
         transform.position = GridManager.Instance.GetRandomSpawnPosition();
         isWaitingToRespawn = false;
     }
+    // Fires on every peer whenever this SyncVar arrives/changes - covers the
+    // 8-slot top bar (everyone) and, when it's this client's own character,
+    // the bottom-left local panel too.
+    void OnPlayerNameChanged(string oldValue, string newValue)
+    {
+        GameHUDManager.Instance?.RefreshAll();
+    }
+    void OnLivesChanged(int oldValue, int newValue)
+    {
+        GameHUDManager.Instance?.RefreshAll();
+        if (isLocalPlayer) LocalPlayerHUD.Instance?.Refresh(this);
+    }
     void OnWaitingToRespawnChanged(bool oldValue, bool newValue)
     {
         SetPresence(!newValue);
@@ -328,6 +370,9 @@ public abstract class CharacterBase: Health
     {
         Target = null;
         SetPresence(false);
+        // Fires on every peer (isDead's own hook calls this) - greys out
+        // this player's lives readout in the top bar for everyone watching.
+        GameHUDManager.Instance?.RefreshAll();
 
         if (isServer)
         {
@@ -369,7 +414,13 @@ public abstract class CharacterBase: Health
     {
         // Reset all bindings
         InputComponent.instance.Reset();
-        // Destroy(Free_CameParent);    
+        // Destroy(Free_CameParent);
+        // Covers a disconnect (Mirror destroys this on every peer once the
+        // connection drops) - without this, a remote client's own
+        // Player_List still holds this now-destroyed reference until
+        // something else happens to trigger a refresh, so the top bar keeps
+        // showing them until then instead of immediately going empty.
+        GameHUDManager.Instance?.RefreshAll();
     }
     [Command]
     public override void CmdSetlHealth(int NewHealth)
@@ -382,6 +433,7 @@ public abstract class CharacterBase: Health
         if (!isLocalPlayer) return;
         if (MainInfoUI.instance != null) MainInfoUI.instance.updateInfo();
     }
+
     public virtual void OnEscKeyClick()
     {
         // OptionPanel (old MOBA UI) isn't placed anywhere in the current
@@ -444,8 +496,7 @@ public abstract class CharacterBase: Health
         if (isDead) return;
         if (isWaitingToRespawn) return;
         if (isSkillLocked) return;
-        float effectiveSpeed = Mathf.Max(0f, moveSpeed + mountSpeedModifier);
-        rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * effectiveSpeed;
+        rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * EffectiveMoveSpeed;
 
         // Face the direction actually being moved in - keeps whatever
         // direction it was last facing while standing still, same as
@@ -462,6 +513,7 @@ public abstract class CharacterBase: Health
     {
         if (bombAmount == 0) return;
         bombAmount -= 1;
+        LocalPlayerHUD.Instance?.Refresh(this);
         CmdSpawnBomb();
         
     }
@@ -504,8 +556,20 @@ public abstract class CharacterBase: Health
     [Server]
     public void AddBombCount(int count)
     {
+        // A permanent capacity upgrade - unlike RefundBomb (a bomb exploding,
+        // just restoring availability up to whatever the current max already
+        // is), this raises the max itself too.
+        maxBombAmount += count;
         bombAmount += count;
-        TargetSyncBombAmount(connectionToClient, bombAmount);
+        TargetSyncBombAmount(connectionToClient, bombAmount, maxBombAmount);
+    }
+    // Called when one of this player's own bombs explodes - frees up the
+    // slot it was using, but (unlike AddBombCount) never raises the max.
+    [Server]
+    public void RefundBomb()
+    {
+        bombAmount = Mathf.Min(bombAmount + 1, maxBombAmount);
+        TargetSyncBombAmount(connectionToClient, bombAmount, maxBombAmount);
     }
     [Server]
     public void AddBombPower(int power)
@@ -520,19 +584,23 @@ public abstract class CharacterBase: Health
         TargetSyncMoveSpeed(connectionToClient, moveSpeed);
     }
     [TargetRpc]
-    void TargetSyncBombAmount(NetworkConnection target, int amount)
+    void TargetSyncBombAmount(NetworkConnection target, int amount, int maxAmount)
     {
         bombAmount = amount;
+        maxBombAmount = maxAmount;
+        LocalPlayerHUD.Instance?.Refresh(this);
     }
     [TargetRpc]
     void TargetSyncBombPower(NetworkConnection target, int power)
     {
         bombPower = power;
+        LocalPlayerHUD.Instance?.Refresh(this);
     }
     [TargetRpc]
     void TargetSyncMoveSpeed(NetworkConnection target, float speed)
     {
         moveSpeed = speed;
+        LocalPlayerHUD.Instance?.Refresh(this);
     }
     // Chaos item debuff - server picks one of two equally likely effects and
     // pushes it to the owning client only (both movement input and the
@@ -647,7 +715,12 @@ public abstract class CharacterBase: Health
     {
         currentMount = mount;
         TargetApplyMount(connectionToClient, mount.MoveSpeedModifier, mountStaggerDuration, true);
-        RpcShowMountVisual(mount.VisualColor);
+        // Sending mount.name (matches its Resources/Data/Mount/<name>.asset
+        // filename) instead of the MountData/VisualPrefab reference directly
+        // - Mirror can't serialize a plain (non-networked) asset reference
+        // through an RPC, but every client has the identical Resources
+        // folder, so resolving the same name locally on each machine works.
+        RpcShowMountVisual(mount.name, mount.VisualColor);
         RestartBombImmune(mountStaggerDuration);
     }
     [Server]
@@ -671,35 +744,45 @@ public abstract class CharacterBase: Health
     }
     // Placeholder only - a plain tinted shape parented under the character,
     // sent to every client (not just the owner) since riding a mount is
-    // something everyone should see. TODO(mount visuals): once a real model
-    // exists per mount, along with a sit animation, replace this instantiate
-    // with swapping the character's own animator state instead.
+    // something everyone should see. TODO(mount visuals): once real per-
+    // mount models/animations exist, replace this instantiate with swapping
+    // the character's own animator state instead.
     [ClientRpc]
-    void RpcShowMountVisual(Color color)
+    void RpcShowMountVisual(string mountName, Color color)
     {
-        if (mountVisualPrefab == null)
+        MountData mount = Resources.Load<MountData>("Data/Mount/" + mountName);
+        GameObject prefab = mount != null ? mount.VisualPrefab : null;
+        if (prefab == null)
         {
-            Debug.LogError($"{name}: mountVisualPrefab isn't assigned - mount pickups won't show anything.", this);
+            Debug.LogError($"{name}: mount '{mountName}' has no VisualPrefab assigned - nothing will show.", this);
             return;
         }
-        if (mountVisualInstance == null)
+
+        // Each mount has its own shape now (not just a shared one recolored),
+        // so swapping mounts while already riding one has to replace the
+        // instance entirely, not just retint it.
+        bool firstMount = mountVisualInstance == null;
+        if (mountVisualInstance != null) Destroy(mountVisualInstance);
+        mountVisualInstance = Instantiate(prefab, transform);
+        // The character's own root rises by mountRideHeight while mounted
+        // (see HopRoutine) - since this is parented under that same
+        // transform, it would rise right along with it and end up hovering
+        // in the air instead of sitting near the ground. Shift it back down
+        // by the same amount so it stays put underfoot - needed on every
+        // fresh instance, including a swap to a different mount's shape.
+        mountVisualInstance.transform.localPosition -= new Vector3(0, mountRideHeight, 0);
+
+        if (firstMount)
         {
-            mountVisualInstance = Instantiate(mountVisualPrefab, transform);
-            // The character's own root rises by mountRideHeight while mounted
-            // (see HopRoutine) - since this is parented under that same
-            // transform, it would rise right along with it and end up
-            // hovering in the air instead of sitting near the ground. Shift
-            // it back down by the same amount so it stays put underfoot.
-            mountVisualInstance.transform.localPosition -= new Vector3(0, mountRideHeight, 0);
             // GridHighlight is a direct child of this same root (every
             // character prefab has one) - same rising-with-the-parent issue,
-            // so it needs the same counter-offset. Only ever done once per
-            // mount (guarded by mountVisualInstance == null, same as above) -
-            // swapping mounts while already riding one calls this again, and
-            // applying the offset a second time would push it down further
-            // each time instead of leaving it where it already correctly is.
+            // so it needs the same counter-offset. Only ever done on the
+            // FIRST mount of a ride, though - unlike the visual instance
+            // above, GridHighlight isn't recreated on a swap, so re-applying
+            // the offset again would push it down further each time.
             OffsetGridHighlight(-mountRideHeight);
         }
+
         Renderer rend = mountVisualInstance.GetComponentInChildren<Renderer>();
         if (rend != null)
         {
@@ -730,6 +813,7 @@ public abstract class CharacterBase: Health
     void TargetApplyMount(NetworkConnection target, float speedModifier, float staggerDuration, bool mounting)
     {
         mountSpeedModifier = speedModifier;
+        LocalPlayerHUD.Instance?.Refresh(this);
         bool wasMountedAlready = isMountedLocally;
         isMountedLocally = mounting;
 
@@ -829,7 +913,8 @@ public abstract class CharacterBase: Health
     [TargetRpc]
     void TargetRefundBomb(NetworkConnection conn)
     {
-        bombAmount += 1;
+        bombAmount = Mathf.Min(bombAmount + 1, maxBombAmount);
+        LocalPlayerHUD.Instance?.Refresh(this);
     }
 }
 

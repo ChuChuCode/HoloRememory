@@ -59,13 +59,24 @@ public class RuiSkill : CharacterSkillBase
         // normal physics, so her own y is the one reference here that's
         // guaranteed correct.
         float y = owner.transform.position.y + 0.02f;
+        Color freshColor = Data != null ? Data.FreshFuseColor : new Color(1f, 0.85f, 0.1f);
+        Color aboutToExplodeColor = Data != null ? Data.AboutToExplodeColor : new Color(1f, 0.1f, 0.05f);
         foreach (BombBase bomb in FindObjectsOfType<BombBase>())
         {
+            Color color = Color.Lerp(freshColor, aboutToExplodeColor, bomb.FuseProgress());
             foreach (Vector2Int cell in bomb.GetBlastCells())
             {
                 Vector3 worldXZ = GridManager.Instance.GridToWorld(cell);
                 Vector3 position = new Vector3(worldXZ.x, y, worldXZ.z);
-                activeHighlights.Add(Instantiate(highlightPrefab, position, Quaternion.identity));
+                GameObject highlight = Instantiate(highlightPrefab, position, Quaternion.identity);
+                Renderer rend = highlight.GetComponentInChildren<Renderer>();
+                if (rend != null)
+                {
+                    MaterialPropertyBlock block = new MaterialPropertyBlock();
+                    block.SetColor("_BaseColor", color);
+                    rend.SetPropertyBlock(block);
+                }
+                activeHighlights.Add(highlight);
             }
         }
     }
