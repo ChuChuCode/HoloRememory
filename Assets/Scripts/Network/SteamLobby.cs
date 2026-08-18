@@ -59,6 +59,22 @@ public class SteamLobby : MonoBehaviour
         lobbyDataUpdated = Callback<LobbyDataUpdate_t>.Create(OnGetLobbyData);
         
     }
+    // TODO(room privacy + password): not implemented yet, needs a lobby
+    // creation UI to actually pick these before calling HostLobby(). Planned:
+    //   1. Public vs Friends-only - ELobbyType already supports this
+    //      natively (k_ELobbyTypePublic vs k_ELobbyTypeFriendsOnly, see the
+    //      commented-out line below) - just needs a toggle in the create-
+    //      room screen instead of always hardcoding Public.
+    //   2. Room password - Steam's Lobby API has no built-in password
+    //      concept at all (checked the official ISteamMatchmaking docs).
+    //      Would have to be homebrewed on top of the same SetLobbyData/
+    //      GetLobbyData mechanism already used for MapKey/ModeKey below -
+    //      host sets a password value on the lobby, join flow prompts for
+    //      one and compares before calling JoinLobby/StartClient. Note lobby
+    //      data is publicly readable by anyone who calls GetLobbyData (no
+    //      need to have joined), so a plaintext password there is only a
+    //      casual deterrent, not real security - hash it client-side if
+    //      that matters more than "party game" levels of enforcement.
     public void HostLobby()
     {
         print("Host Button Press");

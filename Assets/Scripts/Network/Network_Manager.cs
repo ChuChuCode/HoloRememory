@@ -29,7 +29,14 @@ public class Network_Manager : NetworkManager
     // Guards against CheckGameOver() (last team standing) and the match
     // timer (time's up) both trying to end the match at once.
     bool matchEnding = false;
-    public override void Start()
+    // Was in Start() - but LobbyController.Start() (a different GameObject)
+    // reads characterSelectComponentsList/mapConfigList too, and Unity only
+    // guarantees ALL Awakes run before ANY Starts, not any ordering between
+    // different objects' own Start() calls. In the Editor this apparently
+    // always resolved in our favor by luck of load order; in an actual
+    // build it didn't, so the Lobby's map/mode carousel could still be
+    // sitting on its placeholder text when LobbyController.Start() ran.
+    public override void Awake()
     {
         // Initial CharacterSelectComponent
         var playerObjects = Resources.LoadAll("Data/Character");
@@ -43,7 +50,9 @@ public class Network_Manager : NetworkManager
         {
             mapConfigList.Add(mapObject as MapConfig);
         }
-        base.Start();
+        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
+        Debug.Log($"[LobbyDebug] Network_Manager.Awake: loaded {characterSelectComponentsList.Count} characters, {mapConfigList.Count} maps, time={Time.realtimeSinceStartup:F2}");
+        base.Awake();
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
@@ -143,8 +152,22 @@ public class Network_Manager : NetworkManager
             {
                 NetworkClient.Ready();
             }
-            // Delete all PlayerObject
-            if (SceneManager.GetActiveScene().name == "Game_Scene")
+            // Delete all PlayerObject - Player_List is only ever populated
+            // while a match is running (see the "Game" branch below), so a
+            // non-empty list here means we're returning FROM one, regardless
+            // of which specific map scene it was. (Previously checked
+            // SceneManager.GetActiveScene().name == "Game_Scene", but no
+            // scene is ever actually named that - real matches use whatever
+            // GameSettings.MapName/MapConfig.SceneName says, e.g.
+            // "Game_Test_Scene" - and by the time OnServerSceneChanged runs,
+            // the active scene is already newSceneName (Lobby_Scene) anyway.
+            // This whole block was dead code: old match characters were
+            // never destroyed or swapped back to PlayerObject, so they kept
+            // running via DontDestroyOnLoad with all their end-of-match state
+            // (health, bombAmount, isHoldingBomb, mount, debuffs...) straight
+            // into the next match, and their still-live input bindings could
+            // fire (e.g. auto-placing a bomb the instant a new life spawned).
+            if (Player_List.Count > 0)
             {
                 foreach(CharacterBase playerobject in Player_List)
                 {
@@ -157,14 +180,44 @@ public class Network_Manager : NetworkManager
             }
             foreach (PlayerObject player in PlayersInfoList)
             {
+                // Ready still resets - everyone has to re-confirm before the
+                // next match starts - but CharacterID carries over so each
+                // player's already-picked character stays selected/shown in
+                // the lobby instead of forcing a re-pick every round.
                 player.Ready = false;
-                player.CharacterID = -1;
             }
             // Set LocalPlayer ** need to change to client
             LobbyController.Instance.LocalPlayerController = LocalPlayerObject;
             // Update UI
             LobbyController.Instance.UpdatePlayerList();
         }
+        // TODO(loading screen): not implemented yet - right now whoever's
+        // client finishes loading this scene first can immediately see/move
+        // while slower clients are still loading. Planned approach (avoids
+        // relying on Mirror's own scene-load AsyncOperation progress, which
+        // is fiddly/version-dependent to read):
+        //   1. Add [SyncVar] float LoadProgress to PlayerObject, same
+        //      broadcast pattern as Ready/CharacterID.
+        //   2. Each client shows a loading screen the instant the scene
+        //      change starts, jumps LoadProgress to a fixed "started
+        //      loading" milestone (e.g. 20-30%) for visual feedback, then
+        //      Cmds LoadProgress = 100 once ITS OWN OnClientSceneChanged()
+        //      fires (scene + character actually ready on that machine).
+        //   3. Loading screen UI reads every PlayersInfoList entry's
+        //      LoadProgress (same as the Lobby player list already does) so
+        //      everyone can see who's still loading.
+        //   4. Server watches for all players hitting 100 (check on each
+        //      LoadProgress hook), then runs a 5s countdown coroutine before
+        //      RpcAll-ing "match officially starts" (hide loading screen,
+        //      unlock input, start the match timer).
+        //   5. A disconnect mid-load has to drop out of the "everyone" check
+        //      (mirror the existing OnServerDisconnect cleanup), or the
+        //      count never reaches 100%.
+        //   6. Characters currently spawn immediately in the block below the
+        //      instant the scene change completes server-side - to actually
+        //      gate on step 4 instead of just cosmetically showing a loading
+        //      screen, spawned characters need to stay input-locked until
+        //      the "match officially starts" signal arrives.
         /// Game Scene
         if (newSceneName.StartsWith("Game") )
         {
