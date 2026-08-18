@@ -67,12 +67,14 @@ public class ModeSelectPanel : MonoBehaviour
         Credit_UI.SetActive(true);
         gameObject.SetActive(false);
     }
-    // Exit Button - not a real app-quit anymore, just leaves this screen
-    // and goes back to Title.
+    // Exit Button - quits the application.
     public void Exit()
     {
-        if (Title_UI != null) Title_UI.SetActive(true);
-        gameObject.SetActive(false);
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }
 

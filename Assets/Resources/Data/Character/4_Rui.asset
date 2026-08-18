@@ -11,9 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 34bdc5d5675dbe542a994e3034947129, type: 3}
   m_Name: 4_Rui
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   ID: 4
-  CharacterName: "鷹嶺ルイ"
+  CharacterName: Rui
   CharacterImage: {fileID: 0}
   SelectAudio: {fileID: 0}
   CharacterModel: {fileID: -481990197644878190, guid: 707f5534cfad4b7fba26f1128117cf68, type: 3}

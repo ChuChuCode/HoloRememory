@@ -9,6 +9,21 @@ namespace HR.Object.Player{
 // block, picking up an item, etc.) calling AddSkillEnergy(); once it's
 // full, the owning player's Skill input triggers Activate() and it resets
 // to 0. Per-character skills subclass this and override Activate().
+//
+// TODO(SP rework, not started): proposed redesign discussed with user -
+//   1. Rename Skill Energy -> SP, and have it passively regenerate over
+//      time (e.g. +X per second) instead of/alongside the current
+//      action-triggered AddSkillEnergy() grants.
+//   2. Let each character's skill cost a different amount of SP to fire,
+//      rather than every skill requiring the bar to be 100% full - needs
+//      a `Cost` field on SkillData (separate from MaxEnergy), and
+//      IsSkillReady/Activate() below need to check/spend `Cost` instead
+//      of MaxEnergy/resetting to 0.
+//   3. SkillData needs a `Description` field (+ Cost from #2) so the HUD
+//      can finally show skill description/icon - this was deferred
+//      earlier for lack of that data (see GameHUDManager/LocalPlayerHUD).
+// Scope is small - mostly SkillData.cs + this file for the mechanic, plus
+// SkillEnergyUI.cs/prefab wiring to actually display description + cost.
 public abstract class CharacterSkillBase : NetworkBehaviour
 {
     [SerializeField] protected SkillData data;
