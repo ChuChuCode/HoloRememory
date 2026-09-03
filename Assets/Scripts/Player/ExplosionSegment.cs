@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using HR.Object.Player;
+using HR.Object.Minions;
 using HR.Map;
 using HR.Network;
 
@@ -13,6 +14,7 @@ public class ExplosionSegment : NetworkBehaviour
     [SerializeField] int damage = 1;
 
     HashSet<CharacterBase> hitTargets = new();
+    HashSet<Minion> hitMinions = new();
     Collider col;
     Vector2Int cell;
     bool isHitting;
@@ -43,6 +45,14 @@ public class ExplosionSegment : NetworkBehaviour
             if (GridManager.Instance.WorldToGrid(character.transform.position) != cell) continue;
             hitTargets.Add(character);
             character.HealthDamage(damage);
+        }
+
+        foreach (Minion minion in manager.Minion_List)
+        {
+            if (minion.isDead || hitMinions.Contains(minion)) continue;
+            if (GridManager.Instance.WorldToGrid(minion.transform.position) != cell) continue;
+            hitMinions.Add(minion);
+            minion.HealthDamage(damage);
         }
     }
 

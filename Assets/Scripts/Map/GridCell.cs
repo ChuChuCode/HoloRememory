@@ -6,7 +6,11 @@ public enum CellType
     Wall,
     Destructible,
     Spawn,
-    Bomb
+    Bomb,
+    // Level-designed marker for where MinionSpawner places a mob at match
+    // start - same non-blocking role as Spawn (see GridManager.IsOccupied),
+    // just a separate type so it isn't mixed into the player spawn pool.
+    MinionSpawn
 }
 
 [DisallowMultipleComponent]

@@ -56,10 +56,13 @@ public class GridManager : MonoBehaviour
         return cells.TryGetValue(coord, out cell);
     }
 
-    // Spawn markers don't block anything - only Wall/Destructible/Bomb do.
+    // Spawn/MinionSpawn markers don't block anything - only
+    // Wall/Destructible/Bomb do.
     public bool IsOccupied(Vector2Int coord)
     {
-        return TryGetCell(coord, out GridCell cell) && cell.type != CellType.Spawn;
+        return TryGetCell(coord, out GridCell cell)
+            && cell.type != CellType.Spawn
+            && cell.type != CellType.MinionSpawn;
     }
 
     // Characters aren't registered as cells at all (by design - players
@@ -120,6 +123,17 @@ public class GridManager : MonoBehaviour
         foreach (KeyValuePair<Vector2Int, GridCell> entry in cells)
         {
             if (entry.Value.type == CellType.Spawn) yield return entry.Key;
+        }
+    }
+
+    // Level-designed minion spawn points - MinionSpawner reads this once at
+    // match start (one minion per marked point), separate from the player
+    // spawn pool above.
+    public IEnumerable<Vector2Int> GetAllMinionSpawnCoords()
+    {
+        foreach (KeyValuePair<Vector2Int, GridCell> entry in cells)
+        {
+            if (entry.Value.type == CellType.MinionSpawn) yield return entry.Key;
         }
     }
 
