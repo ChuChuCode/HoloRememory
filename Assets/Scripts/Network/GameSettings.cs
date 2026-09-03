@@ -33,6 +33,20 @@ public class GameSettings : NetworkBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
+
+    // Applies the mode picked on the Create Room screen (SteamLobby.HostLobby
+    // stashes it here since GameSettings doesn't exist yet at that point -
+    // it only spawns once Lobby_Scene loads). OnStartServer (not Awake) so
+    // this only ever runs on the host that's actually creating the lobby,
+    // never on a joining client's own copy of this object.
+    public override void OnStartServer()
+    {
+        if (Network_Manager.PendingInitialMode.HasValue)
+        {
+            Mode = Network_Manager.PendingInitialMode.Value;
+            Network_Manager.PendingInitialMode = null;
+        }
+    }
     // TEMP diagnostics - remove once the Lobby map/mode display bug is found.
     void OnEnable()
     {

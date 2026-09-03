@@ -42,6 +42,7 @@ public class LobbyListManager : MonoBehaviour
                 lobbyRoomTemp.mode = SteamMatchmaking.GetLobbyData(id, SteamLobby.ModeKey);
                 lobbyRoomTemp.currentPlayers = SteamMatchmaking.GetNumLobbyMembers(id);
                 lobbyRoomTemp.maxPlayers = SteamMatchmaking.GetLobbyMemberLimit(id);
+                lobbyRoomTemp.hasPassword = !string.IsNullOrEmpty(SteamMatchmaking.GetLobbyData(id, SteamLobby.PasswordKey));
                 lobbyRoomTemp.SetLobbyData();
                 lobbyRoomTemp.transform.SetParent(ListContent);
                 lobbyRoomTemp.transform.localScale = Vector3.one;
