@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Korone_Jump
   m_EditorClassIdentifier:
   SkillName: Jump
-  MaxEnergy: 100
+  MaxEnergy: 10
   SkipCells: 1
   JumpDuration: 0.3
   ArcHeight: 1

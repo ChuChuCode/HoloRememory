@@ -17,15 +17,24 @@ public class Bar : MonoBehaviour
     public Gradient gradient;
     public Image fill;
     public TMP_Text text;
+    // Smoothly slides the fill to its new value instead of snapping -
+    // 0 keeps the old instant-jump behavior, for any Bar that wants it.
+    [SerializeField] float fillAnimDuration = 0.3f;
 
-    public void SetValue(int value)
+    Coroutine fillRoutine;
+
+    // float, not int - lets a continuously-regenerating bar (Skill Energy)
+    // feed a smooth fractional fill instead of snapping in whole-unit
+    // jumps. Whole-number bars (Health) just pass an int, which implicitly
+    // widens to float with no behavior change.
+    public void SetValue(float value)
     {
-        slider.value = value;
-        // Set fill color
+        // Text/color react to the real target value immediately - only the
+        // fill's own visual position animates toward it.
         switch(barType)
         {
             case BarType.Health:
-                fill.color = gradient.Evaluate(slider.normalizedValue);
+                fill.color = gradient.Evaluate(slider.maxValue > 0 ? value / slider.maxValue : 0f);
                 break;
             case BarType.Mana:
                 fill.color = Color.blue;
@@ -34,14 +43,47 @@ public class Bar : MonoBehaviour
                 fill.color = Color.yellow;
                 break;
         }
-        // if text has object then set
-        if (text != null) SetText();
+        if (text != null)
+        {
+            // Floored, not rounded - only counts a unit once the fill has
+            // actually fully reached it, per spec ("滿了就會更新文字"),
+            // rather than rounding up early while still mid-fill.
+            text.text = Mathf.FloorToInt(value) + "/" + slider.maxValue;
+        }
+
+        if (fillAnimDuration > 0f && isActiveAndEnabled)
+        {
+            if (fillRoutine != null) StopCoroutine(fillRoutine);
+            fillRoutine = StartCoroutine(AnimateFill(value));
+        }
+        else
+        {
+            slider.value = value;
+        }
+    }
+
+    IEnumerator AnimateFill(float target)
+    {
+        float start = slider.value;
+        float elapsed = 0f;
+        while (elapsed < fillAnimDuration)
+        {
+            elapsed += Time.deltaTime;
+            slider.value = Mathf.Lerp(start, target, elapsed / fillAnimDuration);
+            yield return null;
+        }
+        slider.value = target; // guarantee an exact landing despite frame-time drift
     }
     public void SetMaxValue(int value)
     {
         float ratio = slider.normalizedValue;
         slider.maxValue = value;
-        slider.value = (int)ratio * value;
+        // Was "(int)ratio * value" - casting the 0-1 ratio to int truncates
+        // it to 0 every time, silently resetting the fill. Harmless back
+        // when SetValue snapped instantly right after (the reset was never
+        // visible), but SetValue now animates FROM slider.value, so that
+        // stale 0 became a visible "restarts from empty" glitch.
+        slider.value = ratio * value;
         // Set fill color
         switch(barType)
         {

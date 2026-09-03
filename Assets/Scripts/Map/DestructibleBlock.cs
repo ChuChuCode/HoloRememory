@@ -1,6 +1,5 @@
 using Mirror;
 using UnityEngine;
-using HR.Object.Player;
 
 namespace HR.Map{
 [RequireComponent(typeof(GridCell))]
@@ -16,14 +15,13 @@ public class DestructibleBlock : NetworkBehaviour
     [SerializeField] GameObject[] mountPrefabs;
     [Tooltip("Rolled separately from (and before) the normal item drop above - a mount absorbs a whole hit, so it needs to be much rarer than a regular power-up.")]
     [Range(0f, 1f)] [SerializeField] float mountDropChance = 0.05f;
-    [Tooltip("Skill Energy awarded to whoever destroyed this block - the v1 energy source per the roadmap (\"Destroy Block = +5\") until item pickups/survival time/kills are added.")]
-    [SerializeField] float skillEnergyReward = 5f;
 
+    // SP no longer comes from destroying blocks - it passively regenerates
+    // over time instead (see CharacterSkillBase.RegenRoutine), so this no
+    // longer needs to know who broke it.
     [Server]
-    public void Break(CharacterBase destroyer)
+    public void Break()
     {
-        destroyer?.SkillComponent?.AddSkillEnergy(skillEnergyReward);
-
         if (mountPrefabs != null && mountPrefabs.Length > 0 && Random.value < mountDropChance)
         {
             DropItem(mountPrefabs[Random.Range(0, mountPrefabs.Length)]);

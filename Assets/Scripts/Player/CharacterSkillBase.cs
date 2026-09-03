@@ -4,40 +4,40 @@ using Mirror;
 using HR.UI;
 
 namespace HR.Object.Player{
-// Base for every character's active skill. Gated purely by Skill Energy -
-// no cooldown timer. Energy comes from external actions (destroying a
-// block, picking up an item, etc.) calling AddSkillEnergy(); once it's
-// full, the owning player's Skill input triggers Activate() and it resets
-// to 0. Per-character skills subclass this and override Activate().
+// Base for every character's active skill. Gated by SP, which passively
+// regenerates continuously (every server frame, see Update()) instead of
+// being granted by outside actions - once there's enough for this skill's
+// Cost, the owning player's Skill input triggers Activate() and Cost (not
+// the whole bar) is spent. Per-character skills subclass this and override
+// Activate().
 //
-// TODO(SP rework, not started): proposed redesign discussed with user -
-//   1. Rename Skill Energy -> SP, and have it passively regenerate over
-//      time (e.g. +X per second) instead of/alongside the current
-//      action-triggered AddSkillEnergy() grants.
-//   2. Let each character's skill cost a different amount of SP to fire,
-//      rather than every skill requiring the bar to be 100% full - needs
-//      a `Cost` field on SkillData (separate from MaxEnergy), and
-//      IsSkillReady/Activate() below need to check/spend `Cost` instead
-//      of MaxEnergy/resetting to 0.
-//   3. SkillData needs a `Description` field (+ Cost from #2) so the HUD
-//      can finally show skill description/icon - this was deferred
-//      earlier for lack of that data (see GameHUDManager/LocalPlayerHUD).
-// Scope is small - mostly SkillData.cs + this file for the mechanic, plus
-// SkillEnergyUI.cs/prefab wiring to actually display description + cost.
+// TODO(HUD icon): SkillData still has no icon field, only Description
+// (shown via SkillEnergyUI.SetSkillInfo) - deferred until that art exists
+// (see GameHUDManager/LocalPlayerHUD).
+//
+// TODO(SP items, not started): proposed items discussed with user -
+//   1. Instant SP refill - trivial, AddSkillEnergy(amount) is already
+//      public; an item pickup just calls
+//      character.SkillComponent.AddSkillEnergy(N) server-side.
+//   2. Temporary faster regen - needs a runtime regenRateMultiplier field
+//      here (Update() would multiply the per-second rate by it), plus a
+//      timer to revert it - same "temporary buff + timer" shape as
+//      CharacterBase's mountSpeedModifier/isBombImmune.
 public abstract class CharacterSkillBase : NetworkBehaviour
 {
     [SerializeField] protected SkillData data;
 
     // Unlike bombAmount/bombPower (which the owning client mutates itself
     // via client-side prediction before the Command even runs), every write
-    // to this happens server-side only (AddSkillEnergy/CmdActivate) - with
-    // no SyncVar, a remote (non-host) client's own copy of this field would
-    // just stay 0 forever and never reflect its own energy.
+    // to this happens server-side only (Update/CmdActivate) - with no
+    // SyncVar, a remote (non-host) client's own copy of this field would
+    // just stay 0 forever and never reflect its own SP.
     [SyncVar(hook = nameof(OnSkillEnergyChanged))]
     protected float skillEnergy = 0f;
     public float SkillEnergy => skillEnergy;
-    public float MaxSkillEnergy => data != null ? data.MaxEnergy : 100f;
-    public bool IsSkillReady => skillEnergy >= MaxSkillEnergy;
+    public float MaxSkillEnergy => data != null ? data.MaxEnergy : 10f;
+    public float Cost => data != null ? data.Cost : MaxSkillEnergy;
+    public bool IsSkillReady => skillEnergy >= Cost;
 
     protected CharacterBase owner;
     protected virtual void Awake()
@@ -48,18 +48,35 @@ public abstract class CharacterSkillBase : NetworkBehaviour
     {
         // SyncVar hooks only fire on change - push the resting 0/Max state
         // once up front so the HUD bar isn't just blank until the first
-        // AddSkillEnergy call.
+        // regen tick.
         if (!isLocalPlayer) return;
-        SkillEnergyUI.instance?.UpdateSkillEnergy(skillEnergy, MaxSkillEnergy);
+        SkillEnergyUI.instance?.InitSkillEnergy(skillEnergy, MaxSkillEnergy);
+        SkillEnergyUI.instance?.SetSkillInfo(
+            data != null ? data.SkillName : "",
+            data != null ? data.Description : "");
+    }
+    // Passive SP regen - continuous, not stepped: adds a per-second rate
+    // (RegenAmount/RegenInterval) scaled by deltaTime every frame, instead
+    // of a lump sum every few seconds, so the HUD bar fills smoothly rather
+    // than jumping in visible steps. Runs regardless of isDead/respawn (SP
+    // already persists across respawn, same as before this rework), and
+    // just naturally stops growing once AddSkillEnergy's own clamp hits
+    // MaxSkillEnergy - no need to gate that here.
+    [ServerCallback]
+    void Update()
+    {
+        if (data == null || data.RegenInterval <= 0f) return;
+        AddSkillEnergy((data.RegenAmount / data.RegenInterval) * Time.deltaTime);
     }
     void OnSkillEnergyChanged(float oldValue, float newValue)
     {
         if (!isLocalPlayer) return;
-        SkillEnergyUI.instance?.UpdateSkillEnergy(newValue, MaxSkillEnergy);
+        SkillEnergyUI.instance?.UpdateSkillEnergy(newValue);
     }
 
-    // Called by whatever grants energy (destroying a block, an item, etc.) -
-    // server-only, clamped to MaxSkillEnergy.
+    // Server-only, clamped to MaxSkillEnergy. Called every frame by this
+    // component's own Update() now for passive regen - kept public so an
+    // item/future mechanic can still grant a burst of SP on top of that.
     [Server]
     public void AddSkillEnergy(float amount)
     {
@@ -76,6 +93,10 @@ public abstract class CharacterSkillBase : NetworkBehaviour
     void CmdActivate()
     {
         if (!IsSkillReady) return;
+        // Match-start countdown / match-over lock (Network_Manager sets
+        // this on owner, not on this component) - server-authoritative
+        // check, doesn't rely on the client having honored it.
+        if (owner != null && owner.isInputLocked) return;
         StartCoroutine(ActivateAfterWindUp());
     }
     // WindUpTime is 0 for every P0 skill, so this resolves immediately today.
@@ -86,10 +107,11 @@ public abstract class CharacterSkillBase : NetworkBehaviour
         float windUpTime = data != null ? data.WindUpTime : 0f;
         if (windUpTime > 0f) yield return new WaitForSeconds(windUpTime);
 
-        // Energy is only spent if the skill actually happened - e.g. Korone's
+        // SP is only spent if the skill actually happened - e.g. Korone's
         // Jump can be aimed at a blocked cell, and a wasted attempt like that
-        // shouldn't burn the whole energy bar for nothing.
-        if (Activate()) skillEnergy = 0f;
+        // shouldn't cost anything. Spends just Cost, not the whole bar -
+        // any leftover keeps counting toward the next activation.
+        if (Activate()) skillEnergy = Mathf.Max(0f, skillEnergy - Cost);
     }
     // The actual skill effect - implemented per character. Runs server-side
     // (called from CmdActivate). Return true if it actually happened (energy

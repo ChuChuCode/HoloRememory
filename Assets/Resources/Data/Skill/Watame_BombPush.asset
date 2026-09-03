@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Watame_BombPush
   m_EditorClassIdentifier:
   SkillName: Bomb Push
-  MaxEnergy: 100
+  MaxEnergy: 10
   DurationPerCell: 0.1

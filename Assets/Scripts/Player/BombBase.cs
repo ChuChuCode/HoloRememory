@@ -253,7 +253,7 @@ public class BombBase : NetworkBehaviour
                     // is immediately safe to walk into instead of making
                     // players wait out a hit window for a tile with nothing
                     // left to explode.
-                    cell.GetComponent<DestructibleBlock>().Break(Owned);
+                    cell.GetComponent<DestructibleBlock>().Break();
                     return;
                 }
 

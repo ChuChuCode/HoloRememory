@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Botan_SSRB
   m_EditorClassIdentifier:
   SkillName: SSRB
-  MaxEnergy: 100
+  MaxEnergy: 10
   MaxChaseDistance: 3
   MoveInterval: 0.3
   FuseTime: 1.5

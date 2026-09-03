@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Rui_HawkEye
   m_EditorClassIdentifier:
   SkillName: Hawk Eye
-  MaxEnergy: 100
+  MaxEnergy: 10
   Duration: 10
   RefreshInterval: 0.15
