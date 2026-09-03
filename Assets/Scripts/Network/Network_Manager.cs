@@ -11,6 +11,7 @@ using HR.Object.Player;
 using HR.Network.Lobby;
 using HR.Network.Result;
 using HR.Map;
+using HR.Object.Minions;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -25,10 +26,21 @@ public class Network_Manager : NetworkManager
     [Header("Map Component")]
     public List<MapConfig> mapConfigList = new List<MapConfig>();
     public List<CharacterBase> Player_List = new List<CharacterBase>();
+    // Populated/cleaned up by Minion itself (Awake/OnDestroy) - same
+    // per-machine local list pattern as Player_List, read by
+    // ExplosionSegment to damage mobs the same way it damages players.
+    public List<Minion> Minion_List = new List<Minion>();
+    // Set by SteamLobby.HostLobby() from the Create Room screen's mode
+    // picker, before GameSettings exists (it only spawns once Lobby_Scene
+    // loads) - GameSettings.OnStartServer applies and clears this once it
+    // does. Null on every machine that isn't actively creating a lobby right
+    // now, including this same host for every match after the first.
+    public static GameMode? PendingInitialMode;
     int Player_num = 0;
     // Guards against CheckGameOver() (last team standing) and the match
     // timer (time's up) both trying to end the match at once.
     bool matchEnding = false;
+    [SerializeField] float matchStartLockDuration = 3f;
     // Was in Start() - but LobbyController.Start() (a different GameObject)
     // reads characterSelectComponentsList/mapConfigList too, and Unity only
     // guarantees ALL Awakes run before ANY Starts, not any ordering between
@@ -67,8 +79,13 @@ public class Network_Manager : NetworkManager
             player.ConnectionID = conn.connectionId;
             // Start frome 1
             player.PlayerIdNumber = PlayersInfoList.Count + 1;
-            // Steam ID -> For player Info
-            player.PlayerSteamID = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.Instance.CurrentLobbyID,PlayersInfoList.Count);
+            // Steam ID -> For player Info. SteamLobby.Instance is null under
+            // the KCP fallback (no Steam running) - PlayerSteamID just stays
+            // 0 in that case, there's no Steam lobby membership to look up.
+            if (SteamLobby.Instance != null)
+            {
+                player.PlayerSteamID = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.Instance.CurrentLobbyID,PlayersInfoList.Count);
+            }
             // instantiating a "Player" prefab gives it the name "Player(clone)"
             // => appending the connectionId is WAY more useful for debugging!
             player.name = $"{player.name} [connId={conn.connectionId}]";
@@ -275,12 +292,15 @@ public class Network_Manager : NetworkManager
                 // correctly - sets currentHealth = maxHealth instead of
                 // relying on the SyncVar's hardcoded default of 1.
                 gameplayInsance.InitialHealth();
+                // Defaults true on the prefab already - set explicitly here
+                // too so intent isn't just an implicit field default.
+                gameplayInsance.isInputLocked = true;
 
                 // Player_List.Add(gameplayInsance);
                 // All Player Info *** need to change to client
                 // CharacterInfoPanel.Instance.RpcAdd_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
-            
+            StartCoroutine(UnlockInputAfterMatchStart());
         }
         if (newSceneName.StartsWith("Result_Scene"))
         {
@@ -346,12 +366,32 @@ public class Network_Manager : NetworkManager
     {
         if (matchEnding) return;
         matchEnding = true;
+        // Result's decided - nobody should be able to keep moving/bombing/
+        // using skills during the 5s pause before the scene changes.
+        foreach (CharacterBase character in Player_List)
+        {
+            if (character != null) character.isInputLocked = true;
+        }
         StartCoroutine(EndMatchAfterDelay());
     }
     IEnumerator EndMatchAfterDelay()
     {
         yield return new WaitForSeconds(5f);
         ChangeScene("Lobby_Scene");
+    }
+    // Started once, right after every character for this match has spawned
+    // (see the "Game" scene branch above) - not per-character, since it
+    // applies uniformly. Player_List is safe to read here even though it's
+    // not populated inside that spawn loop itself: CharacterBase.Awake()
+    // (which does the Player_List.Add) runs synchronously at Instantiate
+    // time, well before this delay elapses.
+    IEnumerator UnlockInputAfterMatchStart()
+    {
+        yield return new WaitForSeconds(matchStartLockDuration);
+        foreach (CharacterBase character in Player_List)
+        {
+            if (character != null && !character.isDead) character.isInputLocked = false;
+        }
     }
 }
 

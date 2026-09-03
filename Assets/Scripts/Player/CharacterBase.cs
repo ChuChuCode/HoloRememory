@@ -57,6 +57,12 @@ public abstract class CharacterBase: Health
     [SyncVar(hook = nameof(OnLivesChanged))] public int lives = 1;
     [SerializeField] float respawnDelay = 3f;
     [SyncVar(hook = nameof(OnWaitingToRespawnChanged))] bool isWaitingToRespawn;
+    // Match-flow lock (start-of-match countdown, match-over) - separate
+    // from isSkillLocked (a short self-clearing movement lock tied to an
+    // in-progress skill animation/mount hop). Set/cleared by Network_Manager,
+    // not by anything on this class itself. Defaults locked so there's no
+    // window to act before Network_Manager explicitly arms the countdown.
+    [SyncVar] public bool isInputLocked = true;
 
     [Header("Status")]
     public float moveSpeed;
@@ -496,6 +502,7 @@ public abstract class CharacterBase: Health
         if (isDead) return;
         if (isWaitingToRespawn) return;
         if (isSkillLocked) return;
+        if (isInputLocked) return;
         rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * EffectiveMoveSpeed;
 
         // Face the direction actually being moved in - keeps whatever
@@ -511,6 +518,7 @@ public abstract class CharacterBase: Health
     }
     protected virtual void NormalAttack()
     {
+        if (isInputLocked) return;
         if (bombAmount == 0) return;
         bombAmount -= 1;
         LocalPlayerHUD.Instance?.Refresh(this);
