@@ -21,7 +21,7 @@ public class GridSpawnerEditor : MonoBehaviour
     public bool randomFloorPrefab = false;
 
     [Header("Wall / Obstacle Settings")]
-    public int obstacleLayers = 2;          // 疊幾層（2 = 人物爬不上）
+    public int obstacleLayers = 1;          // 疊幾層（2 格會擋視角，預設 1 格）
 
     [Header("Obstacle Spacing")]
     [Min(1)]
@@ -29,8 +29,11 @@ public class GridSpawnerEditor : MonoBehaviour
 
     [Header("Inner Obstacle Random")]
     public bool randomInnerWalls = false;
+    // Defaults to 100% - fill every eligible cell with a destructible
+    // block, then manually delete the ones you don't want in the Editor,
+    // rather than tuning this down to get a sparser random layout.
     [Range(0f, 1f)]
-    public float randomObstacleChance = 0.4f;
+    public float randomObstacleChance = 1f;
 
     [ContextMenu("Generate Grid")]
     public void GenerateGrid()
