@@ -27,7 +27,13 @@ public class Bar : MonoBehaviour
     // feed a smooth fractional fill instead of snapping in whole-unit
     // jumps. Whole-number bars (Health) just pass an int, which implicitly
     // widens to float with no behavior change.
-    public void SetValue(float value)
+    //
+    // instant: true skips the fill animation entirely - needed for the
+    // very first value pushed to a fresh bar, since animating there would
+    // slide FROM whatever the Slider happened to be left at in the Editor
+    // (often its max) instead of snapping straight to the real starting
+    // value.
+    public void SetValue(float value, bool instant = false)
     {
         // Text/color react to the real target value immediately - only the
         // fill's own visual position animates toward it.
@@ -51,13 +57,18 @@ public class Bar : MonoBehaviour
             text.text = Mathf.FloorToInt(value) + "/" + slider.maxValue;
         }
 
-        if (fillAnimDuration > 0f && isActiveAndEnabled)
+        if (!instant && fillAnimDuration > 0f && isActiveAndEnabled)
         {
             if (fillRoutine != null) StopCoroutine(fillRoutine);
             fillRoutine = StartCoroutine(AnimateFill(value));
         }
         else
         {
+            if (fillRoutine != null)
+            {
+                StopCoroutine(fillRoutine);
+                fillRoutine = null;
+            }
             slider.value = value;
         }
     }

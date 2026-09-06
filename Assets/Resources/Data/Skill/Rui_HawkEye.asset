@@ -11,8 +11,15 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6bc0df80977b4c20a253698b4b2c70af, type: 3}
   m_Name: Rui_HawkEye
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   SkillName: Hawk Eye
+  Description: 
   MaxEnergy: 10
+  Cost: 6
+  RegenAmount: 1
+  RegenInterval: 3
+  WindUpTime: 0
   Duration: 10
   RefreshInterval: 0.15
+  FreshFuseColor: {r: 1, g: 0.85, b: 0.1, a: 1}
+  AboutToExplodeColor: {r: 1, g: 0.1, b: 0.05, a: 1}

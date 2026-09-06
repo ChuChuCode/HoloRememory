@@ -27,7 +27,10 @@ public class SkillEnergyUI : MonoBehaviour
     {
         if (EnergyBar == null) return;
         EnergyBar.SetMaxValue(Mathf.RoundToInt(max));
-        EnergyBar.SetValue(current);
+        // Instant - animating here would slide FROM whatever the Slider
+        // was left at in the Editor (often its max) instead of snapping
+        // straight to the real starting value.
+        EnergyBar.SetValue(current, instant: true);
     }
 
     // Call on every change (regen tick, activation) - value only, no max.
