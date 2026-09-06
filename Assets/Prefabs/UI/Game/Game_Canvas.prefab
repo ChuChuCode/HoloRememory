@@ -3099,6 +3099,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnergyBar: {fileID: 3692012956739807462}
+  iconImage: {fileID: 117968696506396331}
   nameText: {fileID: 1475979227255859629}
   descriptionText: {fileID: 3558335982249024638}
 --- !u!1 &4291972312956889649
@@ -3553,7 +3554,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000030517578}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4602803933179380280
@@ -3569,6 +3570,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   countdownText: {fileID: 7842663465694583375}
+  startFlashDuration: 1
+  punchScale: 0.4
+  punchDuration: 0.4
+  punchVibrato: 6
+  punchElasticity: 0.6
 --- !u!1 &5157231782830045684
 GameObject:
   m_ObjectHideFlags: 0

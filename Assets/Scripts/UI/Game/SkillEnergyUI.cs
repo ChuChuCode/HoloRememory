@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 namespace HR.UI{
@@ -12,6 +13,7 @@ public class SkillEnergyUI : MonoBehaviour
 {
     public static SkillEnergyUI instance;
     [SerializeField] Bar EnergyBar;
+    [SerializeField] Image iconImage;
     [SerializeField] TMP_Text nameText;
     [SerializeField] TMP_Text descriptionText;
 
@@ -42,10 +44,11 @@ public class SkillEnergyUI : MonoBehaviour
 
     // Set once (the local player's own skill never changes mid-match) -
     // not tied to the energy SyncVar hook like UpdateSkillEnergy is.
-    public void SetSkillInfo(string skillName, string description)
+    public void SetSkillInfo(string skillName, string description, Sprite icon = null)
     {
         if (nameText != null) nameText.text = skillName;
         if (descriptionText != null) descriptionText.text = description;
+        if (iconImage != null) iconImage.sprite = icon;
     }
 }
 }

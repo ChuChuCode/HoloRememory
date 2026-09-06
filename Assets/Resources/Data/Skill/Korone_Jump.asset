@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Korone_Jump
   m_EditorClassIdentifier: 
   SkillName: Jump
+  SkillIcon: {fileID: 21300000, guid: 2bcae2bab1ff44bb8810ae40c71e8568, type: 3}
   Description: 
   MaxEnergy: 10
   Cost: 5

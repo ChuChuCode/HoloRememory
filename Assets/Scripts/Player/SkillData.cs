@@ -7,6 +7,8 @@ namespace HR.Object.Player{
 public class SkillData : ScriptableObject
 {
     public string SkillName;
+    [Tooltip("Shown on the Lobby character-detail preview and the in-match skill HUD.")]
+    public Sprite SkillIcon;
     [TextArea]
     [Tooltip("Shown on the local player's skill HUD - what the skill actually does.")]
     public string Description;

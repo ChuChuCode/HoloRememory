@@ -53,7 +53,8 @@ public abstract class CharacterSkillBase : NetworkBehaviour
         SkillEnergyUI.instance?.InitSkillEnergy(skillEnergy, MaxSkillEnergy);
         SkillEnergyUI.instance?.SetSkillInfo(
             data != null ? data.SkillName : "",
-            data != null ? data.Description : "");
+            data != null ? data.Description : "",
+            data != null ? data.SkillIcon : null);
     }
     // Passive SP regen - continuous, not stepped: adds a per-second rate
     // (RegenAmount/RegenInterval) scaled by deltaTime every frame, instead

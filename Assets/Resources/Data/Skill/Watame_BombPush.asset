@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Watame_BombPush
   m_EditorClassIdentifier: 
   SkillName: Bomb Push
+  SkillIcon: {fileID: 21300000, guid: e69dd5c1bdfff4909919c57c10fa13e7, type: 3}
   Description: 
   MaxEnergy: 10
   Cost: 4

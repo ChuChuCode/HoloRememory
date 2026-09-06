@@ -28,6 +28,7 @@ public class CharacterSelectItem : MonoBehaviour
     public void Select_Character()
     {
         LobbyController.Instance.LocalPlayerController.CanSetCharacter(CharacterID);
+        CharacterDetailPanel.Instance?.ShowCharacter(CharacterID);
         audioSource.clip = audioClip;
         audioSource.Play();
     }

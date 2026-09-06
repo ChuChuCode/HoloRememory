@@ -17,3 +17,4 @@ MonoBehaviour:
   CharacterImage: {fileID: 21300000, guid: 118e5905e5a3d0b40bb92095ae8f3442, type: 3}
   SelectAudio: {fileID: 0}
   CharacterModel: {fileID: -481990197644878190, guid: 27b0fb16b90e42ac96ae07e0eacb749e, type: 3}
+  Skill: {fileID: 11400000, guid: 4da32d3cbc9b46868410bb007d1a946f, type: 2}

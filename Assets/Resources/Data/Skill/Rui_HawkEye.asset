@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Rui_HawkEye
   m_EditorClassIdentifier: 
   SkillName: Hawk Eye
+  SkillIcon: {fileID: 21300000, guid: 507d11acbe2b94c4e8ba101d1f2de047, type: 3}
   Description: 
   MaxEnergy: 10
   Cost: 6
