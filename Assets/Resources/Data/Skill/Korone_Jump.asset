@@ -11,9 +11,14 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89566cb8536d49b1bfb4fcdaeff59f83, type: 3}
   m_Name: Korone_Jump
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   SkillName: Jump
+  Description: 
   MaxEnergy: 10
+  Cost: 5
+  RegenAmount: 1
+  RegenInterval: 3
+  WindUpTime: 0
   SkipCells: 1
   JumpDuration: 0.3
   ArcHeight: 1
