@@ -11,7 +11,6 @@ public class LocalPlayerInfo : NetworkBehaviour
     // Fallback only, in case GameSettings isn't around - real duration comes
     // from GameSettings.TimeLimit, same value shown in the Lobby above.
     [SerializeField] float matchDuration = 180f;
-    [SyncVar] double started_time = 0f;
     public double timer;
     bool matchEnded = false;
 
@@ -29,13 +28,6 @@ public class LocalPlayerInfo : NetworkBehaviour
     {
         if (Instance == null) Instance = this;
     }
-    void Start()
-    {
-        if (isServer)
-        {
-            started_time = NetworkTime.time;
-        }
-    }
     void Update()
     {
         Time_Text.text = Time_format();
@@ -48,11 +40,19 @@ public class LocalPlayerInfo : NetworkBehaviour
             Manager.EndMatch();
         }
     }
+    // Anchored on GameSettings.matchCountdownEndTime (the same instant
+    // player input actually unlocks) instead of this object's own spawn
+    // time - it used to start counting the moment this HUD object spawned,
+    // well before the match-start lock/countdown even finished, silently
+    // burning match time nobody could actually play through. Clamped to
+    // never exceed duration, so the display just holds steady at the full
+    // time limit during the lock window instead of counting down early.
     double GetRemaining()
     {
-        double elapsed = NetworkTime.time - started_time;
-        float duration = GameSettings.Instance != null ? GameSettings.Instance.TimeLimit : matchDuration;
-        return duration - elapsed;
+        if (GameSettings.Instance == null) return matchDuration;
+        double elapsed = NetworkTime.time - GameSettings.Instance.matchCountdownEndTime;
+        double duration = GameSettings.Instance.TimeLimit;
+        return System.Math.Min(duration - elapsed, duration);
     }
     string Time_format()
     {

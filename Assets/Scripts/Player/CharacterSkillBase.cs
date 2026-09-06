@@ -58,14 +58,18 @@ public abstract class CharacterSkillBase : NetworkBehaviour
     // Passive SP regen - continuous, not stepped: adds a per-second rate
     // (RegenAmount/RegenInterval) scaled by deltaTime every frame, instead
     // of a lump sum every few seconds, so the HUD bar fills smoothly rather
-    // than jumping in visible steps. Runs regardless of isDead/respawn (SP
-    // already persists across respawn, same as before this rework), and
-    // just naturally stops growing once AddSkillEnergy's own clamp hits
-    // MaxSkillEnergy - no need to gate that here.
+    // than jumping in visible steps. Held off entirely during the
+    // match-start lock (owner.isInputLocked) - nothing should be building
+    // up before the match has actually started. Runs regardless of
+    // isDead/respawn once unlocked (SP already persists across respawn,
+    // same as before this rework), and just naturally stops growing once
+    // AddSkillEnergy's own clamp hits MaxSkillEnergy - no need to gate
+    // that here.
     [ServerCallback]
     void Update()
     {
         if (data == null || data.RegenInterval <= 0f) return;
+        if (owner != null && owner.isInputLocked) return;
         AddSkillEnergy((data.RegenAmount / data.RegenInterval) * Time.deltaTime);
     }
     void OnSkillEnergyChanged(float oldValue, float newValue)

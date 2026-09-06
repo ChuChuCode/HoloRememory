@@ -4919,6 +4919,7 @@ MonoBehaviour:
   mapConfigList: []
   Player_List: []
   Minion_List: []
+  matchStartLockDuration: 4
 --- !u!1 &581785999
 GameObject:
   m_ObjectHideFlags: 0
@@ -16813,6 +16814,7 @@ MonoBehaviour:
   mapConfigList: []
   Player_List: []
   Minion_List: []
+  matchStartLockDuration: 4
 --- !u!1 &2074932175
 GameObject:
   m_ObjectHideFlags: 0

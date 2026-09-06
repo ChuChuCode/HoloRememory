@@ -72,6 +72,19 @@ public class Minion : Health
         }
         InitialHealth();
 
+        // Doesn't start wandering immediately - Network_Manager calls
+        // BeginWandering() once the match-start lock lifts (same moment
+        // player input unlocks), via Minion_List. Not read directly off
+        // GameSettings.matchCountdownEndTime here, since MinionSpawner's
+        // own Start() (which is what spawns this) can run before
+        // Network_Manager's OnServerSceneChanged sets that value - the
+        // same scene-load-ordering trap the Lobby map/mode bug hit earlier.
+    }
+
+    // Called by Network_Manager.UnlockInputAfterMatchStart, once, after
+    // the match-start lock window - not before.
+    public void BeginWandering()
+    {
         StartCoroutine(WanderRoutine());
     }
 

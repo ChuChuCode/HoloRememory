@@ -40,7 +40,13 @@ public class Network_Manager : NetworkManager
     // Guards against CheckGameOver() (last team standing) and the match
     // timer (time's up) both trying to end the match at once.
     bool matchEnding = false;
-    [SerializeField] float matchStartLockDuration = 3f;
+    // Whole match-start window, countdown display included - MatchCountdownUI
+    // shows this as "3, 2, 1" (one per second) then "Start" for the final
+    // second (see its own startFlashDuration), so 4s here reads as 3
+    // numbers + 1 Start beat, not a literal 4-count. Input/minion-wander/
+    // SP-regen/match-timer-start all wait for the same total, so nothing
+    // goes live before "Start" finishes showing.
+    [SerializeField] float matchStartLockDuration = 4f;
     // Was in Start() - but LobbyController.Start() (a different GameObject)
     // reads characterSelectComponentsList/mapConfigList too, and Unity only
     // guarantees ALL Awakes run before ANY Starts, not any ordering between
@@ -300,6 +306,17 @@ public class Network_Manager : NetworkManager
                 // All Player Info *** need to change to client
                 // CharacterInfoPanel.Instance.RpcAdd_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
+            // Setting this SyncVar fires its hook immediately wherever it's
+            // set (same as Mode/MapName already do), including on the
+            // host's own client - no separate manual push needed.
+            if (GameSettings.Instance != null)
+            {
+                GameSettings.Instance.matchCountdownEndTime = NetworkTime.time + matchStartLockDuration;
+                // Reset from the last match - otherwise MatchCountdownUI
+                // would still see it as true and flash FINISH again the
+                // instant this new match starts.
+                GameSettings.Instance.matchFinished = false;
+            }
             StartCoroutine(UnlockInputAfterMatchStart());
         }
         if (newSceneName.StartsWith("Result_Scene"))
@@ -372,6 +389,8 @@ public class Network_Manager : NetworkManager
         {
             if (character != null) character.isInputLocked = true;
         }
+        // Flashes FINISH on MatchCountdownUI (see GameSettings.matchFinished).
+        if (GameSettings.Instance != null) GameSettings.Instance.matchFinished = true;
         StartCoroutine(EndMatchAfterDelay());
     }
     IEnumerator EndMatchAfterDelay()
@@ -391,6 +410,13 @@ public class Network_Manager : NetworkManager
         foreach (CharacterBase character in Player_List)
         {
             if (character != null && !character.isDead) character.isInputLocked = false;
+        }
+        // Same reasoning as Player_List above - MinionSpawner.Start() (which
+        // spawns them) runs well before this delay elapses, so Minion_List
+        // is already fully populated by now.
+        foreach (Minion minion in Minion_List)
+        {
+            if (minion != null) minion.BeginWandering();
         }
     }
 }
