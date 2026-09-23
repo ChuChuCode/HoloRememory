@@ -113,6 +113,15 @@ public class LobbyController : MonoBehaviour
         {
             LocalPlayerController = GameObject.Find("LocalGamePlayer").GetComponent<PlayerObject>();
             RefreshMainButton();
+            // The character was already picked last round (CharacterID
+            // carries over), but CharacterDetailPanel only ever gets filled
+            // by a button click (see CharacterSelectItem.Select_Character) -
+            // nothing re-shows it on a fresh Lobby load, so it was sitting
+            // at its prefab's blank/default state instead of the pick.
+            if (LocalPlayerController.CharacterID != -1)
+            {
+                CharacterDetailPanel.Instance?.ShowCharacter(LocalPlayerController.CharacterID);
+            }
         }
     }
     public void UpdateLobbyName()

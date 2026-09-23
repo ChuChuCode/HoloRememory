@@ -195,7 +195,18 @@ public class Network_Manager : NetworkManager
                 foreach(CharacterBase playerobject in Player_List)
                 {
                     PlayerObject gameplayInsance = PlayersInfoList.Find(player => player.ConnectionID == playerobject.ConnectionID);
-                    NetworkServer.ReplacePlayerForConnection(playerobject.connectionToClient,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
+                    // Use gameplayInsance's OWN connectionToClient, not
+                    // playerobject's copy of it - KeepAuthority (see the
+                    // Lobby->Game swap below) never cleared gameplayInsance's
+                    // ownership, so Mirror's ReplacePlayerForConnection
+                    // rejects the swap ("already owned by a different
+                    // connection") the instant these two references aren't
+                    // the exact same NetworkConnectionToClient instance,
+                    // which host-mode's local connection doesn't reliably
+                    // stay across the scene change. Sourcing conn from the
+                    // object we're restoring ownership to is always
+                    // consistent by construction.
+                    NetworkServer.ReplacePlayerForConnection(gameplayInsance.connectionToClient,gameplayInsance.gameObject,ReplacePlayerOptions.KeepAuthority);
                     // Delete CharacterBase
                     NetworkServer.Destroy(playerobject.gameObject);
                 }

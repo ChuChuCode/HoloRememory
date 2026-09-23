@@ -118,6 +118,27 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
+    // Same "derive the map's extent from every registered cell" approach as
+    // TryGetRandomClearCoord above, exposed for anything that needs actual
+    // bounds (e.g. Noel's Muscle Throw wrapping around the map edge instead
+    // of stopping there). minX/maxX/minZ/maxZ come out as the WALL ring's
+    // own coordinates - the walkable interior is one cell inside that on
+    // every side.
+    public bool TryGetBounds(out int minX, out int maxX, out int minZ, out int maxZ)
+    {
+        minX = int.MaxValue; maxX = int.MinValue; minZ = int.MaxValue; maxZ = int.MinValue;
+        if (cells.Count == 0) return false;
+
+        foreach (Vector2Int key in cells.Keys)
+        {
+            minX = Mathf.Min(minX, key.x);
+            maxX = Mathf.Max(maxX, key.x);
+            minZ = Mathf.Min(minZ, key.y);
+            maxZ = Mathf.Max(maxZ, key.y);
+        }
+        return true;
+    }
+
     public IEnumerable<Vector2Int> GetAllSpawnCoords()
     {
         foreach (KeyValuePair<Vector2Int, GridCell> entry in cells)
