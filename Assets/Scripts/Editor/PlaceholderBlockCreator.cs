@@ -8,7 +8,7 @@ public static class PlaceholderBlockCreator
 {
     const string FolderPath = "Assets/Prefabs/Map/Placeholder";
 
-    [MenuItem("Tools/HoloBomber/Create Placeholder Blocks")]
+    [MenuItem("HoloBomber/Create Placeholder Blocks")]
     static void CreatePlaceholderBlocks()
     {
         EnsureFolder();

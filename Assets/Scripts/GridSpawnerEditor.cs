@@ -174,6 +174,34 @@ public class GridSpawnerEditor : MonoBehaviour
         return false;
     }
 
+    // Scans every GridCell in the scene - Spawn/MinionSpawn/Wall/
+    // Destructible/Bomb markers, including inactive ones - and snaps each to
+    // its nearest grid cell center, so hand-placed markers line up with the
+    // tiles GenerateGrid() above just laid out.
+    [ContextMenu("Snap All Grid Cells To Grid")]
+    public void SnapAllGridCellsToGrid()
+    {
+#if UNITY_EDITOR
+        if (GridManager.Instance == null)
+        {
+            Debug.LogWarning("No GridManager in the scene - can't snap to grid.");
+            return;
+        }
+
+        GridCell[] cells = FindObjectsOfType<GridCell>(true);
+        foreach (GridCell cell in cells)
+        {
+            Vector2Int coord = GridManager.Instance.WorldToGrid(cell.transform.position);
+            Vector3 snapped = GridManager.Instance.GridToWorld(coord);
+
+            Undo.RecordObject(cell.transform, "Snap To Grid");
+            // Keep each marker's own Y - only X/Z are meaningful grid coords.
+            cell.transform.position = new Vector3(snapped.x, cell.transform.position.y, snapped.z);
+        }
+        Debug.Log($"Snapped {cells.Length} GridCell object(s) to grid.");
+#endif
+    }
+
     [ContextMenu("Clear Grid")]
     public void ClearGrid()
     {
