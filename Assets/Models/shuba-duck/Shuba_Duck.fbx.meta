@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: accessories
-    second: {fileID: 2100000, guid: 048b4fafc3d5840aca52c41e0accc779, type: 2}
+    second: {fileID: 2100000, guid: b771f760e7f6644cd8fb3dc49e489a0d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
