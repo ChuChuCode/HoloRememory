@@ -97,6 +97,7 @@ MonoBehaviour:
   BombTime: 2
   BombPower: 1
   ExplosionPrefab: {fileID: 6449865742343254389, guid: 2d2b25f16f0b542abb5b955136f9677d, type: 3}
+  LingeringFirePrefab: {fileID: 6449865742343254389, guid: 1eaaec40d6db4b57ae8e0edca26afecd, type: 3}
   SpawnPoint: {fileID: 48010088384569283}
   bombCollider: {fileID: 4487859158644408081}
 --- !u!114 &972116100371306824

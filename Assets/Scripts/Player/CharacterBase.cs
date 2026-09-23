@@ -74,6 +74,15 @@ public abstract class CharacterBase: Health
     public int maxBombAmount = 1;
     public int bombPower = 1;
     [SerializeField] protected BombBase Bomb_Prefab;
+    // Set by Miko's Blaze skill (see MikoSkill.Activate) - EVERY bomb THIS
+    // character places before Time.time reaches bombFireExpiryTime leaves
+    // lingering fire behind when it explodes (see
+    // BombBase.SetLeavesLingeringFire), not just the first one placed -
+    // a window, not a one-shot flag. -1 (the default) never passes the
+    // Time.time check in CmdSpawnBomb.
+    [HideInInspector] public float bombFireExpiryTime = -1f;
+    [HideInInspector] public float bombFireLingerDuration;
+    [HideInInspector] public float bombFireTickInterval;
     bool isHoldingBomb;
     float holdStartTime;
     [SerializeField] float autoBombHoldThreshold = 0.15f; // a quick tap released before this never auto-places, no matter how far it moved
@@ -89,8 +98,8 @@ public abstract class CharacterBase: Health
 
     [Header("Debuff")]
     [SerializeField] float debuffDuration = 10f;
-    [Tooltip("The character's own visible body mesh - flashed while a debuff is active so everyone (not just the affected player) can see it. Not the GridHighlight or Outline - just the colored body.")]
-    [SerializeField] Renderer bodyRenderer;
+    [Tooltip("The character's own visible body mesh(es) - flashed while a debuff is active so everyone (not just the affected player) can see it. Not the GridHighlight or Outline - just the colored body. The rigged model splits the body across multiple renderers, so this needs every one of them, not just one.")]
+    [SerializeField] Renderer[] bodyRenderers;
     [SerializeField] Color debuffFlashColor = Color.white;
     [SerializeField] float debuffFlashInterval = 0.15f;
     bool forcedAutoBomb;
@@ -98,7 +107,7 @@ public abstract class CharacterBase: Health
     Coroutine forceAutoBombRoutine;
     Coroutine reverseControlsRoutine;
     Coroutine debuffFlashRoutine;
-    Color bodyOriginalColor;
+    Color[] bodyOriginalColors;
     bool bodyColorCaptured;
     bool isSkillLocked;
 
@@ -501,8 +510,19 @@ public abstract class CharacterBase: Health
         if (!isLocalPlayer) return;
         if (isDead) return;
         if (isWaitingToRespawn) return;
-        if (isSkillLocked) return;
-        if (isInputLocked) return;
+
+        // Locked states (skill/input) hold the Rigidbody still even if
+        // moveVector is still nonzero (input isn't disabled for every lock),
+        // so Idle/Walk has to be driven off whether movement will actually
+        // apply this tick, not off moveVector alone - otherwise the walk
+        // animation keeps playing while the character is frozen in place.
+        // Set on the owning client only; NetworkAnimator (client authority)
+        // replicates the parameter to everyone else.
+        bool canMove = !isSkillLocked && !isInputLocked;
+        bool isMoving = canMove && moveVector != Vector2.zero;
+        if (animator != null) animator.SetBool("isMove", isMoving);
+
+        if (!canMove) return;
         rd.velocity = new Vector3(moveVector.x, 0, moveVector.y) * EffectiveMoveSpeed;
 
         // Face the direction actually being moved in - keeps whatever
@@ -642,10 +662,21 @@ public abstract class CharacterBase: Health
     }
     IEnumerator DebuffFlashRoutine(float duration)
     {
-        if (bodyRenderer == null) yield break;
+        if (bodyRenderers == null || bodyRenderers.Length == 0) yield break;
         if (!bodyColorCaptured)
         {
-            bodyOriginalColor = bodyRenderer.sharedMaterial.GetColor("_BaseColor");
+            // The Toon shader's actual body-tint property is _MainColor, not
+            // the standard URP Lit _BaseColor - that reference name is a
+            // leftover from before the shader switch and isn't read by the
+            // graph at all, so writing to it had no visible effect.
+            // Captured per-renderer since the rigged model splits the body
+            // across several materials that aren't guaranteed to share the
+            // same base color (e.g. skin vs. outfit).
+            bodyOriginalColors = new Color[bodyRenderers.Length];
+            for (int i = 0; i < bodyRenderers.Length; i++)
+            {
+                bodyOriginalColors[i] = bodyRenderers[i].sharedMaterial.GetColor("_MainColor");
+            }
             bodyColorCaptured = true;
         }
         MaterialPropertyBlock block = new MaterialPropertyBlock();
@@ -654,8 +685,11 @@ public abstract class CharacterBase: Health
         while (elapsed < duration)
         {
             flashOn = !flashOn;
-            block.SetColor("_BaseColor", flashOn ? debuffFlashColor : bodyOriginalColor);
-            bodyRenderer.SetPropertyBlock(block);
+            for (int i = 0; i < bodyRenderers.Length; i++)
+            {
+                block.SetColor("_MainColor", flashOn ? debuffFlashColor : bodyOriginalColors[i]);
+                bodyRenderers[i].SetPropertyBlock(block);
+            }
             yield return new WaitForSeconds(debuffFlashInterval);
             elapsed += debuffFlashInterval;
         }
@@ -664,10 +698,13 @@ public abstract class CharacterBase: Health
     }
     void RestoreBodyColor()
     {
-        if (bodyRenderer == null || !bodyColorCaptured) return;
+        if (bodyRenderers == null || !bodyColorCaptured) return;
         MaterialPropertyBlock block = new MaterialPropertyBlock();
-        block.SetColor("_BaseColor", bodyOriginalColor);
-        bodyRenderer.SetPropertyBlock(block);
+        for (int i = 0; i < bodyRenderers.Length; i++)
+        {
+            block.SetColor("_MainColor", bodyOriginalColors[i]);
+            bodyRenderers[i].SetPropertyBlock(block);
+        }
     }
     [TargetRpc]
     void TargetForceAutoBomb(NetworkConnection target, float duration)
@@ -916,6 +953,10 @@ public abstract class CharacterBase: Health
         BombBase bomb = Instantiate(Bomb_Prefab, spawnPos, Quaternion.identity);
         bomb.SetOwner(this);
         bomb.SetPower(bombPower);
+        if (Time.time < bombFireExpiryTime)
+        {
+            bomb.SetLeavesLingeringFire(bombFireLingerDuration, bombFireTickInterval);
+        }
         NetworkServer.Spawn(bomb.gameObject);
     }
     [TargetRpc]

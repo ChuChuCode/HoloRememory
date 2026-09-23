@@ -9,6 +9,10 @@ namespace HR.Object.Skill{
 public class BombBase : NetworkBehaviour
 {
     [SerializeField] protected CharacterBase Owned;
+    // Read-only access for skills that aren't themselves a BombBase (e.g.
+    // Noel needs to confirm "is this the bomb in front of me actually mine"
+    // before throwing it).
+    public CharacterBase Owner => Owned;
     [SerializeField] protected Rigidbody Rd;
     [SerializeField] protected int AttackDamage;
     // SyncVar for the same reason as BombPower below - Rui's Hawk Eye reads
@@ -159,6 +163,98 @@ public class BombBase : NetworkBehaviour
         yield return SlideVisual(GridManager.Instance.GridToWorld(destination), duration);
     }
 
+    // Noel's Muscle Throw: bounces through every cell in `path` (worked out
+    // by NoelSkill.Activate() - each blocked attempt along the way, ending
+    // with the one clear cell it actually lands on), doing a visible arc
+    // hop for each one in sequence, like a grenade actually bouncing off
+    // obstacles instead of a single long throw straight to the final spot.
+    // Only the LAST cell in the path is ever registered as this bomb's real
+    // grid position - the earlier ones are purely visual waypoints, never
+    // actually landed on (they're blocked, that's why it kept bouncing).
+    // The bomb keeps whatever fuse was already ticking since it was first
+    // placed (see Start()) and explodes wherever it ends up.
+    [Server]
+    public void ThrowBounce(List<Vector2Int> path, List<bool> wrapped, float hopDuration, float arcHeight)
+    {
+        StartCoroutine(ThrowBounceRoutine(path, wrapped, hopDuration, arcHeight));
+    }
+    IEnumerator ThrowBounceRoutine(List<Vector2Int> path, List<bool> wrapped, float hopDuration, float arcHeight)
+    {
+        // The fuse (Invoke'd back in Start()) keeps running in real
+        // background time regardless of how long this bounce sequence
+        // takes - pause it for the duration so it can't go off mid-air,
+        // then resume with whatever time was actually left once it lands.
+        CancelInvoke(nameof(SpawnExplosion));
+        float fuseRemaining = Mathf.Max(0f, BombTime - (Time.time - spawnTime));
+
+        for (int i = 0; i < path.Count; i++)
+        {
+            Vector3 targetWorld = GridManager.Instance.GridToWorld(path[i]);
+            bool isFinalLanding = i == path.Count - 1;
+
+            if (wrapped[i])
+            {
+                // Crossed the map edge to get here - snapping straight to
+                // the opposite side reads as an intentional wrap (like
+                // Pac-Man); animating a normal-speed arc across the whole
+                // map's width in the same short duration just looks like a
+                // glitchy teleport instead.
+                transform.position = targetWorld;
+                continue;
+            }
+            if (!isFinalLanding)
+            {
+                // Blocked cell - bounce off partway there instead of
+                // visually flying into/through it.
+                targetWorld = Vector3.Lerp(transform.position, targetWorld, 0.5f);
+            }
+            yield return ArcHop(targetWorld, hopDuration, arcHeight);
+        }
+
+        Vector2Int landing = path[path.Count - 1];
+        GridManager.Instance.Unregister(gridCell.Coord, gridCell);
+        gridCell.UpdateCoord(landing);
+        GridManager.Instance.Register(landing, gridCell);
+
+        if (!hasExploded) Invoke(nameof(SpawnExplosion), fuseRemaining);
+    }
+    IEnumerator ArcHop(Vector3 destination, float duration, float arcHeight)
+    {
+        Vector3 start = transform.position;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            Vector3 flat = Vector3.Lerp(start, destination, t);
+            float arc = arcHeight * Mathf.Sin(t * Mathf.PI); // 0 at release/landing, peaks at the midpoint
+            transform.position = new Vector3(flat.x, flat.y + arc, flat.z);
+            yield return null;
+        }
+        transform.position = destination; // guarantee an exact landing despite frame-time drift
+    }
+
+    // Miko's Blaze: set right before this bomb is spawned (see
+    // CharacterBase.CmdSpawnBomb) so every blast tile it produces also
+    // spawns a lingering hazard - see SpawnExplosionSegment.
+    bool leavesLingeringFire;
+    float lingerDuration;
+    float lingerTickInterval;
+    [SerializeField] GameObject LingeringFirePrefab;
+    // How long the normal ExplosionSegment's own blast visual/hit-window
+    // plays before the fire should appear - kept in sync by hand with
+    // ExplosionSegment's own `lifeTime` field (0.5s by default) since that
+    // field is private to that script. The fire is deliberately delayed by
+    // this long so it reads as "left behind after the blast", not
+    // overlapping with the explosion itself.
+    [SerializeField] float explosionVisualDuration = 0.5f;
+    public void SetLeavesLingeringFire(float lingerDuration, float tickInterval)
+    {
+        leavesLingeringFire = true;
+        this.lingerDuration = lingerDuration;
+        this.lingerTickInterval = tickInterval;
+    }
+
     bool hasExploded = false;
 
     [ServerCallback]
@@ -272,6 +368,21 @@ public class BombBase : NetworkBehaviour
     {
         GameObject explosion = Instantiate(ExplosionPrefab, GridManager.Instance.GridToWorld(coord), Quaternion.identity);
         NetworkServer.Spawn(explosion);
+
+        if (leavesLingeringFire && LingeringFirePrefab != null)
+        {
+            // Instantiate(prefab, position, rotation) always forces the
+            // spawned root object to exactly `position`, ignoring whatever
+            // Transform the prefab asset itself was authored with - so the
+            // visible height offset has to be added here, not on the
+            // prefab, or it silently does nothing (GridToWorld always
+            // returns y=0).
+            Vector3 firePos = GridManager.Instance.GridToWorld(coord);
+            firePos.y += 0.4f;
+            GameObject fire = Instantiate(LingeringFirePrefab, firePos, Quaternion.identity);
+            fire.GetComponent<LingeringFire>().Configure(lingerDuration, lingerTickInterval, explosionVisualDuration);
+            NetworkServer.Spawn(fire);
+        }
     }
     // [ServerCallback]
     // void OnTriggerEnter(Collider other) 

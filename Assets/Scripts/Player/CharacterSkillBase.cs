@@ -88,6 +88,20 @@ public abstract class CharacterSkillBase : NetworkBehaviour
         skillEnergy = Mathf.Min(skillEnergy + amount, MaxSkillEnergy);
     }
 
+    // Per-character extra condition for actually using the skill right now
+    // (a valid target, something to act on, etc.) - separate from
+    // IsSkillReady, which only checks SP. Read-only, no side effects, so
+    // it's safe for UI to poll every frame (e.g. to grey out the skill
+    // icon when there's nothing to use it on). Defaults to true for skills
+    // with no extra condition beyond having enough SP - override per
+    // character to mirror whatever Activate() itself checks before acting.
+    protected virtual bool CanUseExtra() => true;
+
+    // What UI should actually check to decide bright vs. greyed-out - both
+    // gates combined. Also the real, server-authoritative gate CmdActivate
+    // uses below, not just a cosmetic hint.
+    public bool CanUse => IsSkillReady && CanUseExtra();
+
     // Called from CharacterBase's Skill input binding (owning client only).
     public void TryActivate()
     {
@@ -97,7 +111,7 @@ public abstract class CharacterSkillBase : NetworkBehaviour
     [Command]
     void CmdActivate()
     {
-        if (!IsSkillReady) return;
+        if (!CanUse) return;
         // Match-start countdown / match-over lock (Network_Manager sets
         // this on owner, not on this component) - server-authoritative
         // check, doesn't rely on the client having honored it.
