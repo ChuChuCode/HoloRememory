@@ -13,6 +13,14 @@ public class WatameSkill : CharacterSkillBase
 {
     WatameBombPushData Data => data as WatameBombPushData;
 
+    // Mirrors Activate()'s own "is there a bomb in front" check below,
+    // without the side effect - see CharacterSkillBase.CanUseExtra.
+    protected override bool CanUseExtra()
+    {
+        Vector2Int bombCoord = GridManager.Instance.WorldToGrid(owner.transform.position) + owner.FacingDir;
+        return GridManager.Instance.TryGetCell(bombCoord, out GridCell cell) && cell.type == CellType.Bomb;
+    }
+
     protected override bool Activate()
     {
         Vector2Int bombCoord = GridManager.Instance.WorldToGrid(owner.transform.position) + owner.FacingDir;

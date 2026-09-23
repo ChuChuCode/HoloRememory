@@ -18,6 +18,14 @@ public class BotanSkill : CharacterSkillBase
     // explodes.
     SSRBBomb activeSSRB;
 
+    // Mirrors Activate()'s own guard/target checks below, without the side
+    // effect - see CharacterSkillBase.CanUseExtra.
+    protected override bool CanUseExtra()
+    {
+        if (activeSSRB != null) return false;
+        return FindNearestEnemy() != null || FindNearestDestructibleBlock() != null;
+    }
+
     protected override bool Activate()
     {
         if (activeSSRB != null) return false; // only one SSRB at a time, per spec

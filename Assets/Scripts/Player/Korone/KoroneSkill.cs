@@ -12,6 +12,16 @@ public class KoroneSkill : CharacterSkillBase
     KoroneJumpData JumpData => data as KoroneJumpData;
     int SkipCells => JumpData != null ? JumpData.SkipCells : 1;
 
+    // Mirrors Activate()'s own landing-cell check below, without the side
+    // effect - see CharacterSkillBase.CanUseExtra.
+    protected override bool CanUseExtra()
+    {
+        Vector2Int dir = owner.FacingDir;
+        Vector2Int current = GridManager.Instance.WorldToGrid(owner.transform.position);
+        Vector2Int landing = current + dir * (SkipCells + 1);
+        return !GridManager.Instance.IsOccupied(landing);
+    }
+
     protected override bool Activate()
     {
         Vector2Int dir = owner.FacingDir;
