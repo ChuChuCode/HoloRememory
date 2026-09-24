@@ -10,7 +10,7 @@ public class DestructibleBlock : NetworkBehaviour
     [Header("Debuff")]
     [SerializeField] GameObject[] debuffPrefabs;
     [Tooltip("Rolled separately from (and before) the normal item drop above - a debuff is a lot more annoying than a regular power-up is helpful, so it needs to be rarer.")]
-    [Range(0f, 1f)] [SerializeField] float debuffDropChance = 0.08f;
+    [Range(0f, 1f)] [SerializeField] float debuffDropChance = 0.05f;
     [Header("Mount")]
     [SerializeField] GameObject[] mountPrefabs;
     [Tooltip("Rolled separately from (and before) the normal item drop above - a mount absorbs a whole hit, so it needs to be much rarer than a regular power-up.")]

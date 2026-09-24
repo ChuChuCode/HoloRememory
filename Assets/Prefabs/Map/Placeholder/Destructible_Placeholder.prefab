@@ -162,7 +162,7 @@ MonoBehaviour:
   dropChance: 0.3
   debuffPrefabs:
   - {fileID: 3889511876017203, guid: ae381622b2f64d1ead822522379a12d3, type: 3}
-  debuffDropChance: 0.08
+  debuffDropChance: 0.05
   mountPrefabs:
   - {fileID: 2636663731674502, guid: 79d810be850d4a09bbc0a0844690dea7, type: 3}
   - {fileID: 4190101984194023, guid: 8c9e456235894fcabee13bedfa9d8a7d, type: 3}
