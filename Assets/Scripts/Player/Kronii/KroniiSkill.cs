@@ -135,6 +135,19 @@ public class KroniiSkill : CharacterSkillBase
     // this local copy tracks almost identically to the server's version.
     [SerializeField] GameObject GhostPrefab;
     GameObject ghost;
+    // Fetched once off the instantiated ghost - it's a separate GameObject
+    // from `owner`, so its Animator's "isMove" parameter is its own copy,
+    // never touched by CharacterBase's movement code. Driven manually below
+    // from the ghost's own frame-to-frame position instead, so it plays
+    // run/idle matching whatever she was actually doing at that point in
+    // her history, not just idling in place.
+    Animator ghostAnimator;
+    Vector3 lastGhostPosition;
+    bool hasLastGhostPosition;
+    // Below this, floating point jitter in the recorded positions alone
+    // would flicker isMove on/off every frame while she's actually standing
+    // still.
+    const float GhostMoveThreshold = 0.001f;
     readonly Queue<PositionSample> localHistory = new();
     // Set once, the first time LateUpdate runs (and again after every
     // rewind - see TargetRewind), to "now + RecordWindowSeconds" - the
@@ -159,6 +172,10 @@ public class KroniiSkill : CharacterSkillBase
         if (ghost == null && GhostPrefab != null)
         {
             ghost = Instantiate(GhostPrefab);
+            // includeInactive: true - SetActive(false) right below would
+            // otherwise make this search come up empty, since the ghost's
+            // whole hierarchy (Animator included) is inactive by then.
+            ghostAnimator = ghost.GetComponentInChildren<Animator>(true);
             ghost.SetActive(false);
         }
         if (ghostReadyTime < 0f) ghostReadyTime = Time.time + RecordWindowSeconds;
@@ -173,11 +190,21 @@ public class KroniiSkill : CharacterSkillBase
         if (localHistory.Count == 0 || Time.time < ghostReadyTime)
         {
             ghost.SetActive(false);
+            hasLastGhostPosition = false; // don't compare against a stale position once it reappears
         }
         else
         {
             ghost.SetActive(true);
-            ghost.transform.position = localHistory.Peek().position;
+            Vector3 nextPosition = localHistory.Peek().position;
+            if (ghostAnimator != null)
+            {
+                bool moved = hasLastGhostPosition
+                    && (nextPosition - lastGhostPosition).sqrMagnitude > GhostMoveThreshold * GhostMoveThreshold;
+                ghostAnimator.SetBool("isMove", moved);
+            }
+            ghost.transform.position = nextPosition;
+            lastGhostPosition = nextPosition;
+            hasLastGhostPosition = true;
         }
     }
 }
