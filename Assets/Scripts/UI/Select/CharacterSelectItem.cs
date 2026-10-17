@@ -27,7 +27,14 @@ public class CharacterSelectItem : MonoBehaviour
     // Ready button, same pattern as the team slot buttons.
     public void Select_Character()
     {
-        LobbyController.Instance.LocalPlayerController.CanSetCharacter(CharacterID);
+        // LocalPlayerController isn't set yet until the local player's own
+        // PlayerObject.OnStartAuthority() runs - a same-frame ordering race
+        // with LobbyController starting up can let a click land before that
+        // happens, which otherwise NPEs here.
+        PlayerObject localPlayer = LobbyController.Instance?.LocalPlayerController;
+        if (localPlayer == null) return;
+
+        localPlayer.CanSetCharacter(CharacterID);
         CharacterDetailPanel.Instance?.ShowCharacter(CharacterID);
         audioSource.clip = audioClip;
         audioSource.Play();

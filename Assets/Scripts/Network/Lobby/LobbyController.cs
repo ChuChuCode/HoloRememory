@@ -111,14 +111,25 @@ public class LobbyController : MonoBehaviour
         // If restart game -> PlayersInfoList has player -> re-get LocalGamePlayer object and refresh the button
         if (Manager.PlayersInfoList.Count > 0)
         {
-            LocalPlayerController = GameObject.Find("LocalGamePlayer").GetComponent<PlayerObject>();
+            // GameObject.Find can come up empty here - this runs as soon as
+            // LobbyController itself starts, which can beat the local
+            // player's own PlayerObject.OnStartAuthority() (the thing that
+            // actually renames it to "LocalGamePlayer") in a same-frame
+            // ordering race. Leaves LocalPlayerController at whatever it
+            // already was (likely still null too) rather than crashing -
+            // OnStartAuthority sets it directly once it does run.
+            GameObject localPlayerObject = GameObject.Find("LocalGamePlayer");
+            if (localPlayerObject != null)
+            {
+                LocalPlayerController = localPlayerObject.GetComponent<PlayerObject>();
+            }
             RefreshMainButton();
             // The character was already picked last round (CharacterID
             // carries over), but CharacterDetailPanel only ever gets filled
             // by a button click (see CharacterSelectItem.Select_Character) -
             // nothing re-shows it on a fresh Lobby load, so it was sitting
             // at its prefab's blank/default state instead of the pick.
-            if (LocalPlayerController.CharacterID != -1)
+            if (LocalPlayerController != null && LocalPlayerController.CharacterID != -1)
             {
                 CharacterDetailPanel.Instance?.ShowCharacter(LocalPlayerController.CharacterID);
             }
