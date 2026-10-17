@@ -10,7 +10,12 @@ public enum CellType
     // Level-designed marker for where MinionSpawner places a mob at match
     // start - same non-blocking role as Spawn (see GridManager.IsOccupied),
     // just a separate type so it isn't mixed into the player spawn pool.
-    MinionSpawn
+    MinionSpawn,
+    // Walkable terrain (see GridManager.IsOccupied) that conceals whoever's
+    // standing in it (see BushBlock) and burns away when an explosion
+    // passes through, without blocking the blast - see
+    // BombBase.SideExoplosion.
+    Bush
 }
 
 [DisallowMultipleComponent]

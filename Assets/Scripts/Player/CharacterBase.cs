@@ -111,6 +111,12 @@ public abstract class CharacterBase: Health
     bool bodyColorCaptured;
     bool isSkillLocked;
 
+    [Header("Bush")]
+    // Server-authoritative (see BushBlock.OnTriggerEnter/Exit) - set here
+    // and replicated via the hook below, rather than each client deciding
+    // for itself, so a laggy/cheating client can't fake staying visible.
+    [SyncVar(hook = nameof(OnHiddenInBushChanged))] bool isHiddenInBush;
+
     // A mount absorbs the next bomb hit instead of costing a life - see
     // HealthDamage/Dismount. currentMount is the server's own authoritative
     // copy (used for the CanPickupItems gate and to decide what Dismount
@@ -705,6 +711,39 @@ public abstract class CharacterBase: Health
             block.SetColor("_MainColor", bodyOriginalColors[i]);
             bodyRenderers[i].SetPropertyBlock(block);
         }
+    }
+    // Called by BushBlock on the server (OnTriggerEnter/Exit) - never by
+    // the character itself, so a client can't fake leaving concealment.
+    [Server]
+    public void SetHiddenInBush(bool hidden)
+    {
+        isHiddenInBush = hidden;
+    }
+    // Fires on every peer whenever isHiddenInBush changes (same "runs
+    // everywhere, including the owner" SyncVar hook behavior as
+    // isDead/lives above). Concealment is team-relative: yourself and your
+    // own team keep seeing this character exactly as normal (the Bush
+    // itself fades instead - see BushBlock), while every other team's
+    // clients just disable the renderers outright - a laggy network
+    // doesn't matter since it's purely visual, gameplay never reads this
+    // back.
+    void OnHiddenInBushChanged(bool _, bool hidden)
+    {
+        if (bodyRenderers == null) return;
+
+        bool visibleToMe = !hidden || IsSameTeamAsLocalPlayer();
+        foreach (Renderer renderer in bodyRenderers)
+        {
+            if (renderer != null) renderer.enabled = visibleToMe;
+        }
+    }
+    // Self counts as same-team trivially (isLocalPlayer short-circuits
+    // before this is even reached in practice, but this covers it too).
+    bool IsSameTeamAsLocalPlayer()
+    {
+        if (isLocalPlayer) return true;
+        CharacterBase localCharacter = Manager.Player_List.Find(p => p != null && p.isLocalPlayer);
+        return localCharacter != null && localCharacter.TeamID == TeamID;
     }
     [TargetRpc]
     void TargetForceAutoBomb(NetworkConnection target, float duration)

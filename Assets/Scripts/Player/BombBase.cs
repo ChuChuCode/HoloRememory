@@ -46,6 +46,14 @@ public class BombBase : NetworkBehaviour
     // Bomb Push, SSRB's own chase hops) can re-register it without a
     // GetComponent lookup every time.
     protected GridCell gridCell;
+    // Captured at placement time (see OnStartServer) - a bomb can be placed
+    // on top of a Bush (it's excluded from GridManager.IsOccupied), and
+    // AddComponent<GridCell> below immediately overwrites the Bush's own
+    // registration at this coord, so by the time this bomb explodes,
+    // GridManager.TryGetCell(origin) would just find this bomb's own cell,
+    // never the Bush underneath it. Held directly instead of relying on
+    // that lookup, so SpawnExplosion can still burn it away.
+    BushBlock bushUnderneath;
 
     // Set on every peer (not just the server) - Rui's Hawk Eye runs entirely
     // on the caster's own client and needs this to compute FuseProgress()
@@ -86,6 +94,16 @@ public class BombBase : NetworkBehaviour
     public override void OnStartServer()
     {
         bombCollider.isTrigger = true; // ⭐ 關鍵
+
+        // Must read this BEFORE AddComponent<GridCell> below, which
+        // immediately registers this bomb's own cell at the same coord -
+        // see bushUnderneath's own comment.
+        Vector2Int coord = GridManager.Instance.WorldToGrid(transform.position);
+        if (GridManager.Instance.TryGetCell(coord, out GridCell existingCell) && existingCell.type == CellType.Bush)
+        {
+            bushUnderneath = existingCell.GetComponent<BushBlock>();
+        }
+
         // Register immediately (Spawn-time, not next-frame Start()) so a
         // rapid second CmdSpawnBomb can't sneak into the same cell first.
         gridCell = gameObject.AddComponent<GridCell>();
@@ -274,6 +292,10 @@ public class BombBase : NetworkBehaviour
         // rounded back to wherever it started.
         Vector2Int origin = gridCell.Coord;
         SpawnExplosionSegment(origin);
+        // A Bush this bomb was placed on top of (see bushUnderneath) never
+        // shows up in a GridManager lookup at this coord - placing the bomb
+        // already overwrote its registration. Burn it directly instead.
+        if (bushUnderneath != null) bushUnderneath.Break();
 
         // Side Explosion
         SideExoplosion(origin, Vector2Int.up);
@@ -358,6 +380,14 @@ public class BombBase : NetworkBehaviour
                     // Chain reaction: detonate it now instead of waiting for its own timer.
                     cell.GetComponent<BombBase>().SpawnExplosion();
                     return;
+                }
+
+                if (cell.type == CellType.Bush)
+                {
+                    // Unlike Destructible, doesn't stop the blast here -
+                    // grass burns but doesn't block it. Falls through to
+                    // SpawnExplosionSegment below and the loop keeps going.
+                    cell.GetComponent<BushBlock>().Break();
                 }
             }
 

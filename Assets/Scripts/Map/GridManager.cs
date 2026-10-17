@@ -56,13 +56,16 @@ public class GridManager : MonoBehaviour
         return cells.TryGetValue(coord, out cell);
     }
 
-    // Spawn/MinionSpawn markers don't block anything - only
-    // Wall/Destructible/Bomb do.
+    // Spawn/MinionSpawn/Bush markers don't block anything - only
+    // Wall/Destructible/Bomb do. Bush has a physical (trigger) collider so
+    // BushBlock can detect who's standing in it, but that's not a movement
+    // block, so it's excluded here the same as the non-blocking types.
     public bool IsOccupied(Vector2Int coord)
     {
         return TryGetCell(coord, out GridCell cell)
             && cell.type != CellType.Spawn
-            && cell.type != CellType.MinionSpawn;
+            && cell.type != CellType.MinionSpawn
+            && cell.type != CellType.Bush;
     }
 
     // Characters aren't registered as cells at all (by design - players
