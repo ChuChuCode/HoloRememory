@@ -8,6 +8,7 @@ using Steamworks;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization.Settings;
 using HR.Network.Lobby;
 
 namespace HR.Network{
@@ -26,6 +27,7 @@ public class SteamLobby : MonoBehaviour
     [Header("variables")]
     public ulong CurrentLobbyID;
     const string HostAddressKey = "HostAddress";
+    const string UITableName = "UI";
     // Published as Steam Lobby Data so the room *browser* (not yet joined,
     // so no Mirror/GameSettings sync) can still show map/mode per room.
     public const string MapKey = "Map";
@@ -100,6 +102,13 @@ public class SteamLobby : MonoBehaviour
                 : "Player's Lobby";
         }
     }
+    // config.DisplayName itself is no longer read here - the Key depends on
+    // config.mode instead, so every GameModeConfig shows a real translation
+    // (from the UI table) rather than whatever freeform text happens to be
+    // typed into that field. Re-populated every time this is called (see
+    // RefreshCreateRoomDefaults), so it naturally follows whatever the
+    // CURRENT language is - unlike Language_Component.GetNativeName, this
+    // one SHOULD translate into the active locale, not stay fixed.
     void PopulateModeDropdown()
     {
         if (HostModeDropdown == null || modeOptions == null) return;
@@ -107,20 +116,34 @@ public class SteamLobby : MonoBehaviour
         List<string> labels = new List<string>();
         foreach (GameModeConfig config in modeOptions)
         {
-            labels.Add(config != null ? config.DisplayName : "???");
+            labels.Add(config != null ? GetModeDisplayName(config.mode) : "???");
         }
         HostModeDropdown.AddOptions(labels);
     }
+    static string GetModeDisplayName(GameMode mode)
+    {
+        string key = mode switch
+        {
+            GameMode.OneLife => "game_mode_one_life",
+            GameMode.MultiLife => "game_mode_multi_life",
+            GameMode.HealthBar => "game_mode_health_mode",
+            _ => null
+        };
+        return key != null
+            ? LocalizationSettings.StringDatabase.GetLocalizedString(UITableName, key)
+            : mode.ToString();
+    }
     // Hardcoded, not data-driven like modeOptions - there's no asset behind
-    // "visibility", it's always exactly these 3 Steam lobby types. English
-    // labels deliberately - LiberationSans SDF (the project's TMP font) has
-    // no CJK glyphs, so Chinese text here would render as boxes in a build,
-    // same issue that got the character names romanized earlier.
+    // "visibility", it's always exactly these 3 Steam lobby types.
     void PopulateVisibilityDropdown()
     {
         if (HostVisibilityDropdown == null) return;
         HostVisibilityDropdown.ClearOptions();
-        HostVisibilityDropdown.AddOptions(new List<string> { "Public", "Friends Only", "Invite Only" });
+        HostVisibilityDropdown.AddOptions(new List<string> {
+            LocalizationSettings.StringDatabase.GetLocalizedString(UITableName, "room_visual_public"),
+            LocalizationSettings.StringDatabase.GetLocalizedString(UITableName, "room_visual_friends_only"),
+            LocalizationSettings.StringDatabase.GetLocalizedString(UITableName, "room_visual_invite_only"),
+        });
     }
     // Called by the Create Room screen's own Create button, not the
     // Multiplayer screen's Host button directly anymore - that button now
