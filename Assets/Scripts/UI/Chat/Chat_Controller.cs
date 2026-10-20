@@ -73,6 +73,12 @@ public class Chat_Controller : NetworkBehaviour
         // Set Parent
         newMessage.transform.SetParent(messageContent);
         newMessage.transform.localScale = Vector3.one;
+        // The Content's layout group/size fitter hasn't recalculated height
+        // yet at this point in the frame - without forcing a rebuild first,
+        // verticalNormalizedPosition gets applied against the stale (pre-new-
+        // message) content size and doesn't actually land at the bottom.
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)messageContent);
         scrollRect.verticalNormalizedPosition = 0;
     }
 }
