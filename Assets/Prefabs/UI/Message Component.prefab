@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 9144938801603909422}
   - component: {fileID: 1109889426488436223}
   - component: {fileID: 4132148745921775494}
-  - component: {fileID: 2257723440164573018}
   - component: {fileID: 5195665143361845077}
   m_Layer: 5
   m_Name: Message Text
@@ -34,10 +33,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 899615997292116734}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 240, y: 0}
-  m_SizeDelta: {x: 480, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1109889426488436223
 CanvasRenderer:
@@ -67,10 +66,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'User A : Hi'
+  m_text: 'User A : Hiadasdasdasdlsdljaslkdjaskldjaslkdjaskldjsakldjslkdjaslkdjsalkdj'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 1eafeb9a4739842149ad87e7ceaf02ab, type: 2}
+  m_sharedMaterial: {fileID: 249861636717715956, guid: 1eafeb9a4739842149ad87e7ceaf02ab, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -136,20 +135,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &2257723440164573018
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5652968694622939535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalFit: 0
-  m_VerticalFit: 2
 --- !u!114 &5195665143361845077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,6 +168,7 @@ GameObject:
   - component: {fileID: 9080160428719947257}
   - component: {fileID: 2248745379401725386}
   - component: {fileID: 2582088590408313291}
+  - component: {fileID: 3181291817909987485}
   m_Layer: 5
   m_Name: Message Component
   m_TagString: Untagged
@@ -207,8 +193,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 244, y: 0}
-  m_SizeDelta: {x: 480, y: 20}
+  m_AnchoredPosition: {x: 199.87695, y: 0}
+  m_SizeDelta: {x: 391.7539, y: 20}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &6533236236437168044
 CanvasRenderer:
@@ -280,10 +266,24 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 0
-  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &3181291817909987485
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9120511740470529306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
