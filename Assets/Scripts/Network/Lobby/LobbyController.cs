@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.SocialPlatforms;
 using Mirror;
 using HR.Network.Select;
+using UnityEngine.Localization.Settings;
 
 namespace HR.Network.Lobby{
 public class LobbyController : MonoBehaviour
@@ -77,6 +78,22 @@ public class LobbyController : MonoBehaviour
             Instance = this;
         }
     }
+    void OnEnable()
+    {
+        LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+    }
+    void OnDisable()
+    {
+        LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+    }
+    // Mode text and the Start/Ready/Unready button pull their label from the
+    // UI table at display time (see UpdateModeText/RefreshMainButton), so a
+    // locale switch while already sitting in the lobby needs to redraw both.
+    void OnLocaleChanged(UnityEngine.Localization.Locale locale)
+    {
+        UpdateModeText();
+        RefreshMainButton();
+    }
     void Start()
     {
         // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
@@ -86,7 +103,7 @@ public class LobbyController : MonoBehaviour
         foreach (CharacterSelectComponent characterSelectComponent in Manager.characterSelectComponentsList)
         {
             CharacterSelectItem item = Instantiate(CharacterPrefab);
-            item.SetCharacterData(characterSelectComponent.ID, characterSelectComponent.CharacterName, characterSelectComponent.CharacterImage, characterSelectComponent.SelectAudio);
+            item.SetCharacterData(characterSelectComponent.ID, characterSelectComponent.CharacterImage, characterSelectComponent.SelectAudio);
             item.transform.SetParent(CharacterSelectPanel);
             item.transform.localScale = Vector3.one;
             SelectItemList.Add(item);
@@ -157,7 +174,7 @@ public class LobbyController : MonoBehaviour
         if (ModeText == null || GameSettings.Instance == null) return;
         GameModeConfig config = GameSettings.Instance.CurrentConfig();
         Debug.Log($"[LobbyDebug] UpdateModeText: Mode={GameSettings.Instance.Mode}, config={(config != null ? config.DisplayName : "NULL (no matching GameModeConfig)")}");
-        ModeText.text = config != null ? config.DisplayName : GameSettings.Instance.Mode.ToString();
+        ModeText.text = SteamLobby.GetModeDisplayName(GameSettings.Instance.Mode);
     }
     // Left/Right Arrow Buttons - cycles through GameSettings.Configs in
     // order. The arrows should be in HostOnlyUI (see Start()), so only the
@@ -215,12 +232,13 @@ public class LobbyController : MonoBehaviour
 
         if (NetworkServer.active)
         {
-            if (ReadyButtonText != null) ReadyButtonText.text = "Start";
+            if (ReadyButtonText != null) ReadyButtonText.text = LocalizationSettings.StringDatabase.GetLocalizedString("UI", "lobby_start_button");
             ReadyButton.interactable = hasCharacter && AllReady;
         }
         else
         {
-            if (ReadyButtonText != null) ReadyButtonText.text = LocalPlayerController.Ready ? "Unready" : "Ready";
+            string key = LocalPlayerController.Ready ? "lobby_unready_button" : "lobby_ready_button";
+            if (ReadyButtonText != null) ReadyButtonText.text = LocalizationSettings.StringDatabase.GetLocalizedString("UI", key);
             ReadyButton.interactable = hasCharacter;
         }
     }

@@ -8,6 +8,7 @@ using Steamworks;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using HR.Network.Lobby;
 
@@ -65,6 +66,33 @@ public class SteamLobby : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        LocalizationSettings.SelectedLocaleChanged += OnLocaleChanged;
+    }
+    void OnDisable()
+    {
+        LocalizationSettings.SelectedLocaleChanged -= OnLocaleChanged;
+    }
+    // These two dropdowns are plain option lists built from code (not
+    // LocalizeStringEvent, which only tracks a single fixed string), so
+    // without this they'd only ever pick up a language change the NEXT
+    // time the Create Room panel happens to be reopened. Also the fix for
+    // the very first population below racing Language_Component's own
+    // async locale setup at startup - if that hasn't finished yet when
+    // Start() runs, this fires again the moment it actually does, instead
+    // of leaving English baked in until something else refreshes it.
+    void OnLocaleChanged(Locale locale)
+    {
+        PopulateModeDropdown();
+        PopulateVisibilityDropdown();
+        RefreshDefaultRoomName();
+    }
+    // Tracks our own last auto-filled value so a locale change can refresh
+    // it safely - RefreshDefaultRoomName below only overwrites the field if
+    // it still holds exactly this, never if the player's actually typed
+    // their own room name over it.
+    string lastAutoFilledRoomName;
     void Start()
     {
         // Best-effort - see RefreshCreateRoomDefaults for why this alone
@@ -95,12 +123,28 @@ public class SteamLobby : MonoBehaviour
     {
         PopulateModeDropdown();
         PopulateVisibilityDropdown();
-        if (HostRoomNameInput != null && string.IsNullOrEmpty(HostRoomNameInput.text))
-        {
-            HostRoomNameInput.text = SteamManager.Initialized
-                ? SteamFriends.GetPersonaName() + "'s Lobby"
-                : "Player's Lobby";
-        }
+        RefreshDefaultRoomName();
+    }
+    // Only overwrites the field if it's empty (fresh open - nothing typed
+    // yet) or still holds exactly what WE put there last time (a locale
+    // change since then) - never touches an actual player-typed room name.
+    void RefreshDefaultRoomName()
+    {
+        if (HostRoomNameInput == null) return;
+        if (!string.IsNullOrEmpty(HostRoomNameInput.text) && HostRoomNameInput.text != lastAutoFilledRoomName) return;
+
+        string playerName = SteamManager.Initialized
+            ? SteamFriends.GetPersonaName()
+            : LocalizationSettings.StringDatabase.GetLocalizedString(UITableName, "generic_player_name");
+        // "{0}'s Lobby" as a format template, not string-concatenation -
+        // where the possessive goes relative to the name isn't the same in
+        // every language (see the Key's own comment in the CSV). Wrapped in
+        // a List<object> (not passed bare) to land on the IList<object>
+        // overload - passed positionally as a lone string, the compiler
+        // binds it to the optional Locale parameter instead of the
+        // trailing params arguments.
+        lastAutoFilledRoomName = LocalizationSettings.StringDatabase.GetLocalizedString(UITableName, "create_room_default_name", new List<object> { playerName });
+        HostRoomNameInput.text = lastAutoFilledRoomName;
     }
     // config.DisplayName itself is no longer read here - the Key depends on
     // config.mode instead, so every GameModeConfig shows a real translation
@@ -120,7 +164,7 @@ public class SteamLobby : MonoBehaviour
         }
         HostModeDropdown.AddOptions(labels);
     }
-    static string GetModeDisplayName(GameMode mode)
+    public static string GetModeDisplayName(GameMode mode)
     {
         string key = mode switch
         {

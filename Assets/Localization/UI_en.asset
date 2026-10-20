@@ -146,6 +146,98 @@ MonoBehaviour:
     m_Localized: Create
     m_Metadata:
       m_Items: []
+  - m_Id: 2233059989512192
+    m_Localized: '{0}''s Lobby'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2233060069203968
+    m_Localized: Player
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2237301819170816
+    m_Localized: Mode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2237301882085376
+    m_Localized: Time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2237301882085377
+    m_Localized: Ready
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2237301890473984
+    m_Localized: Option
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2237301890473985
+    m_Localized: Send
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2938933401870336
+    m_Localized: Unready
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2938933443813376
+    m_Localized: Start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2953170694168576
+    m_Localized: Korone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805445124096
+    m_Localized: Botan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805457707008
+    m_Localized: Watame
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805457707009
+    m_Localized: Rui
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805457707010
+    m_Localized: Noel
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805461901312
+    m_Localized: Kronii
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805461901313
+    m_Localized: Miko
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805466095616
+    m_Localized: Jump
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805466095617
+    m_Localized: SSRB
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805466095618
+    m_Localized: Bomb Push
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805466095619
+    m_Localized: Hawk Eye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805466095620
+    m_Localized: Muscle Throw
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805470289920
+    m_Localized: Time Rewind
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2954805470289921
+    m_Localized: Blaze
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
