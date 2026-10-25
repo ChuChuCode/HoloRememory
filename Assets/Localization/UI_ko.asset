@@ -182,6 +182,54 @@ MonoBehaviour:
     m_Localized: "\uC2DC\uC791"
     m_Metadata:
       m_Items: []
+  - m_Id: 4744694679461888
+    m_Localized: Key Bindings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239104
+    m_Localized: Key Bindings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239105
+    m_Localized: "\uC704"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239106
+    m_Localized: "\uC544\uB798"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239107
+    m_Localized: "\uC67C\uCABD"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239108
+    m_Localized: "\uC624\uB978\uCABD"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239109
+    m_Localized: "\uD3ED\uD0C4 \uC124\uCE58"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239110
+    m_Localized: "\uC2A4\uD0AC"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239111
+    m_Localized: Rebind
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239112
+    m_Localized: Press key
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239113
+    m_Localized: In use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4744694696239114
+    m_Localized: Reset to Default
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

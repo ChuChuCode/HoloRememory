@@ -15,6 +15,7 @@ public class InputComponent : MonoBehaviour
     {
         DontDestroyOnLoad(this);
         playerInput = new PlayerInputActions();
+        KeyBindingManager.LoadOverrides(playerInput);
         if (instance == null) instance = this;
         if (instance != this) Destroy(gameObject);
     }
@@ -28,6 +29,7 @@ public class InputComponent : MonoBehaviour
     {
         playerInput.Dispose();
         playerInput = new PlayerInputActions();
+        KeyBindingManager.LoadOverrides(playerInput);
         playerInput.Enable();
     }
 }

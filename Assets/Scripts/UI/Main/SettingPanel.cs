@@ -8,6 +8,9 @@ namespace HR.UI{
 public class SettingPanel : MonoBehaviour
 {
     [SerializeField] GameObject Main_UI;
+    // The Key Bindings screen - a separate panel rather than squeezed into
+    // this one, see OpenKeyBindPanel/KeyBindPanel.Back.
+    [SerializeField] GameObject keyBindPanel;
     [Header("Setting Object")]
     public Slider Master;
     public Slider Music;
@@ -103,6 +106,15 @@ public class SettingPanel : MonoBehaviour
     {
         Main_UI.SetActive(true);
         gameObject.SetActive(false);
+    }
+    // "Key Bindings" button's OnClick (wire up in the Inspector) - doesn't
+    // touch Main_UI, just swaps this panel for the Key Bindings one.
+    // KeyBindPanel.Back() swaps back the same way.
+    public void OpenKeyBindPanel()
+    {
+        if (keyBindPanel == null) return;
+        gameObject.SetActive(false);
+        keyBindPanel.SetActive(true);
     }
 }
 

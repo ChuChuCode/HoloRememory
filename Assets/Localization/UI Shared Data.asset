@@ -323,6 +323,66 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 7773370654763515928
+  - m_Id: 4744694679461888
+    m_Key: keybind_panel_button
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160962
+  - m_Id: 4744694696239104
+    m_Key: keybind_title
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160963
+  - m_Id: 4744694696239105
+    m_Key: keybind_move_up
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160964
+  - m_Id: 4744694696239106
+    m_Key: keybind_move_down
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160965
+  - m_Id: 4744694696239107
+    m_Key: keybind_move_left
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160966
+  - m_Id: 4744694696239108
+    m_Key: keybind_move_right
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160967
+  - m_Id: 4744694696239109
+    m_Key: keybind_bomb
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160968
+  - m_Id: 4744694696239110
+    m_Key: keybind_skill
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160969
+  - m_Id: 4744694696239111
+    m_Key: keybind_rebind_button
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160970
+  - m_Id: 4744694696239112
+    m_Key: keybind_press_any_key
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160971
+  - m_Id: 4744694696239113
+    m_Key: keybind_duplicate_warning
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160972
+  - m_Id: 4744694696239114
+    m_Key: keybind_reset_button
+    m_Metadata:
+      m_Items:
+      - rid: 7773370703109160973
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -585,3 +645,51 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: "\u89D2\u8272\u8A73\u60C5\u9762\u677F:Miko\u6280\u80FD\u8AAA\u660E\u6587\u5B57,\u76EE\u524D\u7121\u73FE\u6210\u5167\u5BB9,\u5F85\u88DC"
+    - rid: 7773370703109160962
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "Settings \u9762\u677F:\u958B\u555F\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762\u7684\u6309\u9215,\u9375\u76E4\u6309\u9375\u56FA\u5B9A\u7528\u82F1\u6587,\u56DB\u8A9E\u8A00\u90FD\u540C\u4E00\u4EFD\u82F1\u6587\u5167\u5BB9,\u4E0D\u5206\u8A9E\u8A00"
+    - rid: 7773370703109160963
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u6A19\u984C,\u56FA\u5B9A\u7528\u82F1\u6587,\u56DB\u8A9E\u8A00\u90FD\u540C\u4E00\u4EFD\u82F1\u6587\u5167\u5BB9"
+    - rid: 7773370703109160964
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u4E0A\u79FB\u52D5,\u52D5\u4F5C\u540D\u7A31,\u8DDF\u5176\u4ED6UI\u4E00\u6A23\u9700\u8981\u7FFB\u8B6F"
+    - rid: 7773370703109160965
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u4E0B\u79FB\u52D5,\u52D5\u4F5C\u540D\u7A31,\u8DDF\u5176\u4ED6UI\u4E00\u6A23\u9700\u8981\u7FFB\u8B6F"
+    - rid: 7773370703109160966
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u5DE6\u79FB\u52D5,\u52D5\u4F5C\u540D\u7A31,\u8DDF\u5176\u4ED6UI\u4E00\u6A23\u9700\u8981\u7FFB\u8B6F"
+    - rid: 7773370703109160967
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u53F3\u79FB\u52D5,\u52D5\u4F5C\u540D\u7A31,\u8DDF\u5176\u4ED6UI\u4E00\u6A23\u9700\u8981\u7FFB\u8B6F"
+    - rid: 7773370703109160968
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u653E\u7F6E\u70B8\u5F48,\u52D5\u4F5C\u540D\u7A31,\u8DDF\u5176\u4ED6UI\u4E00\u6A23\u9700\u8981\u7FFB\u8B6F"
+    - rid: 7773370703109160969
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u6280\u80FD,\u52D5\u4F5C\u540D\u7A31,\u8DDF\u5176\u4ED6UI\u4E00\u6A23\u9700\u8981\u7FFB\u8B6F"
+    - rid: 7773370703109160970
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u91CD\u65B0\u7D81\u5B9A\u6309\u9215\u9810\u8A2D\u6587\u5B57,\u56FA\u5B9A\u7528\u82F1\u6587,\u56DB\u8A9E\u8A00\u90FD\u540C\u4E00\u4EFD\u82F1\u6587\u5167\u5BB9"
+    - rid: 7773370703109160971
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u7B49\u5F85\u73A9\u5BB6\u6309\u4E0B\u6309\u9375\u6642\u986F\u793A\u7684\u6587\u5B57(\u6309\u9215\u7A7A\u9593\u5C0F,\u9700\u7C21\u77ED),\u56FA\u5B9A\u7528\u82F1\u6587,\u56DB\u8A9E\u8A00\u90FD\u540C\u4E00\u4EFD\u82F1\u6587\u5167\u5BB9"
+    - rid: 7773370703109160972
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u6309\u9375\u5DF2\u88AB\u5176\u4ED6\u52D5\u4F5C\u4F54\u7528\u6642\u77ED\u66AB\u986F\u793A\u7684\u8B66\u544A\u6587\u5B57(\u6309\u9215\u7A7A\u9593\u5C0F,\u9700\u7C21\u77ED),\u56FA\u5B9A\u7528\u82F1\u6587,\u56DB\u8A9E\u8A00\u90FD\u540C\u4E00\u4EFD\u82F1\u6587\u5167\u5BB9"
+    - rid: 7773370703109160973
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u91CD\u8A2D\u70BA\u9810\u8A2D\u503C\u6309\u9215,\u56FA\u5B9A\u7528\u82F1\u6587,\u56DB\u8A9E\u8A00\u90FD\u540C\u4E00\u4EFD\u82F1\u6587\u5167\u5BB9"
