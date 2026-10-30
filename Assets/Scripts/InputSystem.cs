@@ -16,6 +16,10 @@ public class InputComponent : MonoBehaviour
         DontDestroyOnLoad(this);
         playerInput = new PlayerInputActions();
         KeyBindingManager.LoadOverrides(playerInput);
+        // Unlike Player (only enabled while a character exists - see
+        // CharacterBase.OnEnable/OnDisable), UI navigation needs to work
+        // from the Main Menu onward, before any character is ever spawned.
+        playerInput.UI.Enable();
         if (instance == null) instance = this;
         if (instance != this) Destroy(gameObject);
     }

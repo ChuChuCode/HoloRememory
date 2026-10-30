@@ -196,13 +196,20 @@ public abstract class CharacterBase: Health
         // OnLivesChanged), so showing briefly-blank here is self-correcting.
         GameHUDManager.Instance?.RefreshAll();
     }
-    protected virtual void OnEnable() 
+    protected virtual void OnEnable()
     {
         InputComponent.instance.playerInput.Player.Enable();
+        // UI map (always-on from the Main Menu onward - see InputComponent)
+        // shares Arrow/Escape with Player's Move/Option composites. With a
+        // character alive, those keys are gameplay's to interpret - no
+        // in-match panel uses mouse/keyboard UI navigation, so UI can stay
+        // off entirely until this character is gone.
+        InputComponent.instance.playerInput.UI.Disable();
     }
     protected virtual void OnDisable()
     {
         InputComponent.instance.playerInput.Player.Disable();
+        InputComponent.instance.playerInput.UI.Enable();
     }
     protected virtual void Start()
     {
