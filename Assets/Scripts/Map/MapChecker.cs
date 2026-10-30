@@ -20,6 +20,14 @@ public class MapChecker : MonoBehaviour
     {
         string sceneName = gameObject.scene.name;
 
+        // Checked first so a bad text map (Game_Map_Runtime) reports its
+        // actual root cause instead of just the knock-on "no spawns
+        // registered" symptom below.
+        if (MapLoader.LastError != null)
+        {
+            Debug.LogError($"[{sceneName}] Map text failed to load: {MapLoader.LastError}", this);
+        }
+
         GridManager gridManager = FindObjectOfType<GridManager>();
         if (gridManager == null)
         {

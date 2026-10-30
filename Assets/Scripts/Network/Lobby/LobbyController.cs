@@ -333,11 +333,11 @@ public class LobbyController : MonoBehaviour
         List<MapConfig> maps = Manager.mapConfigList;
         if (maps == null || maps.Count == 0) return;
 
-        int currentIndex = maps.FindIndex(c => c.SceneName == GameSettings.Instance.MapName);
+        int currentIndex = maps.FindIndex(c => c.MapId == GameSettings.Instance.MapName);
         if (currentIndex == -1) currentIndex = 0;
 
         int nextIndex = (currentIndex + direction + maps.Count) % maps.Count;
-        change_map(maps[nextIndex].SceneName);
+        change_map(maps[nextIndex].MapId);
     }
     // Map Button - host-only; synced to everyone via GameSettings.MapName.
     public void change_map(string mapName)
@@ -351,8 +351,8 @@ public class LobbyController : MonoBehaviour
         Debug.Log($"[LobbyDebug] UpdateMapText: GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "NULL")}");
         if (GameSettings.Instance == null) return;
         List<MapConfig> maps = Manager.mapConfigList;
-        MapConfig current = maps != null ? maps.Find(c => c.SceneName == GameSettings.Instance.MapName) : null;
-        Debug.Log($"[LobbyDebug] UpdateMapText: mapConfigList.Count={(maps != null ? maps.Count : -1)}, GameSettings.MapName='{GameSettings.Instance.MapName}', matchedCurrent={(current != null ? current.DisplayName : "NULL (no MapConfig.SceneName matches MapName)")}");
+        MapConfig current = maps != null ? maps.Find(c => c.MapId == GameSettings.Instance.MapName) : null;
+        Debug.Log($"[LobbyDebug] UpdateMapText: mapConfigList.Count={(maps != null ? maps.Count : -1)}, GameSettings.MapName='{GameSettings.Instance.MapName}', matchedCurrent={(current != null ? current.DisplayName : "NULL (no MapConfig.MapId matches MapName)")}");
         RefreshMapCarousel(maps, current);
     }
     // GameSettings is a scene-placed NetworkIdentity - the log confirmed its

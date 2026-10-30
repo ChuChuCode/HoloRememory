@@ -11,8 +11,14 @@ public class GameSettings : NetworkBehaviour
 
     [SyncVar(hook = nameof(OnModeChanged))] public GameMode Mode = GameMode.OneLife;
 
-    // Synced (not just host-local) so every client's map UI actually shows
-    // what the host picked, not just the host's own screen.
+    // A MapConfig.MapId (not a literal Unity scene name, despite the field
+    // name - kept as-is since it's already wired through this SyncVar/hook/
+    // SteamLobby's lobby-data sync, and renaming buys nothing functionally).
+    // Network_Manager.ChangeScene looks up the matching MapConfig to decide
+    // which actual scene to load (its own Scene, or the shared
+    // Game_Map_Runtime for a text-file map). Synced (not just host-local) so
+    // every client's map UI actually shows what the host picked, not just
+    // the host's own screen.
     [SyncVar(hook = nameof(OnMapChanged))] public string MapName = "Game_Test_Scene";
 
     // TODO: fixed at 3:00 for now, not host-adjustable yet - same default on

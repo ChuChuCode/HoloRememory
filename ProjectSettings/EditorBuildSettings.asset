@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Game_Test_Scene.unity
     guid: ff53c976351cde54b841818d7f9b9275
   - enabled: 1
+    path: Assets/Scenes/Game_Map_Runtime.unity
+    guid: 94f46c16bd654f7c8fe553b615707038
+  - enabled: 1
     path: Assets/Scenes/Result_Scene.unity
     guid: 5a55ab86e2387cf4082a490ad48e5d77
   m_configObjects:

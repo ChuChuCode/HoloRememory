@@ -365,11 +365,20 @@ public class Network_Manager : NetworkManager
             Player_List.Clear();
         }
     }
-    // Server Change Scene
-    public void ChangeScene(string SceneName)
+    // Server Change Scene - mapId is a MapConfig.MapId (see
+    // GameSettings.MapName's comment), not necessarily a literal scene name:
+    // a text-file map resolves to the shared Game_Map_Runtime scene, a
+    // legacy baked map resolves to its own MapConfig.SceneName. Falls back to
+    // treating mapId as a literal scene name directly (e.g. "Lobby_Scene",
+    // which has no MapConfig at all) when no MapConfig matches.
+    public void ChangeScene(string mapId)
     {
-        print($"Change Scene to : {SceneName}");
-        ServerChangeScene(SceneName);
+        MapConfig config = mapConfigList.Find(c => c.MapId == mapId);
+        string sceneToLoad = config != null
+            ? (config.MapFile != null ? "Game_Map_Runtime" : config.SceneName)
+            : mapId;
+        print($"Change Scene to : {sceneToLoad}");
+        ServerChangeScene(sceneToLoad);
     }
     // Called (server-only) whenever a player dies - FFA, so TeamID is really
     // just each player's unique slot; this ends the game once at most one

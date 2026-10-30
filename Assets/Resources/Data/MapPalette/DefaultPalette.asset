@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cce6c9a18664db48a85f408c3297831, type: 3}
+  m_Name: DefaultPalette
+  m_EditorClassIdentifier:
+  FloorPrefab: {fileID: 3198056832511701744, guid: dbf4fc80f6f2f492383497f32b98a814, type: 3}
+  WallPrefab: {fileID: 3153130283235538625, guid: ddf05e180004245388b3d7982a98bd2d, type: 3}
+  DestructiblePrefab: {fileID: 337296182763580881, guid: c60ec1df382274ccaaff9650404ed337, type: 3}
+  BushPrefab: {fileID: 3566844430930781413, guid: 39585cb0a7df84d36bdf68a387fad39d, type: 3}
+  SpawnMarkerPrefab: {fileID: 0}
+  MinionSpawnMarkerPrefab: {fileID: 0}
