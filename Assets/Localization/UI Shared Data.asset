@@ -363,6 +363,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 7773370703109160969
+  - m_Id: 5111042756567040
+    m_Key: keybind_cancel
+    m_Metadata:
+      m_Items:
+      - rid: 7773370792698445826
   - m_Id: 4744694696239111
     m_Key: keybind_rebind_button
     m_Metadata:
@@ -693,3 +698,7 @@ MonoBehaviour:
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
         m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:\u91CD\u8A2D\u70BA\u9810\u8A2D\u503C\u6309\u9215,\u56FA\u5B9A\u7528\u82F1\u6587,\u56DB\u8A9E\u8A00\u90FD\u540C\u4E00\u4EFD\u82F1\u6587\u5167\u5BB9"
+    - rid: 7773370792698445826
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6309\u9375\u91CD\u7D81\u5B9A\u756B\u9762:Option\u52D5\u4F5C(\u66AB\u505C/\u96E2\u958B\u9078\u55AE),\u52D5\u4F5C\u540D\u7A31,\u8DDF\u5176\u4ED6UI\u4E00\u6A23\u9700\u8981\u7FFB\u8B6F"

@@ -286,6 +286,10 @@ MonoBehaviour:
     m_Localized: Reset to Default
     m_Metadata:
       m_Items: []
+  - m_Id: 5111042756567040
+    m_Localized: Cancel
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

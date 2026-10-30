@@ -69,6 +69,7 @@ Key,Id,Shared Comments,Chinese (Traditional)(zh-TW),Chinese (Traditional)(zh-TW)
 "keybind_move_right",,"按鍵重綁定畫面:右移動,動作名稱,跟其他UI一樣需要翻譯","右","","Right","","右","","오른쪽",""
 "keybind_bomb",,"按鍵重綁定畫面:放置炸彈,動作名稱,跟其他UI一樣需要翻譯","放置炸彈","","Bomb","","爆弾設置","","폭탄 설치",""
 "keybind_skill",,"按鍵重綁定畫面:技能,動作名稱,跟其他UI一樣需要翻譯","技能","","Skill","","スキル","","스킬",""
+"keybind_cancel",,"按鍵重綁定畫面:Option動作(暫停/離開選單),動作名稱,跟其他UI一樣需要翻譯","取消","","Cancel","","キャンセル","","취소",""
 "keybind_rebind_button",,"按鍵重綁定畫面:重新綁定按鈕預設文字,固定用英文,四語言都同一份英文內容","Rebind","","Rebind","","Rebind","","Rebind",""
 "keybind_press_any_key",,"按鍵重綁定畫面:等待玩家按下按鍵時顯示的文字(按鈕空間小,需簡短),固定用英文,四語言都同一份英文內容","Press key","","Press key","","Press key","","Press key",""
 "keybind_duplicate_warning",,"按鍵重綁定畫面:按鍵已被其他動作佔用時短暫顯示的警告文字(按鈕空間小,需簡短),固定用英文,四語言都同一份英文內容","In use","","In use","","In use","","In use",""
