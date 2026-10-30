@@ -20,6 +20,11 @@ public class KeyBindingManager : MonoBehaviour
     // leaving its action disabled and its row stuck on "Press key".
     InputActionRebindingExtensions.RebindingOperation activeRebind;
 
+    // KeyBindPanel checks this before letting Esc close the whole panel -
+    // while a rebind is waiting on a key press, Esc should only cancel that
+    // rebind (via WithCancelingThrough below), not also back out of the panel.
+    public bool IsRebinding => activeRebind != null;
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -98,6 +103,10 @@ public class KeyBindingManager : MonoBehaviour
         action.Disable();
         activeRebind = action.PerformInteractiveRebinding(bindingIndex)
             .WithControlsExcluding("Mouse")
+            // Escape is reserved for cancel (both here and backing out of
+            // panels) - never offer it as a new binding for anything else,
+            // which would make it ambiguous with the cancel-through below.
+            .WithControlsExcluding("<Keyboard>/escape")
             .WithCancelingThrough("<Keyboard>/escape")
             .WithExpectedControlType("Button")
             .OnMatchWaitForAnother(0.05f)
@@ -149,16 +158,25 @@ public class KeyBindingManager : MonoBehaviour
         return false;
     }
 
+    // The raw control path segment (e.g. "e", "space", "upArrow") - used
+    // both as the key into KeyIconSet and as input to GetKeyDisplayName's
+    // text fallback. Kept separate from effectivePath's full "<Keyboard>/e"
+    // form so callers never need to know that format.
+    public static string GetControlName(InputAction action, int bindingIndex)
+    {
+        string path = action.bindings[bindingIndex].effectivePath;
+        return path.Substring(path.LastIndexOf('/') + 1);
+    }
+
     // GetBindingDisplayString() resolves the OS's current keyboard layout -
     // on a system with a CJK IME/layout active (e.g. Zhuyin on Taiwan
     // keyboards), that shows the IME's symbol for the key instead of the
     // plain English letter. Building the display name straight from the
     // binding path instead keeps it as a fixed "E"/"Space"/etc. regardless
-    // of the player's OS keyboard layout or active IME.
-    public static string GetKeyDisplayName(InputAction action, int bindingIndex)
+    // of the player's OS keyboard layout or active IME. Only used as a
+    // fallback when KeyIconSet has no icon for this control.
+    public static string GetKeyDisplayName(string control)
     {
-        string path = action.bindings[bindingIndex].effectivePath;
-        string control = path.Substring(path.LastIndexOf('/') + 1);
         switch (control)
         {
             case "space": return "Space";

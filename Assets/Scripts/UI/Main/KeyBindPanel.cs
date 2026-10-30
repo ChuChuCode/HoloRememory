@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using HR.Global;
 
 namespace HR.UI.Main{
@@ -50,6 +51,18 @@ public class KeyBindPanel : MonoBehaviour
             KeyBindComponent row = child.GetComponent<KeyBindComponent>();
             if (row != null) row.RefreshDisplay();
         }
+    }
+
+    // Polled directly against Keyboard.current (rather than the Player
+    // action map's Option action) since this panel can be open from the
+    // Main Menu/Lobby before any player/character exists to have that map
+    // enabled. Skipped while a row is actively waiting on a key press, so
+    // that Esc only cancels the rebind (see KeyBindingManager.StartRebind's
+    // WithCancelingThrough) instead of also closing the whole panel.
+    void Update()
+    {
+        if (KeyBindingManager.Instance != null && KeyBindingManager.Instance.IsRebinding) return;
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) Back();
     }
 
     // Hooked up to this panel's Back button in the Inspector.

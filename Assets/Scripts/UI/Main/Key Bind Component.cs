@@ -15,11 +15,17 @@ public class KeyBindComponent : MonoBehaviour
 
     [SerializeField] TMP_Text actionLabelText;
     [SerializeField] TMP_Text currentKeyText;
+    [SerializeField] Image currentKeyIcon;
     [SerializeField] Button rebindButton;
     [SerializeField] TMP_Text rebindButtonText;
 
     BindableKey boundKey;
     string actionLabelKey;
+
+    // Loaded once and shared across every row - not per-prefab wired, see
+    // KeyIconSet's own comment.
+    static KeyIconSet iconSet;
+    static KeyIconSet IconSet => iconSet != null ? iconSet : (iconSet = Resources.Load<KeyIconSet>("KeyIconSet"));
 
     public void Setup(BindableKey key, string labelKey)
     {
@@ -30,14 +36,36 @@ public class KeyBindComponent : MonoBehaviour
         RefreshDisplay();
     }
 
-    // Re-reads the bound action's display string - called after Setup, and
-    // again after a rebind/reset so this row reflects the latest binding.
+    // Re-reads the bound action's icon/display string - called after Setup,
+    // and again after a rebind/reset so this row reflects the latest
+    // binding. Prefers an icon from KeyIconSet; falls back to text for any
+    // control the icon set doesn't cover (e.g. an uncommon key the player
+    // rebound to).
     public void RefreshDisplay()
     {
         (var action, int bindingIndex) = KeyBindingManager.Instance.Resolve(boundKey);
-        if (currentKeyText != null && action != null && bindingIndex >= 0)
+        if (action == null || bindingIndex < 0) return;
+
+        string control = KeyBindingManager.GetControlName(action, bindingIndex);
+        Sprite icon = IconSet != null ? IconSet.GetIcon(control) : null;
+
+        if (icon != null)
         {
-            currentKeyText.text = KeyBindingManager.GetKeyDisplayName(action, bindingIndex);
+            if (currentKeyIcon != null)
+            {
+                currentKeyIcon.sprite = icon;
+                currentKeyIcon.gameObject.SetActive(true);
+            }
+            if (currentKeyText != null) currentKeyText.gameObject.SetActive(false);
+        }
+        else
+        {
+            if (currentKeyIcon != null) currentKeyIcon.gameObject.SetActive(false);
+            if (currentKeyText != null)
+            {
+                currentKeyText.gameObject.SetActive(true);
+                currentKeyText.text = KeyBindingManager.GetKeyDisplayName(control);
+            }
         }
     }
 

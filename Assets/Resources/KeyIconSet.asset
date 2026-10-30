@@ -1,0 +1,117 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d60ea7e7916a42179a438284dd785679, type: 3}
+  m_Name: KeyIconSet
+  m_EditorClassIdentifier: 
+  Icons:
+  - ControlName: a
+    Icon: {fileID: 21300000, guid: c2632f02868b843749a73d3338a8985d, type: 3}
+  - ControlName: b
+    Icon: {fileID: 21300000, guid: 68a933dc040dd42e1875338f3df93e9c, type: 3}
+  - ControlName: c
+    Icon: {fileID: 21300000, guid: 2e076fdaf540d41bb9dac862c1eaaae0, type: 3}
+  - ControlName: d
+    Icon: {fileID: 21300000, guid: 6642f729b39a44d84995f5ee2b8ce1f6, type: 3}
+  - ControlName: e
+    Icon: {fileID: 21300000, guid: 5f06fead61b2c4d2c9609040e48e9cda, type: 3}
+  - ControlName: f
+    Icon: {fileID: 21300000, guid: 1876c085bf01146468c9551070d93f4c, type: 3}
+  - ControlName: g
+    Icon: {fileID: 21300000, guid: c7dd91e21feb84fb3ab3a8a027c27456, type: 3}
+  - ControlName: h
+    Icon: {fileID: 21300000, guid: 1d7d938c7759643529adaaa3fdaa6227, type: 3}
+  - ControlName: i
+    Icon: {fileID: 21300000, guid: 0dc4333e505524e72a2b32d659b0b427, type: 3}
+  - ControlName: j
+    Icon: {fileID: 21300000, guid: 85a6dbbdfb2ac4f4e90a50ca3d9a0fb4, type: 3}
+  - ControlName: k
+    Icon: {fileID: 21300000, guid: 4ca71766a2b06465d95a9a0d267c1248, type: 3}
+  - ControlName: l
+    Icon: {fileID: 21300000, guid: 933748a7decc74f7aa345034b1c3278d, type: 3}
+  - ControlName: m
+    Icon: {fileID: 21300000, guid: 616a3814af5c3458780a73310afb9857, type: 3}
+  - ControlName: n
+    Icon: {fileID: 21300000, guid: 3c8a4c6224b804f9586ee61b70820c09, type: 3}
+  - ControlName: o
+    Icon: {fileID: 21300000, guid: d449f405dd7724f5ba878df4ad3f294a, type: 3}
+  - ControlName: p
+    Icon: {fileID: 21300000, guid: 8c6ff22dedf5043db944ec47632e943d, type: 3}
+  - ControlName: q
+    Icon: {fileID: 21300000, guid: 2ac12395c6bba47cebf448d3cc9618ff, type: 3}
+  - ControlName: r
+    Icon: {fileID: 21300000, guid: acd865a3c3e4a468280f2b0a0109be7f, type: 3}
+  - ControlName: s
+    Icon: {fileID: 21300000, guid: cbb9656768c044b22b6ef645f16bad2d, type: 3}
+  - ControlName: t
+    Icon: {fileID: 21300000, guid: c5596965e60124572ab0ee96d73472ee, type: 3}
+  - ControlName: u
+    Icon: {fileID: 21300000, guid: b0551e9b08392458ebf310392251d5fe, type: 3}
+  - ControlName: v
+    Icon: {fileID: 21300000, guid: 91f2499663fdb4d9194edf8b8a6d57e7, type: 3}
+  - ControlName: w
+    Icon: {fileID: 21300000, guid: 60dfa87a25c414eb29281f8aab67f1de, type: 3}
+  - ControlName: x
+    Icon: {fileID: 21300000, guid: aab82c3d3e37b4337b3cf32c8d1cc000, type: 3}
+  - ControlName: y
+    Icon: {fileID: 21300000, guid: e489d5b7d442641029c4e9672304da1c, type: 3}
+  - ControlName: z
+    Icon: {fileID: 21300000, guid: 49c2042edb7ab4d2fb98b2b3e1e75b6f, type: 3}
+  - ControlName: 0
+    Icon: {fileID: 21300000, guid: b96309eb69a2e44b78b224c27c91c142, type: 3}
+  - ControlName: 1
+    Icon: {fileID: 21300000, guid: 02aa99010293b4ac080e9ca0d8fd00aa, type: 3}
+  - ControlName: 2
+    Icon: {fileID: 21300000, guid: f4952f2c01f65437fa1b32494282aae9, type: 3}
+  - ControlName: 3
+    Icon: {fileID: 21300000, guid: be72b047ce0354641b83a5e180fe1439, type: 3}
+  - ControlName: 4
+    Icon: {fileID: 21300000, guid: d670d180d5c334b518ba10f55881c23e, type: 3}
+  - ControlName: 5
+    Icon: {fileID: 21300000, guid: cc8620052c7d847568142d2d02aac97f, type: 3}
+  - ControlName: 6
+    Icon: {fileID: 21300000, guid: 2b3979457f8c241aa8672820364eb165, type: 3}
+  - ControlName: 7
+    Icon: {fileID: 21300000, guid: 4d1e9a8414f7f4de3b539f2c9a0a440a, type: 3}
+  - ControlName: 8
+    Icon: {fileID: 21300000, guid: bcffb04b423e24e48b3f8024aadf6240, type: 3}
+  - ControlName: 9
+    Icon: {fileID: 21300000, guid: 5af6249426fd94a5ab692a347f9e884f, type: 3}
+  - ControlName: space
+    Icon: {fileID: 21300000, guid: bdc368fcf2950418ab995b0c6255b226, type: 3}
+  - ControlName: escape
+    Icon: {fileID: 21300000, guid: ba399da0591e547578fa8b9afa87e733, type: 3}
+  - ControlName: enter
+    Icon: {fileID: 21300000, guid: d4dfb54b42ecc41d5a917dfbfaa7f90d, type: 3}
+  - ControlName: tab
+    Icon: {fileID: 21300000, guid: aeaebed60116f4f579828b410cf35973, type: 3}
+  - ControlName: backspace
+    Icon: {fileID: 21300000, guid: 6d1ad1cd6036f43f6aff848bd446cbbf, type: 3}
+  - ControlName: leftShift
+    Icon: {fileID: 21300000, guid: 2fbb9190664c04404a42ad86dd140437, type: 3}
+  - ControlName: rightShift
+    Icon: {fileID: 21300000, guid: 2fbb9190664c04404a42ad86dd140437, type: 3}
+  - ControlName: leftCtrl
+    Icon: {fileID: 21300000, guid: 8678e24d7934b40378da1a7183df3ab7, type: 3}
+  - ControlName: rightCtrl
+    Icon: {fileID: 21300000, guid: 8678e24d7934b40378da1a7183df3ab7, type: 3}
+  - ControlName: leftAlt
+    Icon: {fileID: 21300000, guid: dffc8e1f32a8647cbb0d0bff2f9febfb, type: 3}
+  - ControlName: rightAlt
+    Icon: {fileID: 21300000, guid: dffc8e1f32a8647cbb0d0bff2f9febfb, type: 3}
+  - ControlName: upArrow
+    Icon: {fileID: 21300000, guid: 387a43eba97644c2d94d244bb3999f63, type: 3}
+  - ControlName: downArrow
+    Icon: {fileID: 21300000, guid: f674f41f9b6564b6da5108965f530354, type: 3}
+  - ControlName: leftArrow
+    Icon: {fileID: 21300000, guid: 30e5f979aa14e433495bd5e9f2c2b382, type: 3}
+  - ControlName: rightArrow
+    Icon: {fileID: 21300000, guid: 7338bf325f54b4bd690c229c8f00147a, type: 3}
