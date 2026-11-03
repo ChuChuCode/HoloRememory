@@ -193,6 +193,11 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 7773370572105842693
+  - m_Id: 7995123055976448
+    m_Key: lobby_time_limit_unlimited
+    m_Metadata:
+      m_Items:
+      - rid: 2521548580902404098
   - m_Id: 2237301882085377
     m_Key: lobby_ready_button
     m_Metadata:
@@ -395,6 +400,11 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 2521548580902404098
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "Lobby_Scene \u623F\u9593\u5167\u756B\u9762:\u6642\u9593\u9650\u5236\u9078\u9805\u4E4B\u4E00,\u4EE3\u8868\u4E0D\u9650\u6642(GameSettings.TimeLimit
+          \u70BA -1 \u6642\u986F\u793A)"
     - rid: 7773370473286729734
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
