@@ -423,7 +423,12 @@ public abstract class CharacterBase: Health
 
         if (!isLocalPlayer) return;
 
-        DeadScreen.instance.isDead(true);
+        // Unlike the respawn-wait flash (OnWaitingToRespawnChanged, a few
+        // seconds), permanent elimination can leave this player watching for
+        // the rest of the match - stay in full color instead of leaving the
+        // screen desaturated the whole time. The camera is one shared,
+        // fixed top-down view of the whole arena (not per-player), so
+        // there's nothing else to switch to - just let them keep watching it.
         InputComponent.instance.playerInput.Player.Disable();
     }
     // Called on every client the instant this character's owner
