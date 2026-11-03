@@ -18,6 +18,10 @@ public class LobbyPlayerSlot : MonoBehaviour
     public TMP_Text PlayerNameText;
     public RawImage PlayerIcon;
     [SerializeField] Image Background;
+    // Host-only, hidden for everyone else and for the host's own slot (its
+    // ConnectionID is always 0 - see SetPlayerValues/SetEmpty). Optional -
+    // leave unassigned if this slot prefab doesn't have a kick button yet.
+    [SerializeField] Button KickButton;
     public bool isReady;
     protected Callback<AvatarImageLoaded_t> ImageLoaded;
 
@@ -70,11 +74,12 @@ public class LobbyPlayerSlot : MonoBehaviour
             PlayerIcon.texture = null;
             PlayerIcon.gameObject.SetActive(false);
         }
+        if (KickButton != null) KickButton.gameObject.SetActive(false);
     }
 
     void Start()
     {
-        ImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnImageLoaded);
+        if (SteamManager.Initialized) ImageLoaded = Callback<AvatarImageLoaded_t>.Create(OnImageLoaded);
     }
     public void SetPlayerValues()
     {
@@ -85,6 +90,12 @@ public class LobbyPlayerSlot : MonoBehaviour
         {
             GetPlayerIcon();
         }
+        if (KickButton != null) KickButton.gameObject.SetActive(NetworkServer.active && ConnectionID != 0);
+    }
+    // Kick Button.
+    public void Kick()
+    {
+        LobbyController.Instance?.KickPlayer(ConnectionID);
     }
     // Only the name text follows the player's picked team color - Background
     // is a plain panel, not tied to team color (only greyed out when empty).
@@ -95,6 +106,7 @@ public class LobbyPlayerSlot : MonoBehaviour
     }
     void GetPlayerIcon()
     {
+        if (!SteamManager.Initialized) return;
         int ImageID = SteamFriends.GetLargeFriendAvatar((CSteamID)PlayerSteamID);
         if (ImageID == -1) return;
         PlayerIcon.texture = GetSteamImageAsTexture(ImageID);

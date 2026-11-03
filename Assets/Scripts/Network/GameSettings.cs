@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using HR.Network.Lobby;
 using HR.UI;
+using UnityEngine.Localization.Settings;
 
 namespace HR.Network{
 public class GameSettings : NetworkBehaviour
@@ -21,9 +22,24 @@ public class GameSettings : NetworkBehaviour
     // the host's own screen.
     [SyncVar(hook = nameof(OnMapChanged))] public string MapName = "Game_Test_Scene";
 
-    // TODO: fixed at 3:00 for now, not host-adjustable yet - same default on
-    // every machine so it doesn't need syncing until it becomes a real setting.
-    public float TimeLimit = 180f;
+    // Host cycles through these via LobbyController.NextTimeLimit/
+    // PreviousTimeLimit, same arrow-cycling pattern as Mode/MapName. -1
+    // means "no limit" (see LocalPlayerInfo.GetRemaining / LobbyController.
+    // UpdateTimeLimitText for how each side displays/handles it).
+    public static readonly float[] TimeLimitOptions = { 420f, 300f, 180f, -1f };
+
+    [SyncVar(hook = nameof(OnTimeLimitChanged))] public float TimeLimit = 180f;
+
+    // Shared by the Lobby's own display (LobbyController.UpdateTimeLimitText)
+    // and the Create Room screen's picker (SteamLobby.PopulateTimeLimitDropdown)
+    // so both always agree on how a given value reads.
+    public static string FormatTimeLimit(float value)
+    {
+        if (value < 0f) return LocalizationSettings.StringDatabase.GetLocalizedString("UI", "lobby_time_limit_unlimited");
+        int min = (int)value / 60;
+        int sec = (int)value % 60;
+        return string.Format("{0:00}:{1:00}", min, sec);
+    }
 
     [SerializeField] GameModeConfig[] configs;
     // Read-only - lets LobbyController generate mode buttons the same way
@@ -32,8 +48,6 @@ public class GameSettings : NetworkBehaviour
 
     void Awake()
     {
-        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
-        Debug.Log($"[LobbyDebug] GameSettings.Awake fired, gameObject.activeSelf={gameObject.activeSelf}, time={Time.realtimeSinceStartup:F2}");
         if (Instance == null)
         {
             Instance = this;
@@ -53,21 +67,12 @@ public class GameSettings : NetworkBehaviour
             Mode = Network_Manager.PendingInitialMode.Value;
             Network_Manager.PendingInitialMode = null;
         }
+        if (Network_Manager.PendingInitialTimeLimit.HasValue)
+        {
+            TimeLimit = Network_Manager.PendingInitialTimeLimit.Value;
+            Network_Manager.PendingInitialTimeLimit = null;
+        }
     }
-    // TEMP diagnostics - remove once the Lobby map/mode display bug is found.
-    void OnEnable()
-    {
-        Debug.Log($"[LobbyDebug] GameSettings.OnEnable, time={Time.realtimeSinceStartup:F2}");
-    }
-    void OnDisable()
-    {
-        Debug.Log($"[LobbyDebug] GameSettings.OnDisable, time={Time.realtimeSinceStartup:F2}");
-    }
-    void OnDestroy()
-    {
-        Debug.Log($"[LobbyDebug] GameSettings.OnDestroy, time={Time.realtimeSinceStartup:F2}");
-    }
-
     public GameModeConfig CurrentConfig()
     {
         foreach (GameModeConfig config in configs)
@@ -111,6 +116,23 @@ public class GameSettings : NetworkBehaviour
     public void CmdSetMode(GameMode mode)
     {
         Mode = mode;
+    }
+
+    void OnTimeLimitChanged(float oldValue, float newValue)
+    {
+        if (SceneManager.GetActiveScene().name == "Lobby_Scene" && LobbyController.Instance != null)
+        {
+            LobbyController.Instance.UpdateTimeLimitText();
+        }
+    }
+
+    // Time limit is host-only to pick (LobbyController.change_time_limit
+    // gates on NetworkServer.active before calling this), but synced so
+    // every client's UI reflects the current pick.
+    [Command(requiresAuthority = false)]
+    public void CmdSetTimeLimit(float timeLimit)
+    {
+        TimeLimit = timeLimit;
     }
 
     // Map is host-only to pick (LobbyController.change_map gates on

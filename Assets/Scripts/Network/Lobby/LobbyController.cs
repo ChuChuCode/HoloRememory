@@ -96,8 +96,6 @@ public class LobbyController : MonoBehaviour
     }
     void Start()
     {
-        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
-        Debug.Log($"[LobbyDebug] LobbyController.Start: GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "NULL")}, characters={Manager.characterSelectComponentsList.Count}, maps={Manager.mapConfigList.Count}, time={Time.realtimeSinceStartup:F2}");
         // Character select buttons - built once per Lobby_Scene load (ported
         // from the old Select_Scene, which no longer exists as a separate step).
         foreach (CharacterSelectComponent characterSelectComponent in Manager.characterSelectComponentsList)
@@ -154,26 +152,52 @@ public class LobbyController : MonoBehaviour
     }
     public void UpdateLobbyName()
     {
+        // Called unconditionally from PlayerObject.OnStartClient/OnStartAuthority
+        // the moment ANY player object spawns in this scene - including a dev
+        // host/client started via Mirror's NetworkManagerHUD instead of the
+        // Steam lobby flow. No Steam, no lobby data to show - leave the
+        // existing text alone rather than crashing on an uninitialized call.
+        if (!SteamManager.Initialized) return;
         CurrentLobbyID = SteamLobby.Instance.CurrentLobbyID;
         LobbyNameText.text = SteamMatchmaking.GetLobbyData(new CSteamID(CurrentLobbyID),"name");
     }
-    // TODO: fixed display for now, no arrows yet - see GameSettings.TimeLimit.
     public void UpdateTimeLimitText()
     {
         if (TimeLimitText == null || GameSettings.Instance == null) return;
-        int min = (int)GameSettings.Instance.TimeLimit / 60;
-        int sec = (int)GameSettings.Instance.TimeLimit % 60;
-        TimeLimitText.text = string.Format("{0:00}:{1:00}", min, sec);
+        TimeLimitText.text = GameSettings.FormatTimeLimit(GameSettings.Instance.TimeLimit);
+    }
+    // Left/Right Arrow Buttons - same cycling pattern as NextMode/PreviousMode,
+    // sourced from GameSettings.TimeLimitOptions. Should be in HostOnlyUI too.
+    public void NextTimeLimit()
+    {
+        ChangeTimeLimit(1);
+    }
+    public void PreviousTimeLimit()
+    {
+        ChangeTimeLimit(-1);
+    }
+    void ChangeTimeLimit(int direction)
+    {
+        if (GameSettings.Instance == null) return;
+        float[] options = GameSettings.TimeLimitOptions;
+
+        int currentIndex = System.Array.FindIndex(options, v => v == GameSettings.Instance.TimeLimit);
+        if (currentIndex == -1) currentIndex = 0;
+
+        int nextIndex = (currentIndex + direction + options.Length) % options.Length;
+        change_time_limit(options[nextIndex]);
+    }
+    // Time Limit Button - host-only; synced to everyone via GameSettings.TimeLimit.
+    public void change_time_limit(float timeLimit)
+    {
+        if (!NetworkServer.active) return;
+        GameSettings.Instance.CmdSetTimeLimit(timeLimit);
     }
     // Room Mode display - refreshed on Start and whenever GameSettings.Mode
     // syncs (GameSettings.OnModeChanged), since any client can change it.
     public void UpdateModeText()
     {
-        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
-        Debug.Log($"[LobbyDebug] UpdateModeText: ModeText={(ModeText != null ? "ok" : "NULL")}, GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "NULL")}");
         if (ModeText == null || GameSettings.Instance == null) return;
-        GameModeConfig config = GameSettings.Instance.CurrentConfig();
-        Debug.Log($"[LobbyDebug] UpdateModeText: Mode={GameSettings.Instance.Mode}, config={(config != null ? config.DisplayName : "NULL (no matching GameModeConfig)")}");
         ModeText.text = SteamLobby.GetModeDisplayName(GameSettings.Instance.Mode);
     }
     // Left/Right Arrow Buttons - cycles through GameSettings.Configs in
@@ -316,6 +340,20 @@ public class LobbyController : MonoBehaviour
             if (btn != null) btn.interactable = !isMine && !locked;
         }
     }
+    // Kick Button - called from LobbyPlayerSlot, host-only (slot itself hides
+    // the button for everyone else, and for the host's own slot since
+    // ConnectionID == 0 there - see LobbyPlayerSlot.SetPlayerValues). Plain
+    // Disconnect(), not a dedicated "you were kicked" message - the kicked
+    // client's own Network_Manager.OnClientDisconnect() already routes it
+    // back to the lobby browser, same as an unexpected host loss.
+    public void KickPlayer(int connectionId)
+    {
+        if (!NetworkServer.active || connectionId == 0) return;
+        if (NetworkServer.connections.TryGetValue(connectionId, out NetworkConnectionToClient conn))
+        {
+            conn.Disconnect();
+        }
+    }
     // Left/Right Arrow Buttons - same cycling pattern as NextMode/PreviousMode,
     // sourced from Network_Manager.mapConfigList (auto-loaded from
     // Resources/Data/Map). Should be in HostOnlyUI too.
@@ -347,20 +385,16 @@ public class LobbyController : MonoBehaviour
     }
     public void UpdateMapText()
     {
-        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
-        Debug.Log($"[LobbyDebug] UpdateMapText: GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "NULL")}");
         if (GameSettings.Instance == null) return;
         List<MapConfig> maps = Manager.mapConfigList;
         MapConfig current = maps != null ? maps.Find(c => c.MapId == GameSettings.Instance.MapName) : null;
-        Debug.Log($"[LobbyDebug] UpdateMapText: mapConfigList.Count={(maps != null ? maps.Count : -1)}, GameSettings.MapName='{GameSettings.Instance.MapName}', matchedCurrent={(current != null ? current.DisplayName : "NULL (no MapConfig.MapId matches MapName)")}");
         RefreshMapCarousel(maps, current);
     }
-    // GameSettings is a scene-placed NetworkIdentity - the log confirmed its
-    // Instance is still null a full frame after LobbyController.Start(),
-    // meaning it isn't simply a same-frame ordering race (that's what the
-    // single "yield return null" used to assume) - something about the
-    // host/server startup sequence sets it up later than that. Polling here
-    // is correct either way regardless of the exact Mirror-internal reason.
+    // GameSettings is a scene-placed NetworkIdentity - its Instance can still
+    // be null a full frame after LobbyController.Start() (something about the
+    // host/server startup sequence sets it up later than a same-frame
+    // ordering race would). Polling here covers that regardless of the exact
+    // Mirror-internal reason.
     IEnumerator RefreshModeAndMapNextFrame()
     {
         float elapsed = 0f;
@@ -370,8 +404,6 @@ public class LobbyController : MonoBehaviour
             yield return null;
             elapsed += Time.deltaTime;
         }
-        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
-        Debug.Log($"[LobbyDebug] RefreshModeAndMapNextFrame: waited {elapsed:F2}s, GameSettings.Instance={(GameSettings.Instance != null ? "ready" : "STILL NULL - gave up")}, maps={Manager.mapConfigList.Count}, MapName={(GameSettings.Instance != null ? GameSettings.Instance.MapName : "n/a")}, time={Time.realtimeSinceStartup:F2}");
         UpdateModeText();
         UpdateMapText();
     }

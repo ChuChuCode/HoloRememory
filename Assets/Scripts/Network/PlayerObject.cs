@@ -6,6 +6,7 @@ using HR.Network.Result;
 using UnityEngine;
 using HR.Object.Player;
 using HR.UI;
+using UnityEngine.Localization.Settings;
 
 namespace HR.Network{
 public class PlayerObject : NetworkBehaviour
@@ -43,7 +44,14 @@ public class PlayerObject : NetworkBehaviour
     }
     public override void OnStartAuthority()
     {
-        CmdSetPlayerName(SteamFriends.GetPersonaName().ToString());
+        // Same fallback SteamLobby.RefreshDefaultRoomName already uses for a
+        // dev host/client started without Steam (e.g. via NetworkManagerHUD) -
+        // SteamFriends.GetPersonaName() would otherwise be an unguarded call
+        // into an uninitialized Steamworks interface.
+        string playerName = SteamManager.Initialized
+            ? SteamFriends.GetPersonaName().ToString()
+            : LocalizationSettings.StringDatabase.GetLocalizedString("UI", "generic_player_name");
+        CmdSetPlayerName(playerName);
         gameObject.name = "LocalGamePlayer";
         // Set LocalPlayer
         LobbyController.Instance.LocalPlayerController = this;

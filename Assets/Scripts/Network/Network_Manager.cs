@@ -36,6 +36,18 @@ public class Network_Manager : NetworkManager
     // does. Null on every machine that isn't actively creating a lobby right
     // now, including this same host for every match after the first.
     public static GameMode? PendingInitialMode;
+    // Same stash pattern as PendingInitialMode - set by SteamLobby.HostLobby()
+    // from the Create Room screen's time limit picker, applied once by
+    // GameSettings.OnStartServer() the moment it spawns in Lobby_Scene.
+    public static float? PendingInitialTimeLimit;
+    // Set by OnClientDisconnect below when the connection drops for a reason
+    // we didn't choose (host crashed/quit, or we got kicked) - survives the
+    // Main_Scene reload since it's static, same pattern as
+    // ModeSelectPanel.ReturnToGameUI, so Main_Scene can route straight back
+    // to the lobby browser instead of stranding the player on Title with no
+    // explanation. There's no real host migration here - this is the
+    // fallback for when the host disappears mid-session.
+    public static bool ReturnToLobbyBrowser = false;
     int Player_num = 0;
     // Guards against CheckGameOver() (last team standing) and the match
     // timer (time's up) both trying to end the match at once.
@@ -68,16 +80,22 @@ public class Network_Manager : NetworkManager
         {
             mapConfigList.Add(mapObject as MapConfig);
         }
-        // TEMP diagnostic - remove once the Lobby map/mode display bug is found.
-        Debug.Log($"[LobbyDebug] Network_Manager.Awake: loaded {characterSelectComponentsList.Count} characters, {mapConfigList.Count} maps, time={Time.realtimeSinceStartup:F2}");
         base.Awake();
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {
+        // A match already running has no spectator/late-join state to put a
+        // fresh connection into - rather than leaving it connected with no
+        // player object (silently stuck), reject it outright.
+        if (SceneManager.GetActiveScene().name != "Lobby_Scene")
+        {
+            conn.Disconnect();
+            return;
+        }
         // print(PlayersInfoList.Count);
         // print(Player_num);
         // ******Spawn Twice when Rematch
-        if ( SceneManager.GetActiveScene().name == "Lobby_Scene" && PlayersInfoList.Count != Player_num) 
+        if (PlayersInfoList.Count != Player_num)
         {
             PlayerObject player = Instantiate(PlayerObject_Prefab);
             // Set connectID, PlayerID, SteamID
@@ -164,6 +182,20 @@ public class Network_Manager : NetworkManager
     public override void OnStopServer()
     {
         Player_num = 0;
+    }
+    // Fires on every remaining client when the connection drops for ANY
+    // reason - voluntary leave (PlayerObject.LeaveGame), host crash/quit, or
+    // getting kicked. A voluntary leave already set ReturnToGameUI right
+    // before calling StopHost/StopClient; anything else reaching here wasn't
+    // our choice, so route back to the lobby browser instead of the plain
+    // Title screen.
+    public override void OnClientDisconnect()
+    {
+        if (!ModeSelectPanel.ReturnToGameUI)
+        {
+            ReturnToLobbyBrowser = true;
+        }
+        base.OnClientDisconnect();
     }
     public override void OnServerSceneChanged(string newSceneName)
     {

@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using Mirror;
 using HR.Network;
+using UnityEngine.Localization.Settings;
 
 namespace HR.UI{
 public class LocalPlayerInfo : NetworkBehaviour
@@ -50,12 +51,18 @@ public class LocalPlayerInfo : NetworkBehaviour
     double GetRemaining()
     {
         if (GameSettings.Instance == null) return matchDuration;
-        double elapsed = NetworkTime.time - GameSettings.Instance.matchCountdownEndTime;
         double duration = GameSettings.Instance.TimeLimit;
+        // -1 = no limit - never counts down to the Update() auto-end check.
+        if (duration < 0) return double.PositiveInfinity;
+        double elapsed = NetworkTime.time - GameSettings.Instance.matchCountdownEndTime;
         return System.Math.Min(duration - elapsed, duration);
     }
     string Time_format()
     {
+        if (GameSettings.Instance != null && GameSettings.Instance.TimeLimit < 0)
+        {
+            return LocalizationSettings.StringDatabase.GetLocalizedString("UI", "lobby_time_limit_unlimited");
+        }
         timer = Mathf.Max(0f, (float)GetRemaining());
         int min = (int) timer / 60;
         int sec = (int) timer % 60;

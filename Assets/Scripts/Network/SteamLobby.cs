@@ -52,6 +52,9 @@ public class SteamLobby : MonoBehaviour
     // GameModeConfig assets, not read from GameSettings.Configs.
     [SerializeField] TMP_Dropdown HostModeDropdown;
     [SerializeField] GameModeConfig[] modeOptions;
+    // Dropdown option order must match GameSettings.TimeLimitOptions
+    // index-for-index - same reasoning as HostModeDropdown/modeOptions above.
+    [SerializeField] TMP_Dropdown HostTimeLimitDropdown;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -86,6 +89,7 @@ public class SteamLobby : MonoBehaviour
     {
         PopulateModeDropdown();
         PopulateVisibilityDropdown();
+        PopulateTimeLimitDropdown();
         RefreshDefaultRoomName();
     }
     // Tracks our own last auto-filled value so a locale change can refresh
@@ -99,13 +103,21 @@ public class SteamLobby : MonoBehaviour
         // isn't reliable if the Create Room panel starts inactive.
         RefreshCreateRoomDefaults();
 
-        // networkManager = Network_Manager.singleton as Network_Manager;
-        // If initialized failed
-        if (!SteamManager.Initialized) return;
+        // Set before the Initialized check below (not after) - every other
+        // script calls SteamLobby.Instance.X unconditionally, Steam running
+        // or not (e.g. when a dev starts a host/client via Mirror's
+        // NetworkManagerHUD instead of the Steam lobby flow). Leaving
+        // Instance null in that case turns every one of those call sites
+        // into a guaranteed NullReferenceException instead of a clean
+        // early-out inside the method actually being called.
         if (Instance == null)
         {
             Instance = this;
         }
+
+        // networkManager = Network_Manager.singleton as Network_Manager;
+        // If initialized failed
+        if (!SteamManager.Initialized) return;
 
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnGameLobbyJoinRequested);
@@ -123,6 +135,7 @@ public class SteamLobby : MonoBehaviour
     {
         PopulateModeDropdown();
         PopulateVisibilityDropdown();
+        PopulateTimeLimitDropdown();
         RefreshDefaultRoomName();
     }
     // Only overwrites the field if it's empty (fresh open - nothing typed
@@ -164,6 +177,20 @@ public class SteamLobby : MonoBehaviour
         }
         HostModeDropdown.AddOptions(labels);
     }
+    // Same role as PopulateModeDropdown, for GameSettings.TimeLimitOptions -
+    // re-populated every time this is called so the "Unlimited" label
+    // follows the current locale too.
+    void PopulateTimeLimitDropdown()
+    {
+        if (HostTimeLimitDropdown == null) return;
+        HostTimeLimitDropdown.ClearOptions();
+        List<string> labels = new List<string>();
+        foreach (float option in GameSettings.TimeLimitOptions)
+        {
+            labels.Add(GameSettings.FormatTimeLimit(option));
+        }
+        HostTimeLimitDropdown.AddOptions(labels);
+    }
     public static string GetModeDisplayName(GameMode mode)
     {
         string key = mode switch
@@ -195,6 +222,14 @@ public class SteamLobby : MonoBehaviour
     public void HostLobby()
     {
         print("Host Button Press");
+        // No Steam - this build only hosts/joins through Steam lobbies, so
+        // bail out before touching any Steamworks call rather than crashing
+        // (e.g. SteamMatchmaking.CreateLobby on an uninitialized interface).
+        if (!SteamManager.Initialized)
+        {
+            Debug.LogWarning("[SteamLobby] HostLobby called but Steam isn't initialized - ignoring.");
+            return;
+        }
         // Disable host button
         HostButton.interactable = false;
 
@@ -215,6 +250,10 @@ public class SteamLobby : MonoBehaviour
         {
             Network_Manager.PendingInitialMode = modeOptions[HostModeDropdown.value].mode;
         }
+        if (HostTimeLimitDropdown != null && HostTimeLimitDropdown.value < GameSettings.TimeLimitOptions.Length)
+        {
+            Network_Manager.PendingInitialTimeLimit = GameSettings.TimeLimitOptions[HostTimeLimitDropdown.value];
+        }
 
         SteamMatchmaking.CreateLobby(visibility, Manager.maxConnections);
     }
@@ -233,8 +272,7 @@ public class SteamLobby : MonoBehaviour
         // If Lobby Create Error -> Show Host button
         if (callback.m_eResult != EResult.k_EResultOK)
         {
-            // TEMP diagnostic - remove once the Create-stuck bug is found.
-            Debug.LogError($"[CreateRoomDebug] OnLobbyCreated failed: m_eResult={callback.m_eResult}");
+            Debug.LogError($"[SteamLobby] OnLobbyCreated failed: m_eResult={callback.m_eResult}");
             HostButton.interactable = true;
             return;
         }
@@ -322,6 +360,11 @@ public class SteamLobby : MonoBehaviour
     }
     public void GetLobbyList()
     {
+        if (!SteamManager.Initialized)
+        {
+            Debug.LogWarning("[SteamLobby] GetLobbyList called but Steam isn't initialized - ignoring.");
+            return;
+        }
         if (lobbyIDs.Count > 0) lobbyIDs.Clear();
         SteamMatchmaking.AddRequestLobbyListResultCountFilter(60);
         SteamMatchmaking.RequestLobbyList();
@@ -329,6 +372,7 @@ public class SteamLobby : MonoBehaviour
     }
     public void JoinLobby(CSteamID lobbyID)
     {
+        if (!SteamManager.Initialized) return;
         SteamMatchmaking.JoinLobby(lobbyID);
     }
     // SHA256 hex string - never compare/store the raw password, GetLobbyData
@@ -348,6 +392,7 @@ public class SteamLobby : MonoBehaviour
     // only a mismatched non-empty stored hash actually blocks the join.
     public bool TryJoinWithPassword(CSteamID lobbyID, string enteredPassword)
     {
+        if (!SteamManager.Initialized) return false;
         string storedHash = SteamMatchmaking.GetLobbyData(lobbyID, PasswordKey);
         if (!string.IsNullOrEmpty(storedHash) && HashPassword(enteredPassword) != storedHash)
         {
