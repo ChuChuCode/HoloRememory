@@ -133,7 +133,6 @@ public class SupplyRun : NetworkBehaviour
         if (item != null)
         {
             item.position = end;
-            Debug.Log($"[ItemDebug] {item.name} finished falling, landed at {end}, t={Time.time}"); // TEMP diagnostic, remove once the vanish-on-land bug is found
         }
     }
 }
