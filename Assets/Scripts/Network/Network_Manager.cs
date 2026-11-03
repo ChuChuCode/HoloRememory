@@ -257,33 +257,6 @@ public class Network_Manager : NetworkManager
             // Update UI
             LobbyController.Instance.UpdatePlayerList();
         }
-        // TODO(loading screen): not implemented yet - right now whoever's
-        // client finishes loading this scene first can immediately see/move
-        // while slower clients are still loading. Planned approach (avoids
-        // relying on Mirror's own scene-load AsyncOperation progress, which
-        // is fiddly/version-dependent to read):
-        //   1. Add [SyncVar] float LoadProgress to PlayerObject, same
-        //      broadcast pattern as Ready/CharacterID.
-        //   2. Each client shows a loading screen the instant the scene
-        //      change starts, jumps LoadProgress to a fixed "started
-        //      loading" milestone (e.g. 20-30%) for visual feedback, then
-        //      Cmds LoadProgress = 100 once ITS OWN OnClientSceneChanged()
-        //      fires (scene + character actually ready on that machine).
-        //   3. Loading screen UI reads every PlayersInfoList entry's
-        //      LoadProgress (same as the Lobby player list already does) so
-        //      everyone can see who's still loading.
-        //   4. Server watches for all players hitting 100 (check on each
-        //      LoadProgress hook), then runs a 5s countdown coroutine before
-        //      RpcAll-ing "match officially starts" (hide loading screen,
-        //      unlock input, start the match timer).
-        //   5. A disconnect mid-load has to drop out of the "everyone" check
-        //      (mirror the existing OnServerDisconnect cleanup), or the
-        //      count never reaches 100%.
-        //   6. Characters currently spawn immediately in the block below the
-        //      instant the scene change completes server-side - to actually
-        //      gate on step 4 instead of just cosmetically showing a loading
-        //      screen, spawned characters need to stay input-locked until
-        //      the "match officially starts" signal arrives.
         /// Game Scene
         if (newSceneName.StartsWith("Game") )
         {
@@ -318,6 +291,11 @@ public class Network_Manager : NetworkManager
                 gameplayInsance.TeamID = player.TeamID;
                 gameplayInsance.CharacterID = player.CharacterID;
                 gameplayInsance.PlayerName = player.PlayerName;
+                // Reset for this match's load-wait cycle - gameplayInsance's
+                // own OnStartAuthority() (the owning client only) sets this
+                // back to true once that client's load actually finishes;
+                // see WaitForAllPlayersLoadedThenStartMatch below.
+                player.MatchLoaded = false;
                 // NetworkServer.Destroy(oldPlayer);
                 
                 // Ensure the client is ready before replacing the player
@@ -349,18 +327,15 @@ public class Network_Manager : NetworkManager
                 // All Player Info *** need to change to client
                 // CharacterInfoPanel.Instance.RpcAdd_to_Info(characterModelComponent.CharacterImage,gameplayInsance.gameObject);
             }
-            // Setting this SyncVar fires its hook immediately wherever it's
-            // set (same as Mode/MapName already do), including on the
-            // host's own client - no separate manual push needed.
-            if (GameSettings.Instance != null)
-            {
-                GameSettings.Instance.matchCountdownEndTime = NetworkTime.time + matchStartLockDuration;
-                // Reset from the last match - otherwise MatchCountdownUI
-                // would still see it as true and flash FINISH again the
-                // instant this new match starts.
-                GameSettings.Instance.matchFinished = false;
-            }
-            StartCoroutine(UnlockInputAfterMatchStart());
+            // Reset from the last match - otherwise MatchCountdownUI would
+            // still see it as true and flash FINISH again the instant this
+            // new match starts.
+            if (GameSettings.Instance != null) GameSettings.Instance.matchFinished = false;
+            // Don't arm the countdown yet - everyone's isInputLocked stays
+            // true (set above) until WaitForAllPlayersLoadedThenStartMatch
+            // actually starts it, once every connected client's own load
+            // finishes (or the timeout gives up waiting on a frozen one).
+            StartCoroutine(WaitForAllPlayersLoadedThenStartMatch());
         }
         if (newSceneName.StartsWith("Result_Scene"))
         {
@@ -450,12 +425,39 @@ public class Network_Manager : NetworkManager
         yield return new WaitForSeconds(5f);
         ChangeScene("Lobby_Scene");
     }
-    // Started once, right after every character for this match has spawned
-    // (see the "Game" scene branch above) - not per-character, since it
+    // Gates the match-start countdown/timer on every connected player's own
+    // client actually finishing its scene load and getting its character
+    // (PlayerObject.MatchLoaded, set via CharacterBase.OnStartAuthority())
+    // instead of arming it the instant the HOST's own scene change completes
+    // server-side, which let a fast machine move/act while slower ones were
+    // still loading. A disconnect mid-wait drops that connection's
+    // PlayerObject out of PlayersInfoList on its own (OnStopClient), so it
+    // can't stall this forever; the timeout is just a last-resort fallback
+    // for a frozen/very slow client.
+    IEnumerator WaitForAllPlayersLoadedThenStartMatch()
+    {
+        float elapsed = 0f;
+        const float timeout = 20f;
+        while (elapsed < timeout && PlayersInfoList.Exists(p => !p.MatchLoaded))
+        {
+            yield return null;
+            elapsed += Time.deltaTime;
+        }
+        // Setting this SyncVar fires its hook immediately wherever it's set
+        // (same as Mode/MapName already do), including on the host's own
+        // client - no separate manual push needed.
+        if (GameSettings.Instance != null)
+        {
+            GameSettings.Instance.matchCountdownEndTime = NetworkTime.time + matchStartLockDuration;
+        }
+        StartCoroutine(UnlockInputAfterMatchStart());
+    }
+    // Started once the load-wait above clears (see
+    // WaitForAllPlayersLoadedThenStartMatch) - not per-character, since it
     // applies uniformly. Player_List is safe to read here even though it's
-    // not populated inside that spawn loop itself: CharacterBase.Awake()
+    // not populated inside the spawn loop itself: CharacterBase.Awake()
     // (which does the Player_List.Add) runs synchronously at Instantiate
-    // time, well before this delay elapses.
+    // time, well before any of this elapses.
     IEnumerator UnlockInputAfterMatchStart()
     {
         yield return new WaitForSeconds(matchStartLockDuration);

@@ -196,6 +196,20 @@ public abstract class CharacterBase: Health
         // OnLivesChanged), so showing briefly-blank here is self-correcting.
         GameHUDManager.Instance?.RefreshAll();
     }
+    // Fires once, locally, the instant this client gains authority over its
+    // own freshly-spawned character for this match - i.e. "my load is done,
+    // I'm ready to play." Reported through the PlayerObject rather than this
+    // object: ReplacePlayerForConnection(..., KeepAuthority) leaves client
+    // authority on the PlayerObject throughout the Lobby<->Game swap, and
+    // Network_Manager gates the match-start countdown on every PlayerObject's
+    // MatchLoaded flag (see Network_Manager.WaitForAllPlayersLoadedThenStartMatch)
+    // instead of starting it the instant the host's own scene change
+    // completes, which let a fast machine move/act while slower ones were
+    // still loading.
+    public override void OnStartAuthority()
+    {
+        Manager.LocalPlayerObject?.CmdSetMatchLoaded();
+    }
     protected virtual void OnEnable()
     {
         InputComponent.instance.playerInput.Player.Enable();

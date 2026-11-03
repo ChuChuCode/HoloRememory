@@ -19,6 +19,14 @@ public class PlayerObject : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerReadyUpdate))] public bool Ready;
     [SyncVar(hook = nameof(PlayerTeamUpdate))] public int TeamID = 0;
     [SyncVar(hook = nameof(CharacterSelect))] public int CharacterID = -1;
+    // Reset to false by Network_Manager right as a match's characters spawn,
+    // set true by this client's own CharacterBase.OnStartAuthority() once its
+    // scene load + character are actually ready. Network_Manager gates the
+    // match-start countdown on every PlayerObject's MatchLoaded (see
+    // Network_Manager.WaitForAllPlayersLoadedThenStartMatch) instead of
+    // starting it the instant the host's own scene change completes, which
+    // let a fast machine move/act while slower ones were still loading.
+    [SyncVar] public bool MatchLoaded;
     private Network_Manager manager;
 
     public Network_Manager Manager
@@ -105,6 +113,15 @@ public class PlayerObject : NetworkBehaviour
     public void PlayerNameUpdate(string OldValue,string NewValue)
     {
         LobbyController.Instance.UpdatePlayerList();
+    }
+    // Called by CharacterBase.OnStartAuthority() - ReplacePlayerForConnection
+    // (..., KeepAuthority) leaves client authority on THIS object throughout
+    // the Lobby<->Game swap, so the owning client can still call Commands on
+    // it even while a CharacterBase is the active "player".
+    [Command]
+    public void CmdSetMatchLoaded()
+    {
+        MatchLoaded = true;
     }
     /// Start Button
     public void CanStartGame(string SceneName)
