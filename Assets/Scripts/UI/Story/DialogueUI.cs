@@ -84,7 +84,7 @@ public class DialogueUI : MonoBehaviour
     void ShowLine()
     {
         DialogueLine line = current.Lines[lineIndex];
-        if (portraitImage != null) portraitImage.sprite = line.Portrait;
+        if (portraitImage != null) portraitImage.sprite = line.Character != null ? line.Character.GetPortrait(line.Expression) : null;
         if (speakerNameText != null)
         {
             speakerNameText.text = string.IsNullOrEmpty(line.SpeakerNameKey)

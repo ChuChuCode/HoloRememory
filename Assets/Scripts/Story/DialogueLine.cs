@@ -1,5 +1,5 @@
 using System;
-using UnityEngine;
+using HR.Network.Select;
 
 namespace HR.Story{
 // One beat of a DialogueScript. Deliberately per-line (not fixed on the
@@ -8,10 +8,16 @@ namespace HR.Story{
 [Serializable]
 public class DialogueLine
 {
-    // Placeholder sprite for now - only Watame has any character art at all
-    // right now, and even hers isn't portrait-proportioned. Swap in real
-    // portraits per character/expression later without touching this class.
-    public Sprite Portrait;
+    // Portrait is resolved as Character.GetPortrait(Expression) at playback
+    // time (see DialogueUI.ShowLine) rather than wiring a raw Sprite here -
+    // the same art asset gets reused across every line/script that needs
+    // it instead of being re-dragged into each one, and swapping art later
+    // only means editing CharacterSelectComponent.Portraits in one place.
+    // Null Character = no portrait shown (e.g. narration).
+    public CharacterSelectComponent Character;
+    // Name into Character.Portraits (e.g. "Normal", "Happy") - "" or no
+    // match falls back to that character's first portrait entry.
+    public string Expression;
     // Localization keys into the "Story" table (Assets/Localization/CSV/Story.csv) -
     // same GetLocalizedString("Story", key) pattern already used for the "UI"
     // table elsewhere in the project. Empty SpeakerNameKey = no name shown
