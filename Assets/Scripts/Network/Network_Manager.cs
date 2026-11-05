@@ -12,6 +12,8 @@ using HR.Network.Lobby;
 using HR.Network.Result;
 using HR.Map;
 using HR.Object.Minions;
+using HR.Story;
+using HR.Save;
 
 namespace HR.Network{
 public class Network_Manager : NetworkManager
@@ -25,6 +27,15 @@ public class Network_Manager : NetworkManager
     public List<CharacterSelectComponent> characterSelectComponentsList = new List<CharacterSelectComponent>();
     [Header("Map Component")]
     public List<MapConfig> mapConfigList = new List<MapConfig>();
+    [Header("Solo Mode")]
+    // Auto-loaded from Assets/Resources/Data/Level, same pattern as
+    // characterSelectComponentsList/mapConfigList above.
+    public List<LevelConfig> levelConfigList = new List<LevelConfig>();
+    // Set by StartSoloLevel(), read by OnServerAddPlayer/OnServerSceneChanged/
+    // CheckSoloWin/EndMatchAfterDelay to branch solo-only behavior without
+    // touching the existing multiplayer paths.
+    public bool SoloModeActive;
+    public LevelConfig CurrentSoloLevel;
     public List<CharacterBase> Player_List = new List<CharacterBase>();
     // Populated/cleaned up by Minion itself (Awake/OnDestroy) - same
     // per-machine local list pattern as Player_List, read by
@@ -80,6 +91,12 @@ public class Network_Manager : NetworkManager
         {
             mapConfigList.Add(mapObject as MapConfig);
         }
+        // Initial LevelConfig
+        var levelObjects = Resources.LoadAll("Data/Level");
+        foreach (var levelObject in levelObjects)
+        {
+            levelConfigList.Add(levelObject as LevelConfig);
+        }
         base.Awake();
     }
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
@@ -122,7 +139,28 @@ public class Network_Manager : NetworkManager
 
             // Add when PlayerObject in OnStartClient
             // PlayersInfoList.Add(player);
+
+            // Solo mode skips the human Lobby step entirely (no Ready, no
+            // character pick) - StartHost() already loaded Lobby_Scene as
+            // Mirror's onlineScene by the time this runs, so this briefly
+            // (one frame) touches the Lobby pipeline before moving straight
+            // on to the chosen level's arena, reusing the exact same
+            // Lobby->Game spawn branch below as multiplayer.
+            if (SoloModeActive && CurrentSoloLevel != null)
+            {
+                player.CharacterID = CurrentSoloLevel.Character != null ? CurrentSoloLevel.Character.ID : -1;
+                ChangeScene(CurrentSoloLevel.Map.MapId);
+            }
         }
+    }
+    // Called by LevelSelectPanel once a level (and its optional intro
+    // dialogue) is confirmed - no Steam lobby involved, just a direct local
+    // host start.
+    public void StartSoloLevel(LevelConfig level)
+    {
+        SoloModeActive = true;
+        CurrentSoloLevel = level;
+        StartHost();
     }
     // Prefer a color nobody currently in the room is using, so a fresh
     // joiner doesn't land on the same color as an existing player by luck
@@ -330,7 +368,17 @@ public class Network_Manager : NetworkManager
             // Reset from the last match - otherwise MatchCountdownUI would
             // still see it as true and flash FINISH again the instant this
             // new match starts.
-            if (GameSettings.Instance != null) GameSettings.Instance.matchFinished = false;
+            if (GameSettings.Instance != null)
+            {
+                GameSettings.Instance.matchFinished = false;
+                // Solo levels aren't bound by the multiplayer match timer -
+                // clearing minions can take as long as it takes. Without
+                // this, whatever TimeLimit carried over from the last
+                // multiplayer lobby (or the 180s default) could cut a solo
+                // level short with an ambiguous "still alive but out of
+                // time" outcome.
+                if (SoloModeActive) GameSettings.Instance.TimeLimit = -1f;
+            }
             // Don't arm the countdown yet - everyone's isInputLocked stays
             // true (set above) until WaitForAllPlayersLoadedThenStartMatch
             // actually starts it, once every connected client's own load
@@ -403,6 +451,16 @@ public class Network_Manager : NetworkManager
             EndMatch();
         }
     }
+    // Called (server-only) by Minion.OnDestroy() - a solo level's win
+    // condition, separate from CheckGameOver's team-elimination check above
+    // (which already correctly ends a solo match as a loss the instant the
+    // lone player dies, no changes needed there).
+    public void CheckSoloWin()
+    {
+        if (!SoloModeActive || CurrentSoloLevel == null) return;
+        if (CurrentSoloLevel.WinCondition != LevelWinCondition.ClearAllMinions) return;
+        if (Minion_List.Count == 0) EndMatch();
+    }
     // Called by CheckGameOver() (last one standing) or LocalPlayerInfo (time
     // ran out - a draw). Either way, pause 5s before returning to the lobby
     // so the ending actually registers, even without a win/loss screen yet.
@@ -423,6 +481,28 @@ public class Network_Manager : NetworkManager
     IEnumerator EndMatchAfterDelay()
     {
         yield return new WaitForSeconds(5f);
+        if (SoloModeActive)
+        {
+            // Outcome is read from the actual win condition, not from
+            // "did EndMatch() get triggered via CheckSoloWin or
+            // CheckGameOver" - that way a stray timeout or any other future
+            // EndMatch() call site still resolves correctly instead of
+            // silently misreporting a win.
+            bool won = CurrentSoloLevel != null
+                && CurrentSoloLevel.WinCondition == LevelWinCondition.ClearAllMinions
+                && Minion_List.Count == 0;
+            if (won && CurrentSoloLevel != null) SaveSystem.Instance?.Unlock($"level:{CurrentSoloLevel.LevelId}");
+            SoloModeActive = false;
+            CurrentSoloLevel = null;
+            // ReturnToGameUI marks this as an expected disconnect (same as
+            // PlayerObject.LeaveGame()) so OnClientDisconnect() below doesn't
+            // ALSO set ReturnToLobbyBrowser for what is actually a normal
+            // solo level ending, not a host loss.
+            ModeSelectPanel.ReturnToGameUI = true;
+            ModeSelectPanel.ReturnToLevelSelect = true;
+            StopHost();
+            yield break;
+        }
         ChangeScene("Lobby_Scene");
     }
     // Gates the match-start countdown/timer on every connected player's own
@@ -443,6 +523,27 @@ public class Network_Manager : NetworkManager
             yield return null;
             elapsed += Time.deltaTime;
         }
+
+        // Reveal the arena - fades out the black cover LevelSelectPanel.
+        // SelectLevel() faded in before the brief Lobby_Scene pass-through
+        // StartHost() causes.
+        if (SoloModeActive) TransitionScene.Instance?.FadeOut();
+
+        // Solo intro dialogue plays here - AFTER arriving in the arena
+        // (character already spawned, isInputLocked still true from the
+        // spawn loop above), not before the scene transition. The countdown
+        // doesn't arm until it finishes, so the player sees: spawn -> brief
+        // pause -> dialogue box + portrait -> countdown -> gameplay. Solo is
+        // always host+client on the same machine, so driving this locally
+        // off the server coroutine (no RPC) is correct - there's no other
+        // peer who'd need it synced.
+        if (SoloModeActive && CurrentSoloLevel != null && CurrentSoloLevel.IntroDialogue != null && DialogueUI.Instance != null)
+        {
+            bool dialogueDone = false;
+            DialogueUI.Instance.Play(CurrentSoloLevel.IntroDialogue, () => dialogueDone = true);
+            while (!dialogueDone) yield return null;
+        }
+
         // Setting this SyncVar fires its hook immediately wherever it's set
         // (same as Mode/MapName already do), including on the host's own
         // client - no separate manual push needed.

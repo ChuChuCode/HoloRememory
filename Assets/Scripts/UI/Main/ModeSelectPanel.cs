@@ -19,9 +19,7 @@ public class ModeSelectPanel : MonoBehaviour
     // the player needs to launch Steam and restart the game, not just open
     // it mid-session. Optional - leave unassigned if not wired up yet.
     [SerializeField] TMP_Text SteamWarningText;
-    // TODO: solo mode doesn't exist yet (character select -> map select ->
-    // start, skipping Lobby entirely). Point this at a placeholder for now.
-    [SerializeField] GameObject SoloUI;
+    [SerializeField] LevelSelectPanel SoloLevelSelect;
     // Merged in from the now-deleted MainPanel/Main UI - this panel is the
     // only screen after Title now, so it owns Setting/Credit/Exit too.
     [SerializeField] GameObject Setting_UI;
@@ -31,6 +29,11 @@ public class ModeSelectPanel : MonoBehaviour
     // Main_Scene (the offlineScene) - survives the scene load since it's
     // static, so Main_Scene can skip straight to Game UI instead of Title.
     public static bool ReturnToGameUI = false;
+    // Set by Network_Manager.EndMatchAfterDelay() when a solo level ends
+    // (win or loss) - same "survives the Main_Scene reload" static-flag
+    // pattern as ReturnToGameUI/Network_Manager.ReturnToLobbyBrowser, so the
+    // player lands back on Level Select instead of Title.
+    public static bool ReturnToLevelSelect = false;
 
     void Start()
     {
@@ -65,6 +68,18 @@ public class ModeSelectPanel : MonoBehaviour
     // Called instead by PressAnyKey.Start() (lives on Title, always active).
     public void CheckReturnToGameUI()
     {
+        // Set when a solo level just ended (win or loss, see
+        // Network_Manager.EndMatchAfterDelay) - skip Title and go straight
+        // back to Level Select instead of stranding the player.
+        if (ReturnToLevelSelect)
+        {
+            ReturnToLevelSelect = false;
+            ReturnToGameUI = false;
+            if (Title_UI != null) Title_UI.SetActive(false);
+            gameObject.SetActive(false);
+            SoloLevelSelect?.Open();
+            return;
+        }
         // Set by Network_Manager.OnClientDisconnect() when the connection
         // dropped for a reason we didn't choose (host crashed/quit, or we
         // got kicked) - no real host migration, so this is the fallback:
@@ -100,9 +115,9 @@ public class ModeSelectPanel : MonoBehaviour
     // Solo Card
     public void Solo()
     {
-        if (SoloUI == null) return;
-        SoloUI.SetActive(true);
+        if (SoloLevelSelect == null) return;
         gameObject.SetActive(false);
+        SoloLevelSelect.Open();
     }
     // Setting Button
     public void Setting()

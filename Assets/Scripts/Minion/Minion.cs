@@ -164,7 +164,12 @@ public class Minion : Health
 
     void OnDestroy()
     {
-        if (manager != null) manager.Minion_List.Remove(this);
+        if (manager == null) return;
+        manager.Minion_List.Remove(this);
+        // No-op outside solo mode (CheckSoloWin checks SoloModeActive
+        // itself) - a multiplayer match clearing its minions shouldn't end
+        // the match.
+        if (NetworkServer.active) manager.CheckSoloWin();
     }
 }
 }
