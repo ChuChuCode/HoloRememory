@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Story Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: Story
+  m_TableCollectionNameGuidString: 392463b1114c942158ba50ac031156ca
+  m_Entries:
+  - m_Id: 33083613184
+    m_Key: story_speaker_watame
+    m_Metadata:
+      m_Items:
+      - rid: 2521548580902404100
+  - m_Id: 33129750528
+    m_Key: story_level_1_name
+    m_Metadata:
+      m_Items:
+      - rid: 2521548580902404101
+  - m_Id: 33129750529
+    m_Key: story_level_1_intro_line_1
+    m_Metadata:
+      m_Items:
+      - rid: 2521548580902404102
+  - m_Id: 33129750530
+    m_Key: story_level_1_intro_line_2
+    m_Metadata:
+      m_Items:
+      - rid: 2521548580902404103
+  - m_Id: 33129750531
+    m_Key: story_level_1_intro_line_3
+    m_Metadata:
+      m_Items:
+      - rid: 2521548580902404104
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 2521548580902404099
+  references:
+    version: 2
+    RefIds:
+    - rid: 2521548580902404099
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1793808102217
+    - rid: 2521548580902404100
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u5C0D\u8A71\u6846\u8B1B\u8005\u540D\u7A31:Watame(\u4F54\u4F4D,\u4E4B\u5F8C\u53EF\u80FD\u63DB\u6210\u89D2\u8272\u7684\u6B63\u5F0F\u986F\u793A\u540D\u7A31
+          key)"
+    - rid: 2521548580902404101
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "Level Select \u756B\u9762:\u7B2C\u4E00\u95DC\u7684\u95DC\u5361\u540D\u7A31(\u4F54\u4F4D\u5167\u5BB9,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u95DC\u5361\u540D\u7A31)"
+    - rid: 2521548580902404102
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u7B2C\u4E00\u95DC\u958B\u5834\u5287\u60C5\u7B2C 1 \u53E5(\u4F54\u4F4D\u6587\u5B57,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u5287\u60C5)"
+    - rid: 2521548580902404103
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u7B2C\u4E00\u95DC\u958B\u5834\u5287\u60C5\u7B2C 2 \u53E5(\u4F54\u4F4D\u6587\u5B57,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u5287\u60C5)"
+    - rid: 2521548580902404104
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u7B2C\u4E00\u95DC\u958B\u5834\u5287\u60C5\u7B2C 3 \u53E5(\u4F54\u4F4D\u6587\u5B57,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u5287\u60C5)"

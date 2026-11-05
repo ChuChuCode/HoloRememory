@@ -1,0 +1,6 @@
+Key,Id,Shared Comments,Chinese (Traditional)(zh-TW),Chinese (Traditional)(zh-TW) Comments,English(en),English(en) Comments,Japanese(ja),Japanese(ja) Comments,Korean(ko),Korean(ko) Comments
+"story_speaker_watame",,"對話框講者名稱:Watame(佔位,之後可能換成角色的正式顯示名稱 key)","Watame","","Watame","","わため","","와타메",""
+"story_level_1_name",,"Level Select 畫面:第一關的關卡名稱(佔位內容,之後補正式關卡名稱)","試煉關卡","","Trial Stage","","トライアルステージ","","시험 스테이지",""
+"story_level_1_intro_line_1",,"第一關開場劇情第 1 句(佔位文字,之後補正式劇情)","敵人出現了,準備戰鬥吧!","","Enemies incoming - let's get ready!","","敵が現れた、戦闘準備!","","적이 나타났다, 전투 준비!",""
+"story_level_1_intro_line_2",,"第一關開場劇情第 2 句(佔位文字,之後補正式劇情)","把場上的小怪全部清光就能過關。","","Clear out every enemy on the field to win.","","フィールド上の敵を全て倒せばクリアだ。","","필드 위의 적을 모두 처치하면 클리어다.",""
+"story_level_1_intro_line_3",,"第一關開場劇情第 3 句(佔位文字,之後補正式劇情)","小心別被炸到自己了!","","Just don't blow yourself up!","","自分の爆弾に気をつけてね!","","자기 폭탄 조심해!",""
