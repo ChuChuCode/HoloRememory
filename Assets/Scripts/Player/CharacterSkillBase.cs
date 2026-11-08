@@ -38,6 +38,9 @@ public abstract class CharacterSkillBase : NetworkBehaviour
     public float MaxSkillEnergy => data != null ? data.MaxEnergy : 10f;
     public float Cost => data != null ? data.Cost : MaxSkillEnergy;
     public bool IsSkillReady => skillEnergy >= Cost;
+    // Solo Mode tutorial-trigger flag (see LevelEventTrigger.UsedSkill) -
+    // read via CharacterBase.SkillComponent.TutorialUsedSkill.
+    [SyncVar] public bool TutorialUsedSkill;
 
     protected CharacterBase owner;
     protected virtual void Awake()
@@ -130,7 +133,15 @@ public abstract class CharacterSkillBase : NetworkBehaviour
         // Jump can be aimed at a blocked cell, and a wasted attempt like that
         // shouldn't cost anything. Spends just Cost, not the whole bar -
         // any leftover keeps counting toward the next activation.
-        if (Activate()) skillEnergy = Mathf.Max(0f, skillEnergy - Cost);
+        if (Activate())
+        {
+            skillEnergy = Mathf.Max(0f, skillEnergy - Cost);
+            // Solo Mode tutorial-trigger flag (see LevelEventTrigger.
+            // UsedSkill) - set once and never cleared, only on an actual
+            // (non-wasted) activation. Already server-side here, no Command
+            // round-trip needed.
+            TutorialUsedSkill = true;
+        }
     }
     // The actual skill effect - implemented per character. Runs server-side
     // (called from CmdActivate). Return true if it actually happened (energy

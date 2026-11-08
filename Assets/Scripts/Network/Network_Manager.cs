@@ -149,6 +149,13 @@ public class Network_Manager : NetworkManager
             if (SoloModeActive && CurrentSoloLevel != null)
             {
                 player.CharacterID = CurrentSoloLevel.Character != null ? CurrentSoloLevel.Character.ID : -1;
+                // Multiplayer keeps this in sync via LobbyController.change_map
+                // (host picks a map in the Lobby UI) - solo skips that whole
+                // step, so nothing else ever sets it. Without this,
+                // GameSettings.MapName stays at its hardcoded default
+                // ("Game_Test_Scene") and MapLoader.ResolveConfig() resolves
+                // to THAT MapConfig instead of the chosen level's.
+                if (GameSettings.Instance != null) GameSettings.Instance.MapName = CurrentSoloLevel.Map.MapId;
                 ChangeScene(CurrentSoloLevel.Map.MapId);
             }
         }
@@ -552,6 +559,98 @@ public class Network_Manager : NetworkManager
             GameSettings.Instance.matchCountdownEndTime = NetworkTime.time + matchStartLockDuration;
         }
         StartCoroutine(UnlockInputAfterMatchStart());
+        if (SoloModeActive) StartCoroutine(MonitorLevelEvents());
+    }
+    // Watches CurrentSoloLevel.Events for the rest of the match, firing each
+    // one at most once as its trigger condition becomes true. Multiplayer
+    // never starts this (SoloModeActive gate above) and a level with no
+    // events just exits immediately.
+    IEnumerator MonitorLevelEvents()
+    {
+        if (CurrentSoloLevel == null || CurrentSoloLevel.Events.Count == 0) yield break;
+        List<LevelEvent> remaining = new List<LevelEvent>(CurrentSoloLevel.Events);
+        while (remaining.Count > 0 && SoloModeActive)
+        {
+            for (int i = remaining.Count - 1; i >= 0; i--)
+            {
+                if (!IsEventTriggered(remaining[i])) continue;
+                LevelEvent triggered = remaining[i];
+                remaining.RemoveAt(i);
+                yield return StartCoroutine(FireLevelEvent(triggered));
+            }
+            yield return null;
+        }
+    }
+    // Solo Mode has exactly one playable character - the tutorial-trigger
+    // flags (TutorialMovedUp/Down/Left/Right/PlacedBomb/UsedSkill) always
+    // belong to this one.
+    CharacterBase SoloCharacter => Player_List.Count > 0 ? Player_List[0] : null;
+    bool IsEventTriggered(LevelEvent ev)
+    {
+        switch (ev.Trigger)
+        {
+            case LevelEventTrigger.MinionsRemaining:
+                return Minion_List.Count <= ev.TriggerValue;
+            case LevelEventTrigger.TimeElapsed:
+                // Same elapsed-since-countdown-armed calc as
+                // LocalPlayerInfo.GetRemaining() uses for the HUD timer.
+                if (GameSettings.Instance == null) return false;
+                return (NetworkTime.time - GameSettings.Instance.matchCountdownEndTime) >= ev.TriggerValue;
+            case LevelEventTrigger.MovedUp:
+                return SoloCharacter != null && SoloCharacter.TutorialMovedUp;
+            case LevelEventTrigger.MovedDown:
+                return SoloCharacter != null && SoloCharacter.TutorialMovedDown;
+            case LevelEventTrigger.MovedLeft:
+                return SoloCharacter != null && SoloCharacter.TutorialMovedLeft;
+            case LevelEventTrigger.MovedRight:
+                return SoloCharacter != null && SoloCharacter.TutorialMovedRight;
+            case LevelEventTrigger.PlacedBomb:
+                return SoloCharacter != null && SoloCharacter.TutorialPlacedBomb;
+            case LevelEventTrigger.UsedSkill:
+                return SoloCharacter != null && SoloCharacter.SkillComponent != null && SoloCharacter.SkillComponent.TutorialUsedSkill;
+            case LevelEventTrigger.PickedUpItem:
+                return SoloCharacter != null && SoloCharacter.TutorialPickedUpItem;
+            default:
+                return false;
+        }
+    }
+    IEnumerator FireLevelEvent(LevelEvent ev)
+    {
+        switch (ev.Action)
+        {
+            case LevelEventAction.PlayDialogue:
+                if (ev.Dialogue == null || DialogueUI.Instance == null) break;
+                // Same "pause while talking" treatment as the intro dialogue.
+                foreach (CharacterBase character in Player_List)
+                {
+                    if (character != null) character.isInputLocked = true;
+                }
+                bool dialogueDone = false;
+                DialogueUI.Instance.Play(ev.Dialogue, () => dialogueDone = true);
+                while (!dialogueDone) yield return null;
+                foreach (CharacterBase character in Player_List)
+                {
+                    if (character != null && !character.isDead) character.isInputLocked = false;
+                }
+                break;
+            case LevelEventAction.SpawnMinions:
+                MinionSpawner.Instance?.SpawnWave(ev.SpawnCount);
+                break;
+            case LevelEventAction.ShowPrompt:
+                // Fire-and-forget - doesn't lock input or wait for the
+                // player to actually do it, unlike PlayDialogue above.
+                TutorialPromptUI.Instance?.Show(ev.ControlName, ev.PromptTextKey, ev.PromptDuration);
+                break;
+            case LevelEventAction.CompleteLevel:
+                if (ev.Dialogue != null && DialogueUI.Instance != null)
+                {
+                    bool completeDialogueDone = false;
+                    DialogueUI.Instance.Play(ev.Dialogue, () => completeDialogueDone = true);
+                    while (!completeDialogueDone) yield return null;
+                }
+                EndMatch();
+                break;
+        }
     }
     // Started once the load-wait above clears (see
     // WaitForAllPlayersLoadedThenStartMatch) - not per-character, since it

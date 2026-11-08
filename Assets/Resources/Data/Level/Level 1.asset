@@ -14,9 +14,42 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   LevelId: level_1
   DisplayNameKey: story_level_1_name
-  Map: {fileID: 11400000, guid: 3412c4e0daaf4181b013857e9caa4cd6, type: 2}
+  Map: {fileID: 11400000, guid: 545dde909ad6462bbb934220203b4f56, type: 2}
   Character: {fileID: 11400000, guid: 542ef61177584e5ea3b012db2952cb60, type: 2}
   UnlockCost: 0
   RequiredLevelId:
   WinCondition: 0
   IntroDialogue: {fileID: 11400000, guid: d0dc2bddeac34b69af5fb892d2b75419, type: 2}
+  Events:
+  - Trigger: 1
+    TriggerValue: 1
+    Action: 2
+    Dialogue: {fileID: 0}
+    SpawnCount: 1
+    ControlName: upArrow
+    PromptTextKey: story_tutorial_move
+    PromptDuration: 3
+  - Trigger: 4
+    TriggerValue: 0
+    Action: 2
+    Dialogue: {fileID: 0}
+    SpawnCount: 1
+    ControlName: space
+    PromptTextKey: story_tutorial_bomb
+    PromptDuration: 3
+  - Trigger: 6
+    TriggerValue: 0
+    Action: 2
+    Dialogue: {fileID: 0}
+    SpawnCount: 1
+    ControlName:
+    PromptTextKey: story_tutorial_item
+    PromptDuration: 3
+  - Trigger: 8
+    TriggerValue: 0
+    Action: 3
+    Dialogue: {fileID: 11400000, guid: 81b43daa26e84d4eafcc8ed15d4f0306, type: 2}
+    SpawnCount: 1
+    ControlName:
+    PromptTextKey:
+    PromptDuration: 2.5

@@ -294,6 +294,11 @@ MonoBehaviour:
     m_Localized: Unlimited
     m_Metadata:
       m_Items: []
+  - m_Id: 9138953864077312
+    m_Localized: Steam not detected. Please launch Steam, then restart the game to
+      use multiplayer.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

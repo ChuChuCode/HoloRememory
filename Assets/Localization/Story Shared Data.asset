@@ -40,6 +40,26 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 2521548580902404104
+  - m_Id: 794857902694400
+    m_Key: story_tutorial_move
+    m_Metadata:
+      m_Items:
+      - rid: 2521548653864681474
+  - m_Id: 794858108215296
+    m_Key: story_tutorial_bomb
+    m_Metadata:
+      m_Items:
+      - rid: 2521548653864681475
+  - m_Id: 794858108215297
+    m_Key: story_tutorial_item
+    m_Metadata:
+      m_Items:
+      - rid: 2521548653864681476
+  - m_Id: 794858112409600
+    m_Key: story_level_1_outro_line_1
+    m_Metadata:
+      m_Items:
+      - rid: 2521548653864681477
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
@@ -59,16 +79,32 @@ MonoBehaviour:
     - rid: 2521548580902404101
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_CommentText: "Level Select \u756B\u9762:\u7B2C\u4E00\u95DC\u7684\u95DC\u5361\u540D\u7A31(\u4F54\u4F4D\u5167\u5BB9,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u95DC\u5361\u540D\u7A31)"
+        m_CommentText: "Level Select \u756B\u9762:\u7B2C\u4E00\u95DC\u7684\u95DC\u5361\u540D\u7A31,\u6539\u6210\u65B0\u624B\u6559\u5B78\u95DC"
     - rid: 2521548580902404102
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_CommentText: "\u7B2C\u4E00\u95DC\u958B\u5834\u5287\u60C5\u7B2C 1 \u53E5(\u4F54\u4F4D\u6587\u5B57,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u5287\u60C5)"
+        m_CommentText: "\u6559\u5B78\u95DC\u958B\u5834\u5287\u60C5\u7B2C 1 \u53E5"
     - rid: 2521548580902404103
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_CommentText: "\u7B2C\u4E00\u95DC\u958B\u5834\u5287\u60C5\u7B2C 2 \u53E5(\u4F54\u4F4D\u6587\u5B57,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u5287\u60C5)"
+        m_CommentText: "\u6559\u5B78\u95DC\u958B\u5834\u5287\u60C5\u7B2C 2 \u53E5"
     - rid: 2521548580902404104
       type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
       data:
-        m_CommentText: "\u7B2C\u4E00\u95DC\u958B\u5834\u5287\u60C5\u7B2C 3 \u53E5(\u4F54\u4F4D\u6587\u5B57,\u4E4B\u5F8C\u88DC\u6B63\u5F0F\u5287\u60C5)"
+        m_CommentText: "\u6559\u5B78\u95DC\u958B\u5834\u5287\u60C5\u7B2C 3 \u53E5"
+    - rid: 2521548653864681474
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6559\u5B78\u95DC\u4E2D\u9014\u63D0\u793A:\u79FB\u52D5(\u914D\u6309\u9375\u5716\u793A\u986F\u793A)"
+    - rid: 2521548653864681475
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6559\u5B78\u95DC\u4E2D\u9014\u63D0\u793A:\u653E\u70B8\u5F48\u70B8\u958B\u64CB\u8DEF\u7684\u65B9\u584A(\u914D\u6309\u9375\u5716\u793A\u986F\u793A)"
+    - rid: 2521548653864681476
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6559\u5B78\u95DC\u4E2D\u9014\u63D0\u793A:\u63D0\u9192\u64BF\u8D77\u5C0F\u602A\u65B9\u584A\u70B8\u958B\u5F8C\u6389\u843D\u7684\u9053\u5177(\u914D\u6309\u9375\u5716\u793A\u986F\u793A,\u82E5\u7121\u5716\u793A\u5247\u7D14\u6587\u5B57)"
+    - rid: 2521548653864681477
+      type: {class: Comment, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_CommentText: "\u6559\u5B78\u95DC\u5B8C\u6210\u6642\u7684\u7D50\u5C3E\u5287\u60C5"

@@ -238,6 +238,10 @@ MonoBehaviour:
     m_Localized: "\u7121\u5236\u9650"
     m_Metadata:
       m_Items: []
+  - m_Id: 9138953864077312
+    m_Localized: "Steam\u304C\u691C\u51FA\u3055\u308C\u307E\u305B\u3093\u3002Steam\u3092\u8D77\u52D5\u3057\u3066\u304B\u3089\u30B2\u30FC\u30E0\u3092\u518D\u8D77\u52D5\u3057\u3066\u304F\u3060\u3055\u3044\u3002"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -33,6 +33,13 @@ public class DialogueUI : MonoBehaviour
     DialogueScript current;
     int lineIndex;
     Action onComplete;
+    bool isPlaying;
+    // Solo Mode now has two call sites for Play() (the intro dialogue and
+    // any mid-match LevelEvent) that could in principle land close together -
+    // queue instead of clobbering whatever's already showing, which used to
+    // silently drop the first caller's onComplete (hanging its caller's
+    // "wait for dialogue" loop forever).
+    readonly Queue<(DialogueScript script, Action onComplete)> pending = new Queue<(DialogueScript, Action)>();
 
     void Awake()
     {
@@ -47,6 +54,17 @@ public class DialogueUI : MonoBehaviour
             onComplete?.Invoke();
             return;
         }
+        if (isPlaying)
+        {
+            pending.Enqueue((script, onComplete));
+            return;
+        }
+        StartPlaying(script, onComplete);
+    }
+
+    void StartPlaying(DialogueScript script, Action onComplete)
+    {
+        isPlaying = true;
         current = script;
         this.onComplete = onComplete;
         lineIndex = 0;
@@ -65,9 +83,18 @@ public class DialogueUI : MonoBehaviour
             Action callback = onComplete;
             current = null;
             onComplete = null;
+            callback?.Invoke();
+
+            if (pending.Count > 0)
+            {
+                (DialogueScript nextScript, Action nextCallback) = pending.Dequeue();
+                StartPlaying(nextScript, nextCallback);
+                return;
+            }
+
+            isPlaying = false;
             if (panel != null) panel.SetActive(false);
             SetHiddenUIActive(true);
-            callback?.Invoke();
             return;
         }
         ShowLine();

@@ -527,7 +527,31 @@ public abstract class CharacterBase: Health
             facingDir = Mathf.Abs(moveVector.x) > Mathf.Abs(moveVector.y)
                 ? new Vector2Int(moveVector.x > 0 ? 1 : -1, 0)
                 : new Vector2Int(0, moveVector.y > 0 ? 1 : -1);
+            CmdReportTutorialMove(moveVector.x, moveVector.y);
         }
+    }
+    // Solo Mode tutorial-trigger flags (see LevelEventTrigger.MovedUp/Down/
+    // Left/Right) - set once and never cleared, so a level's LevelEvent list
+    // can check "has the player moved this direction at least once yet."
+    // Movement is read purely client-side (CharacterMove above), so unlike
+    // bomb placement/skill use (already server-side via CmdSpawnBomb/
+    // CharacterSkillBase.ActivateAfterWindUp) this needs its own Command to
+    // reach the server.
+    [SyncVar] public bool TutorialMovedUp;
+    [SyncVar] public bool TutorialMovedDown;
+    [SyncVar] public bool TutorialMovedLeft;
+    [SyncVar] public bool TutorialMovedRight;
+    [SyncVar] public bool TutorialPlacedBomb;
+    // Set directly by Item.OnTriggerEnter ([ServerCallback], already
+    // server-side) - see LevelEventTrigger.PickedUpItem.
+    [SyncVar] public bool TutorialPickedUpItem;
+    [Command]
+    void CmdReportTutorialMove(float x, float y)
+    {
+        if (x > 0f) TutorialMovedRight = true;
+        else if (x < 0f) TutorialMovedLeft = true;
+        if (y > 0f) TutorialMovedUp = true;
+        else if (y < 0f) TutorialMovedDown = true;
     }
     protected void OnMovementCancelled(CallbackContext callback)
     {
@@ -1023,6 +1047,10 @@ public abstract class CharacterBase: Health
             bomb.SetLeavesLingeringFire(bombFireLingerDuration, bombFireTickInterval);
         }
         NetworkServer.Spawn(bomb.gameObject);
+        // Already server-side here (unlike movement above) - set directly,
+        // no Command round-trip needed. Only reached past the occupied-cell
+        // early return, i.e. a bomb was actually placed, not just attempted.
+        TutorialPlacedBomb = true;
     }
     [TargetRpc]
     void TargetRefundBomb(NetworkConnection conn)

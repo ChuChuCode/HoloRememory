@@ -23,19 +23,35 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 33129750528
-    m_Localized: Trial Stage
+    m_Localized: Tutorial
     m_Metadata:
       m_Items: []
   - m_Id: 33129750529
-    m_Localized: Enemies incoming - let's get ready!
+    m_Localized: Welcome to the tutorial!
     m_Metadata:
       m_Items: []
   - m_Id: 33129750530
-    m_Localized: Clear out every enemy on the field to win.
+    m_Localized: Try moving around with the arrow keys first.
     m_Metadata:
       m_Items: []
   - m_Id: 33129750531
-    m_Localized: Just don't blow yourself up!
+    m_Localized: Follow the path to the end - something will be blocking the way.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 794857902694400
+    m_Localized: Move around
+    m_Metadata:
+      m_Items: []
+  - m_Id: 794858108215296
+    m_Localized: Place a bomb to break the block ahead
+    m_Metadata:
+      m_Items: []
+  - m_Id: 794858108215297
+    m_Localized: Pick up the item that dropped
+    m_Metadata:
+      m_Items: []
+  - m_Id: 794858112409600
+    m_Localized: Well done! Tutorial complete - ready for the real levels?
     m_Metadata:
       m_Items: []
   references:

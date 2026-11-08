@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using HR.Network;
 using HR.Network.Select;
@@ -35,5 +36,9 @@ public class LevelConfig : ScriptableObject
     public LevelWinCondition WinCondition = LevelWinCondition.ClearAllMinions;
     // Optional - null skips straight to gameplay, no dialogue screen.
     public DialogueScript IntroDialogue;
+    // Scripted beats that can fire partway through the match (dialogue,
+    // extra minion waves) - see Network_Manager.MonitorLevelEvents. Empty is
+    // fine; IntroDialogue above is unaffected either way.
+    public List<LevelEvent> Events = new List<LevelEvent>();
 }
 }
