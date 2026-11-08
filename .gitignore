@@ -76,3 +76,7 @@ crashlytics-build.properties
 
 # Mono/Unity crash dumps
 mono_crash.*.json
+
+# Google Sheets service account key used by the Localization importer
+# (HoloBomber/Localization/Import From Google Sheet) - never commit this
+/google-sheets-credentials.json

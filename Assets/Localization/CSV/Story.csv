@@ -1,6 +1,10 @@
-Key,Id,Shared Comments,Chinese (Traditional)(zh-TW),Chinese (Traditional)(zh-TW) Comments,English(en),English(en) Comments,Japanese(ja),Japanese(ja) Comments,Korean(ko),Korean(ko) Comments
-"story_speaker_watame",,"對話框講者名稱:Watame(佔位,之後可能換成角色的正式顯示名稱 key)","Watame","","Watame","","わため","","와타메",""
-"story_level_1_name",,"Level Select 畫面:第一關的關卡名稱(佔位內容,之後補正式關卡名稱)","試煉關卡","","Trial Stage","","トライアルステージ","","시험 스테이지",""
-"story_level_1_intro_line_1",,"第一關開場劇情第 1 句(佔位文字,之後補正式劇情)","敵人出現了,準備戰鬥吧!","","Enemies incoming - let's get ready!","","敵が現れた、戦闘準備!","","적이 나타났다, 전투 준비!",""
-"story_level_1_intro_line_2",,"第一關開場劇情第 2 句(佔位文字,之後補正式劇情)","把場上的小怪全部清光就能過關。","","Clear out every enemy on the field to win.","","フィールド上の敵を全て倒せばクリアだ。","","필드 위의 적을 모두 처치하면 클리어다.",""
-"story_level_1_intro_line_3",,"第一關開場劇情第 3 句(佔位文字,之後補正式劇情)","小心別被炸到自己了!","","Just don't blow yourself up!","","自分の爆弾に気をつけてね!","","자기 폭탄 조심해!",""
+Key,Id,Chinese (Traditional)(zh-TW),English(en),Japanese(ja),Korean(ko)
+"story_speaker_watame",33083613184,"Watame","Watame","わため","와타메"
+"story_level_1_name",33129750528,"新手教學","Tutorial","チュートリアル","튜토리얼"
+"story_level_1_intro_line_1",33129750529,"歡迎來到新手教學!","Welcome to the tutorial!","チュートリアルへようこそ!","튜토리얼에 오신 것을 환영합니다!"
+"story_level_1_intro_line_2",33129750530,"先試著用方向鍵到處走走看吧。","Try moving around with the arrow keys first.","まずは矢印キーで動いてみよう。","먼저 방향키로 움직여 보세요."
+"story_level_1_intro_line_3",33129750531,"沿路走到底,會有東西擋住去路喔。","Follow the path to the end - something will be blocking the way.","道なりに進むと、何かが行く手を塞いでいるはずだ。","길을 따라가면 무언가가 길을 막고 있을 거예요."
+"story_tutorial_move",794857902694400,"移動看看","Move around","動いてみよう","움직여 보세요"
+"story_tutorial_bomb",794858108215296,"放炸彈炸開前面的方塊","Place a bomb to break the block ahead","爆弾を置いてブロックを壊そう","폭탄을 놓아 블록을 부수세요"
+"story_tutorial_item",794858108215297,"撿起掉落的道具","Pick up the item that dropped","落ちたアイテムを拾おう","떨어진 아이템을 주우세요"
+"story_level_1_outro_line_1",794858112409600,"做得好!教學完成了,準備好迎接正式關卡了嗎?","Well done! Tutorial complete - ready for the real levels?","よくできました!チュートリアル完了、本番のステージに挑戦しよう!","잘했어요! 튜토리얼 완료, 본 스테이지에 도전할 준비가 됐나요?"
